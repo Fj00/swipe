@@ -14,7 +14,7 @@ $(document).ready(function(){
 		"<p>article#4 article#4 article#4 article#4 article#4 article#4 article#4 </p>article#4 article#4 article#4 article#4 article#4 <p>article#4 article#4 article#4 article#4 article#4 article#4</p> article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 ",
 		"article5 <p>article5 article5 article5 article5 article5<p> article5 article5 article5 article5 article5 article5 article5 article5"
 	);
-	
+
 	szl= function(e){
 		//.log('szled it');
 		$('#topArticle').css("background", "#FF5555");
@@ -22,7 +22,7 @@ $(document).ready(function(){
 			$(this).remove();
 			$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
 			$('#bottomArticle').attr('id', 'middleArticle').draggable(newArticle);
-				firstDrag = true;
+				//firstDrag = true;
 		});
 		createArticle();
 	}
@@ -34,7 +34,7 @@ $(document).ready(function(){
 			$(this).remove();
 			$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
 			$('#bottomArticle').attr('id', 'middleArticle').draggable(newArticle);
-			firstDrag = true;
+			//firstDrag = true;
 		});
 		createArticle();
 	}	
@@ -45,7 +45,7 @@ $(document).ready(function(){
 		$('#bottomArticle').addClass('article').text(index);
 		index += 1;
 		if (index > 10){ index = 0;}
-		firstDrag = false;		
+		//firstDrag = false;		
 	}	
 
 	var initial = parseInt($('#topArticle').css('left'));
@@ -53,7 +53,7 @@ $(document).ready(function(){
 	var newArticle = {
 		axis: 'x',
 		start: function(ui, event){
-			firstDrag = true;	
+			//firstDrag = true;	
 		},
 		drag: function(ui,event){
 			console.log(firstDrag);
@@ -63,19 +63,17 @@ $(document).ready(function(){
 				$('#nextArticle').addClass('article').text('next');
 				firstDrag = false;
 			}*/
-			if (parseInt($('#topArticle').css('left')) > $(window).width() * .65){//make szl and fzl functions that removes previous article
+			/*if (parseInt($('#topArticle').css('left')) > $(window).width() * .65){//make szl and fzl functions that removes previous article
 				//.log('true');
-				$('#topArticle').animate({left: '+'+width+"px"}, 
-					{duration: 500, 
-						complete: function(){
-							//.log('true');
-							$(this).remove();
-							$('#middleArticle').attr('id','topArticle').draggable(newArticle);
-							firstDrag = true;
-						}
+				$('#topArticle').css("background", "#FF5555");
+				$('#topArticle').animate({left: '+'+width+"px"}, 500, 'swing', function(){
+					$(this).remove();
+					$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
+					$('#bottomArticle').attr('id', 'middleArticle').draggable(newArticle);
+				//firstDrag = true;
 				}).trigger('mouseup');
-				firstDrag = true;
-			}
+				//firstDrag = true;
+			}*/
 		},
 		stop: function(ui, event){
 			console.log("stop");
@@ -159,4 +157,3 @@ $(document).ready(function(){
 		}
 	}
 });
-
