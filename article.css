@@ -75,6 +75,6 @@ header{
 	padding: 1em;
 	box-shadow: 0 0 1em black;
 }
-#currentArticle{
+#topArticle{
 	z-index: 1;
 }

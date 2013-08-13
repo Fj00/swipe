@@ -17,97 +17,68 @@ $(document).ready(function(){
 	
 	szl= function(e){
 		//.log('szled it');
-		$('#currentArticle').css("background", "#FF5555");
-		$('#currentArticle').animate({left: '+'+width+"px"}, 500, 'swing', function(){
+		$('#topArticle').css("background", "#FF5555");
+		$('#topArticle').animate({left: '+'+width+"px"}, 500, 'swing', function(){
 			$(this).remove();
-			$('#nextArticle').attr('id', 'currentArticle').draggable(newArticle);
-			//.log('callback');
-				/*var newDiv = document.createElement('div');
-				szld.push($(this).contents());
-				$('#header-container').append($(newDiv).attr('id', 'newSzl' + szlCount));
-				$('#newSzl' + szlCount).css({
-					'position':'absolute',
-					'width':'20%',
-					'height':'100%',
-					'left': $(document).width(),
-					'overflow':'auto',
-					'background':'white',
-					'transition':'1s',
-					'overflow':'hidden',
-					'left': szlCount * 20 + '%'
-				}).append(szld[szld.length - 1]);
-				szlCount += 1;*/
+			$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
+			$('#bottomArticle').attr('id', 'middleArticle').draggable(newArticle);
 				firstDrag = true;
 		});
-		//nextArticle(left)
-		//firstDrag = true;
+		createArticle();
 	}
 
 	fzl = function(e){
 		//.log('fzled it');
-		$('#currentArticle').css("background", "#00CCFF");
-		$('#currentArticle').animate({left: '-'+width+"px"}, 500,'swing', function(){
+		$('#topArticle').css("background", "#00CCFF");
+		$('#topArticle').animate({left: '-'+width+"px"}, 500,'swing', function(){
 			$(this).remove();
-			$('#nextArticle').attr('id', 'currentArticle').draggable(newArticle);
+			$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
+			$('#bottomArticle').attr('id', 'middleArticle').draggable(newArticle);
 			firstDrag = true;
 		});
-		/*if (index === articles.length - 1){
-			setTimeout(function(){$('#article' + (articles.length - 1)).remove()},500);
-		}
-		nextArticle(right);*/
+		createArticle();
 	}	
 
-	/*nextArticle = function(direction){
-		var clearOld = setTimeout(function(){
-			$('#article'+(index - 1)).remove();
-		},500);
-		//.log(direction);
+	createArticle = function(){
+		var newCont = $("<div></div").attr('id', 'bottomArticle');//container for next article
+		$('#stream').append(newCont);
+		$('#bottomArticle').addClass('article').text(index);
 		index += 1;
-		if (index >= articles.length){ index = 0;}
-		var newarticle = document.createElement("div");
-		$(newarticle).addClass('article').attr("id","article" + index);
-		$('.article-container').append(newarticle);
-		$(newarticle).css("left", direction );
-		document.getElementById('article' + index).innerHTML = articles[index];	
-		$(newarticle).animate({"left": '10%'},{duration: 500, queue: false}, function(){});		
-	}
-	
-	$("#content").not('#header-container').on({//need to prevent swipe on header articles from calling function
-		'swiperight': szl,
-		'swipeleft': fzl
-	});*/
+		if (index > 10){ index = 0;}
+		firstDrag = false;		
+	}	
 
-	//var newarticle = document.createElement("div");
-	var initial = parseInt($('#currentArticle').css('left'));
+	var initial = parseInt($('#topArticle').css('left'));
 	var firstDrag = true;
 	var newArticle = {
 		axis: 'x',
 		start: function(ui, event){
-			
+			firstDrag = true;	
 		},
 		drag: function(ui,event){
-			console.log(parseInt($('#currentArticle').css('left')) < initial + 1 && $('#stream').children().length < 2);
-			//.log(parseInt($('#currentArticle').css('left')))
-			//if (parseInt($('#currentArticle').css('left')) < initial + 1 && firstDrag == true){
-			if (parseInt($('#currentArticle').css('left')) < initial + 1 && $('#stream').children().length < 2){	
-				//.log('true');
+			console.log(firstDrag);
+			/*if (parseInt($('#topArticle').css('left')) < initial + 1 && firstDrag == true){
 				var newCont = $("<div></div").attr('id', 'nextArticle');//container for next article
 				$('#stream').append(newCont);
 				$('#nextArticle').addClass('article').text('next');
 				firstDrag = false;
-			}
-			if (parseInt($('#currentArticle').css('left')) > $(window).width() * .65){//make szl and fzl functions that removes previous article
+			}*/
+			if (parseInt($('#topArticle').css('left')) > $(window).width() * .65){//make szl and fzl functions that removes previous article
 				//.log('true');
-				$('#currentArticle').animate({left: '+'+width+"px"}, 
+				$('#topArticle').animate({left: '+'+width+"px"}, 
 					{duration: 500, 
 						complete: function(){
 							//.log('true');
 							$(this).remove();
-							$('#nextArticle').attr('id','currentArticle').draggable(newArticle);
+							$('#middleArticle').attr('id','topArticle').draggable(newArticle);
 							firstDrag = true;
 						}
 				}).trigger('mouseup');
+				firstDrag = true;
 			}
+		},
+		stop: function(ui, event){
+			console.log("stop");
 		}
 	}
 	$('.article').draggable(newArticle);
@@ -154,52 +125,36 @@ $(document).ready(function(){
 			////.log(scaledDistance, swipeTime);
 			if (scaledDistance / swipeTime > 3){
 				if (distance.x > 0){
-					/*$('#currentArticle').animate({left: width+"px"}, 500,'swing', function(){
-						$(this).remove();
-						$('#nextArticle').attr('id', 'currentArticle').draggable(newArticle);
-					});*/
 					szl();
 					//.log("szl");
 				}
 				else if (distance.x < 0){
-					/*$('#currentArticle').animate({left: '-'+width+"px"}, 500,'swing',function(){
-						$(this).remove();
-						$('#nextArticle').attr('id', 'currentArticle').draggable(newArticle);
-					});*/
 					fzl();
 					//.log("fzl");
 				}
 				else{
 					//.log("back");
-					$('#currentArticle').animate({'left':'10%'},300);
+					$('#topArticle').animate({'left':'10%'},300);
 				}
 			}
 			else if (Math.abs(distance.x / width) > 0.3) {
 				if (distance.x > 0) {
-					/*$('#currentArticle').animate({left: width+"px"}, 500,'swing', function(){
-						$(this).remove();
-						$('#nextArticle').attr('id', 'currentArticle').draggable(newArticle);
-					});*/
 					szl();
 					//.log("szl");
 				}
 				else if (distance.x < 0){
-					/*$('#currentArticle').animate({left: '-'+width+"px"}, 500,'swing',function(){
-						$(this).remove();
-						$('#nextArticle').attr('id', 'currentArticle').draggable(newArticle);
-					});*/
 					fzl();
 					//.log("fzl");
 				}
 			}
 			else{
-				$('#currentArticle').animate({'left':'10%'},300);
+				$('#topArticle').animate({'left':'10%'},300);
 				//.log("back");
 				firstDrag = false;
 			}
 		}
 		else{
-			$('#currentArticle').animate({'left':'10%'},300);
+			$('#topArticle').animate({'left':'10%'},300);
 			//.log("do nothing");
 		}
 	}
