@@ -74,29 +74,28 @@ $(document).ready(function(){
 	});*/
 
 	//var newarticle = document.createElement("div");
-	var start = parseInt($('#currentArticle').css('left'));
+	var initial = parseInt($('#currentArticle').css('left'));
 	var newArticle = {
 		axis: 'x',
 		start: function(ui, event){},
 		drag: function(ui,event){
-			console.log(event.pageX)
-			if (parseInt($('#currentArticle').css('left')) < start + 1){
+			//console.log(event.pageX)
+			if (parseInt($('#currentArticle').css('left')) < initial + 1){
 				console.log('true');
 				var newCont = $("<div></div").attr('id', 'nextArticle');//container for next article
 				$('#stream').append(newCont);
 				$('#nextArticle').addClass('article').text('next');
 			}
-			if (parseInt($('#currentArticle').css('left')) > $(window).width() * .65){
+			if (parseInt($('#currentArticle').css('left')) > $(window).width() * .65){//make szl and fzl functions that removes previous article
 				console.log('true');
 				$('#currentArticle').animate({left: '+'+width+"px"}, 
-					{duration: 500, queue: false, 
+					{duration: 500, 
 						complete: function(){
-							$(this).remove()
+							console.log('true');
+							$(this).remove();
+							$('#nextArticle').attr('id','currentArticle').draggable(newArticle)
 						}
 				}).trigger('mouseup');
-				$('#nextArticle').animate({'left':'10%'}, {duration: 500, complete: function(){
-					$('#nextArticle').attr('id','currentArticle').draggable(newArticle)}
-				});
 			}
 		}
 	}
@@ -117,7 +116,7 @@ $(document).ready(function(){
 
 		startPos.x = e.pageX;
 		startPos.y = e.pageY;
-		console.log(startPos.x)
+		//console.log(startPos.x)
 		//console.log(start_time + ', ' + startPos.x);
 	}
 	function end(e) {
@@ -141,14 +140,20 @@ $(document).ready(function(){
 
 	checkForSwipe = function(){
 		if (Math.abs(angle) <= 45){
-			console.log(scaledDistance, swipeTime);
-			if (scaledDistance / swipeTime > 100){
+			//console.log(scaledDistance, swipeTime);
+			if (scaledDistance / swipeTime > 1){
 				if (distance.x > 0){
-					$('#currentArticle').animate({left: width+"px"}, 500,'swing');
+					$('#currentArticle').animate({left: width+"px"}, 500,'swing', function(){
+						$(this).remove();
+						$('#nextArticle').attr('id', 'currentArticle').draggable(newArticle);
+					});
 					console.log("szl");
 				}
 				else if (distance.x < 0){
-					$('#currentArticle').animate({left: '-'+width+"px"}, 500,'swing');
+					$('#currentArticle').animate({left: '-'+width+"px"}, 500,'swing',function(){
+						$(this).remove();
+						$('#nextArticle').attr('id', 'currentArticle').draggable(newArticle);
+					});
 					console.log("fzl");
 				}
 				else{
@@ -158,11 +163,17 @@ $(document).ready(function(){
 			}
 			else if (Math.abs(distance.x / width) > 0.3) {
 				if (distance.x > 0) {
-					$('#currentArticle').animate({left: width +"px"}, 500,'swing');
+					$('#currentArticle').animate({left: width+"px"}, 500,'swing', function(){
+						$(this).remove();
+						$('#nextArticle').attr('id', 'currentArticle').draggable(newArticle);
+					});
 					console.log("szl");
 				}
 				else if (distance.x < 0){
-					$('#currentArticle').animate({left: '-'+width+"px"}, 500,'swing');
+					$('#currentArticle').animate({left: '-'+width+"px"}, 500,'swing',function(){
+						$(this).remove();
+						$('#nextArticle').attr('id', 'currentArticle').draggable(newArticle);
+					});
 					console.log("fzl");
 				}
 			}
