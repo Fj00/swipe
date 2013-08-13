@@ -16,25 +16,21 @@ $(document).ready(function(){
 	);
 
 	szl= function(e){
-		//.log('szled it');
 		$('#topArticle').css("background", "#FF5555");
 		$('#topArticle').animate({left: '+'+width+"px"}, 500, 'swing', function(){
 			$(this).remove();
 			$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
-			$('#bottomArticle').attr('id', 'middleArticle').draggable(newArticle);
-				//firstDrag = true;
+			$('#bottomArticle').attr('id', 'middleArticle')
 		});
 		createArticle();
 	}
 
 	fzl = function(e){
-		//.log('fzled it');
 		$('#topArticle').css("background", "#00CCFF");
 		$('#topArticle').animate({left: '-'+width+"px"}, 500,'swing', function(){
 			$(this).remove();
 			$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
-			$('#bottomArticle').attr('id', 'middleArticle').draggable(newArticle);
-			//firstDrag = true;
+			$('#bottomArticle').attr('id', 'middleArticle')
 		});
 		createArticle();
 	}	
@@ -45,7 +41,6 @@ $(document).ready(function(){
 		$('#bottomArticle').addClass('article').text(index);
 		index += 1;
 		if (index > 10){ index = 0;}
-		//firstDrag = false;		
 	}	
 
 	var initial = parseInt($('#topArticle').css('left'));
@@ -53,30 +48,10 @@ $(document).ready(function(){
 	var newArticle = {
 		axis: 'x',
 		start: function(ui, event){
-			//firstDrag = true;	
 		},
 		drag: function(ui,event){
-			console.log(firstDrag);
-			/*if (parseInt($('#topArticle').css('left')) < initial + 1 && firstDrag == true){
-				var newCont = $("<div></div").attr('id', 'nextArticle');//container for next article
-				$('#stream').append(newCont);
-				$('#nextArticle').addClass('article').text('next');
-				firstDrag = false;
-			}*/
-			/*if (parseInt($('#topArticle').css('left')) > $(window).width() * .65){//make szl and fzl functions that removes previous article
-				//.log('true');
-				$('#topArticle').css("background", "#FF5555");
-				$('#topArticle').animate({left: '+'+width+"px"}, 500, 'swing', function(){
-					$(this).remove();
-					$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
-					$('#bottomArticle').attr('id', 'middleArticle').draggable(newArticle);
-				//firstDrag = true;
-				}).trigger('mouseup');
-				//firstDrag = true;
-			}*/
 		},
 		stop: function(ui, event){
-			console.log("stop");
 		}
 	}
 	$('.article').draggable(newArticle);
@@ -93,11 +68,8 @@ $(document).ready(function(){
 	var start_time;
 	function start(e) {
 	    start_time = new Date();
-
 		startPos.x = e.pageX;
 		startPos.y = e.pageY;
-		////.log(startPos.x)
-		////.log(start_time + ', ' + startPos.x);
 	}
 	function end(e) {
 	    var now = new Date();
@@ -107,53 +79,43 @@ $(document).ready(function(){
 		angle = Math.atan(distance.y / distance.x) * (180 / Math.PI);
 
 		scaledDistance = Math.sqrt((distance.x / width)^2 + (distance.y / height)^2);
-	    ////.log((now-start_time)/1000+', '+endPos.x);
 	}
 
 	$(document).mousedown(function(e){
 		start(e);
 	}).mouseup(function(e){
 		end(e);
-		//.log("Swiped ",distance.x,"px at an angle of ", angle, "in ",swipeTime, " milliseconds");
 		checkForSwipe();
 	});	
 
 	checkForSwipe = function(){
 		if (Math.abs(angle) <= 45){
-			////.log(scaledDistance, swipeTime);
 			if (scaledDistance / swipeTime > 3){
 				if (distance.x > 0){
 					szl();
-					//.log("szl");
 				}
 				else if (distance.x < 0){
 					fzl();
-					//.log("fzl");
 				}
 				else{
-					//.log("back");
 					$('#topArticle').animate({'left':'10%'},300);
 				}
 			}
 			else if (Math.abs(distance.x / width) > 0.3) {
 				if (distance.x > 0) {
 					szl();
-					//.log("szl");
 				}
 				else if (distance.x < 0){
 					fzl();
-					//.log("fzl");
 				}
 			}
 			else{
 				$('#topArticle').animate({'left':'10%'},300);
-				//.log("back");
 				firstDrag = false;
 			}
 		}
 		else{
 			$('#topArticle').animate({'left':'10%'},300);
-			//.log("do nothing");
 		}
 	}
 });
