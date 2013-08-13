@@ -1,0 +1,79 @@
+.ui-page {
+	height: 100%;
+}
+
+html{
+	padding: 0;
+	margin: 0;
+	border: none;
+	font-family: Verdana, Helvetica, Arial;
+	height: 100%;
+}
+
+body{
+	margin: 0;
+	overflow-y: hidden;
+	background-color: #DEDEDE;
+	height: 100%;
+}
+
+header{
+	height: 20%;
+	position: relative;
+	background-color: #282828;
+	background-image: linear-gradient(0deg, #000000 0%, #454545 100%);
+	overflow-x: auto;
+	overflow-y: hidden;	
+}
+
+#content{
+	height: 70%;
+	overflow-y:auto;
+	overflow-x:hidden;
+}
+#header-container{
+	overflow-x: auto;
+	overflow-y:hidden;
+}
+#logo{
+	background-image: url(img/szl_logo.png);
+	margin-top: 10px;
+	margin-left: 30px;
+	float:left;
+}
+
+.colorbar{
+	width: 100%;
+	height:5%;
+	background-color: #BF0729;
+}
+
+/*.article-container{
+	position: absolute;
+	left: 10%;
+	margin: auto;
+	margin-top: 50px;
+	padding: 5px;
+	width: 80%;
+	height: 100%;
+	border: 1px solid black;
+	overflow-y: auto;
+}*/
+#stream{
+	position: relative;
+	height: 100%;
+	overflow:hidden;
+}
+.article{
+	position: absolute;
+	left: 10%;
+	width: 80%;
+	height: 100%;
+	border-radius: 10px;
+	background-color: #FFFFFF;
+	margin-bottom: 10px;
+	border: 3px solid black;
+}
+#currentArticle{
+	z-index: 1;
+}
