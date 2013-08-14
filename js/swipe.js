@@ -20,17 +20,27 @@ $(document).ready(function(){
 		$('#topArticle').animate({left: '+'+width+"px"}, 500, 'swing', function(){
 			$(this).remove();
 			$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
-			$('#bottomArticle').attr('id', 'middleArticle')
+			$('#bottomArticle').attr('id', 'middleArticle');
 		});
 		createArticle();
+		var newDiv = document.createElement('div');
+		$('#header-container').append($(newDiv).attr('id', 'newSzl' + szlCount));
+		$('#newSzl' + szlCount).css({
+			'position':'absolute', 'width':'20%', 'height':'100%',
+			'left': -($(document).width()),'background':'white',
+			'transition':'1s', 'overflow':'hidden',
+			'box-shadow':'0 0 .5em black',
+			'z-index': szlCount,
+			'left': szlCount * 20 + '%'
+		});
+		szlCount += 1;
 	}
 
 	fzl = function(e){
-		$('#topArticle').css("background", "#00CCFF");
-		$('#topArticle').animate({left: '-'+width+"px"}, 500,'swing', function(){
+		$('#topArticle').css("background", "#00CCFF").animate({left: '-'+width+"px", background: "#00CCFF"}, 500,'swing', function(){
 			$(this).remove();
 			$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
-			$('#bottomArticle').attr('id', 'middleArticle')
+			$('#bottomArticle').attr('id', 'middleArticle');
 		});
 		createArticle();
 	}	
@@ -47,12 +57,9 @@ $(document).ready(function(){
 	var firstDrag = true;
 	var newArticle = {
 		axis: 'x',
-		start: function(ui, event){
-		},
-		drag: function(ui,event){
-		},
-		stop: function(ui, event){
-		}
+		start: function(ui, event){},
+		drag: function(ui,event){},
+		stop: function(ui, event){}
 	}
 	$('.article').draggable(newArticle);
 
