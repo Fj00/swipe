@@ -30,15 +30,14 @@ $(document).ready(function(){
 		$('#szl-stack').append($(newDiv).attr('id', 'newSzl' + szlCount));
 
 		$('#newSzl' + szlCount).css({
-			'position':'absolute', 'width':'80%', 'height':'20%',
+			'position':'absolute', 'width':'100%', 'height':'20%',
 			//'left': -($(document).width()),
 			'background':'white',
 			//'transition':'1s', 'overflow':'hidden',
 			'box-shadow':'0 0 .5em black',
 			'z-index': szlCount,
 			//'transform':'rotateY(-45deg)',
-			'top': 0,
-			'margin-left': '20%'
+			'top': 0
 		}).addClass('hello');
 		szlCount += 1;
 	}
