@@ -43,7 +43,7 @@ $(document).ready(function(){
 	}
 
 	fzl = function(e){
-		$('#topArticle').css("background", "#00CCFF").animate({left: '-'+width+"px", background: "#00CCFF"}, 500,'swing', function(){
+		$('#topArticle').css("background", "#00CCFF").animate({left: '-'+width+"px"}, 500,'swing', function(){
 			$(this).remove();
 			$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
 			$('#bottomArticle').attr('id', 'middleArticle');
@@ -111,7 +111,7 @@ $(document).ready(function(){
 					fzl();
 				}
 				else{
-					$('#topArticle').animate({'left': 0},300);
+					$('#topArticle').animate({'left': '18%'},300);
 				}
 			}
 			else if (Math.abs(distance.x / width) > 0.25) {
@@ -123,12 +123,12 @@ $(document).ready(function(){
 				}
 			}
 			else{
-				$('#topArticle').animate({'left': 0},300);
+				$('#topArticle').animate({'left': '18%'},300);
 				firstDrag = false;
 			}
 		}
 		else{
-			$('#topArticle').animate({'left': 0},300);
+			$('#topArticle').animate({'left': '18%'},300);
 		}
 	}
 	var orig;

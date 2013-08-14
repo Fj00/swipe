@@ -2,7 +2,7 @@
 	height: 100%;
 }
 
-html{
+html {
 	padding: 0;
 	margin: 0;
 	border: none;
@@ -10,16 +10,16 @@ html{
 	height: 100%;
 }
 
-body{
+body {
 	margin: 0;
 	overflow-y: hidden;
 	background-color: #DEDEDE;
 	height: 100%;
 }
 
-header{
-	height: 20%;
+header {
 	position: relative;
+	height: 20%;
 	background-color: #282828;
 	background-image: linear-gradient(0deg, #000000 0%, #454545 100%);
 	overflow-x: auto;
@@ -27,60 +27,69 @@ header{
 }
 
 #content{
-	height: 70%;
-	overflow-y:auto;
-	overflow-x:hidden;
+	height: 77%;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding-bottom: 5%;
 }
-#header-container{
-	overflow-x: auto;
-	overflow-y:hidden;
+
+#header-container {
+	overflow-y: hidden;
 }
-#logo{
+
+#logo {
 	background-image: url(img/szl_logo.png);
 	margin-top: 10px;
 	margin-left: 30px;
 	float:left;
 }
 
-.colorbar{
-	width: 100%;
-	height:5%;
+.colorbar {
+	height: 3%;
 	background-color: #BF0729;
 }
 
-/*.article-container{
-	position: absolute;
-	left: 10%;
-	margin: auto;
-	margin-top: 50px;
-	padding: 5px;
-	width: 80%;
-	height: 100%;
-	border: 1px solid black;
-	overflow-y: auto;
-}*/
-#stream{
+#stream {
 	position: relative;
 	height: 100%;
 	overflow:hidden;
+	overflow-y: auto;
 }
-.article{
+
+.article {
 	position: absolute;
-	left: 10%;
-	width: 80%;
-	height: 90%;
-	margin-top: 20px;
+	width: 61.8%;
+	height: 88%;
+	margin: 3%;
+	margin-top: 5%;
+	left: 18%;
 	border-radius: 10px;
 	background-color: #FFFFFF;
-	margin-bottom: 0;
-	border: 3px solid black;
+	box-shadow: 0 0 .5em black;
+	max-width: 705px;
 }
-#topArticle{
+
+#topArticle {
 	z-index: 2;
 }
-#middelArticle{
+#middelArticle {
 	z-index: 1;
 }
-#bottomArticle{
+#bottomArticle {
 	z-index: -1;
+}
+
+#paper0 {
+	left: 18.5%;
+	top: 1%;
+	z-index: -2;
+}
+#paper1{
+	left: 19%;
+	top: 2%;
+	z-index: -3;
+}
+
+.ui-loader {
+	display: none;
 }
