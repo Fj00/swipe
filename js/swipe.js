@@ -88,7 +88,7 @@ $(document).ready(function(){
 		scaledDistance = Math.sqrt((distance.x / width)^2 + (distance.y / height)^2);
 	}
 
-	$(document).mousedown(function(e){
+	$('#content').mousedown(function(e){
 		start(e);
 	}).mouseup(function(e){
 		end(e);
