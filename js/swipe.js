@@ -105,7 +105,7 @@ $(document).ready(function(){
 					fzl();
 				}
 				else{
-					$('#topArticle').animate({'left':'10%'},300);
+					$('#topArticle').animate({'left': 0},300);
 				}
 			}
 			else if (Math.abs(distance.x / width) > 0.3) {
@@ -117,12 +117,12 @@ $(document).ready(function(){
 				}
 			}
 			else{
-				$('#topArticle').animate({'left':'10%'},300);
+				$('#topArticle').animate({'left': 0},300);
 				firstDrag = false;
 			}
 		}
 		else{
-			$('#topArticle').animate({'left':'10%'},300);
+			$('#topArticle').animate({'left': 0},300);
 		}
 	}
 });
