@@ -27,10 +27,9 @@ header {
 }
 
 #content{
-	height: 77%;
+	height: 100%;
 	overflow-x: hidden;
 	overflow-y: auto;
-	padding-bottom: 5%;
 }
 
 #header-container {
@@ -51,7 +50,10 @@ header {
 
 #stream {
 	position: relative;
+	width: 85%;
 	height: 100%;
+	float: left;
+	margin-right: 0;
 	overflow:hidden;
 	overflow-y: auto;
 }
@@ -62,8 +64,9 @@ header {
 	height: 88%;
 	margin: 3%;
 	margin-top: 5%;
+	margin-bottom: 5%;
 	left: 18%;
-	border-radius: 10px;
+	/*border-radius: 10px;*/
 	background-color: #FFFFFF;
 	box-shadow: 0 0 .5em black;
 	max-width: 705px;
@@ -92,4 +95,14 @@ header {
 
 .ui-loader {
 	display: none;
+}
+
+#szl-stack{
+	width:15%;
+	height: 100%;
+	float: right;
+	overflow-x: hidden;
+	overflow-y: scroll; 
+	position: relative;
+	background-color: #BF0729;
 }
