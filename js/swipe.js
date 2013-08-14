@@ -6,7 +6,8 @@ $(document).ready(function(){
 		left = -width + 'px',
 		right = width + 'px',
 		szld = [],
-		szlCount = 0;
+		szlCount = 0,
+		sfzling = false;
 	articles.push(
 		"<b>article1 article1 article1 </b>article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1",
 		"article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 <i>article#2 article#2 article#2 article#2 article#2  article#2 </i>article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 ",
@@ -15,40 +16,62 @@ $(document).ready(function(){
 		"article5 <p>article5 article5 article5 article5 article5<p> article5 article5 article5 article5 article5 article5 article5 article5"
 	);
 
-	szl= function(e){
-		$('#topArticle').css("background", "#FF5555");
-		$('#topArticle').animate({left: '+'+width+"px"}, 500, 'swing', function(){
-			$(this).remove();
-			$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
-			$('#bottomArticle').attr('id', 'middleArticle');
-		});
-		createArticle();
-		$('#szl-stack div').each(function(){
-			$(this).animate({top: parseInt($(this).css('top')) + ($(window).height() * .15) + 'px'}, 500);
-		});
-		var newDiv = document.createElement('div');
-		$('#szl-stack').append($(newDiv).attr('id', 'newSzl' + szlCount));
+	$(document).keydown(function(e){
+		if (!sfzling){
+			switch(e.keyCode){
+				case 37: fzl(); break;
+				case 39: szl(); break;
+			}
+		}	
+	})
 
-		$('#newSzl' + szlCount).css({
-			'position':'absolute', 'width':'100%', 'height':'20%',
-			//'left': -($(document).width()),
-			'background':'white',
-			//'transition':'1s', 'overflow':'hidden',
-			'box-shadow':'0 0 .5em black',
-			'z-index': szlCount,
-			//'transform':'rotateY(-45deg)',
-			'top': 0
-		}).addClass('hello');
-		szlCount += 1;
+	//Keeps article from pushing page to the right
+	$('#stream').scroll(function(){
+		$('#stream').scrollLeft(0);
+	});
+
+	szl= function(e){
+		if (!sfzling){
+			sfzling = true;
+			$('#topArticle').css("background", "#FF5555");
+			$('#topArticle').animate({left: '+'+width+"px"}, 500, 'swing', function(){
+				$(this).remove();
+				$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
+				$('#bottomArticle').attr('id', 'middleArticle');
+				sfzling = false;
+			});
+			createArticle();
+			$('#szl-stack div').each(function(){
+				$(this).animate({top: parseInt($(this).css('top')) + ($(window).height() * .15) + 'px'}, 500);
+			});
+			var newDiv = document.createElement('div');
+			$('#szl-stack').append($(newDiv).attr('id', 'newSzl' + szlCount));
+
+			$('#newSzl' + szlCount).css({
+				'position':'absolute', 'width':'100%', 'height':'20%',
+				//'left': -($(document).width()),
+				'background':'white',
+				//'transition':'1s', 'overflow':'hidden',
+				'box-shadow':'0 0 .5em black',
+				'z-index': szlCount,
+				//'transform':'rotateY(-45deg)',
+				'top': 0
+			}).addClass('hello');
+			szlCount += 1;
+		}
 	}
 
 	fzl = function(e){
-		$('#topArticle').css("background", "#00CCFF").animate({left: '-'+width+"px"}, 500,'swing', function(){
-			$(this).remove();
-			$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
-			$('#bottomArticle').attr('id', 'middleArticle');
-		});
-		createArticle();
+		if (!sfzling){
+			sfzling = true;
+			$('#topArticle').css("background", "#00CCFF").animate({left: '-'+width+"px"}, 500,'swing', function(){
+				$(this).remove();
+				$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
+				$('#bottomArticle').attr('id', 'middleArticle');
+				sfzling = false;
+			});
+			createArticle();
+		}
 	}	
 
 	createArticle = function(){

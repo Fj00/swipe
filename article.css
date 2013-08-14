@@ -12,6 +12,7 @@ html {
 
 body {
 	margin: 0;
+	overflow-x: hidden;
 	overflow-y: hidden;
 	background-color: #DEDEDE;
 	height: 100%;
@@ -50,7 +51,7 @@ header {
 }
 
 #stream {
-	position: relative;
+	position: absolute;
 	width: 85%;
 	height: 100%;
 	float: left;
@@ -70,6 +71,7 @@ header {
 	background-color: #FFFFFF;
 	box-shadow: 0 0 .2em black;
 	max-width: 705px;
+	overflow: visible;
 }
 
 #topArticle {
