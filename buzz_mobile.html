@@ -8,6 +8,21 @@
 		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 		<script src="touchAndPunch.js" type="text/javascript"></script>
 		<script src="js/swipe.js" type="text/javascript"></script>
+
+		<!--add this-->
+		<script src="https://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4f8a5d0021a3fa5a" type="text/javascript"></script>
+
+		<meta property="og:type" content="website" />
+
+		<meta property="og:title" content="jo" />
+
+		<meta property="og:description" content="jo" />
+
+		<meta property="og:url" content="file://localhost/Users/adam/Documents/szzzl/swipe/buzz_mobile.html" />
+
+		<meta property="og:image" content="http://www.szzzl.com/images/szzzl-logo-5.png" />
+		<!---->
+
 	</head>
 	<body>
 		<header>
@@ -16,24 +31,70 @@
 				<a href="#"><img src="img/szl_logo.png" id="logo" width='15%' height='70%'/></a>
 
 			</div>
-		</header>			
+		</header>	
+		<footer>
+			<div id="userdata"> user | info </div>
+			<div id="logout"> logout </div>
+		</footer>				
 		<div id="content">
 			<div id="stream">			
 				<div id="topArticle" class="article">
-  					Swipe right to Szl an item, or swipe left to fzl it!
+  					Swipe right to Szl an item...
   				</div>
-  				<div id="middleArticle" class="article">mid</div>
+  				<div id="middleArticle" class="article">...or swipe left to Fzl it!</div>
   				<div id="paper0" class="article"></div>
   				<div id="paper1" class="article"></div>
-			</div>
+  				<!--
+  				<div id="nav-bar">
+  					<div id="fzl-arrow" class="arrow" >
+  						<img src="img/fzlarrow.png"/>
+  					</div>
+  					<div id="szl-arrow" class="arrow" >
+  						<img src="img/szlarrow.png"/>
+  					</div>
+  				</div>
+  			-->
+			</div>	
 			<div id="sidebar">
 				<div id="menu">
+					<!--<a class="button" href="#"><img src="img/back-arrow.png"/></a>
 					<a class="button" href="#"><img src="img/back-arrow.png"/></a>
-					<a class="button" href="#"><img src="img/back-arrow.png"/></a>
-					<a class="button" href="#"><img src="img/back-arrow.png"/></a>
+					<a class="button" href="#"><img src="img/back-arrow.png"/></a>-->
+
+					<!-- ADD THIS BUTTONS -->
+					<div class="addthis_toolbox addthis_default_style addthis_32x32_style" style="margin-left: auto; margin-right: auto;" addthis:url="http://www.szzzl.com/buzzes/<%= @id %>" addthis:title="<%= @title %>" addthis:description="(via www.szzzl.com)">
+
+					  <a style="margin-top: 5px; margin-left: 3px;" class="addthis_button_facebook"></a>
+
+					  <a style="margin-top: 5px; margin-left: 3px;" class="addthis_button_twitter"></a>
+
+					  <a style="margin-top: 5px; margin-left: 3px;" class="addthis_button_linkedin"></a>
+
+					  <a style="margin-top: 5px; margin-left: 3px;" class="addthis_button_email"></a>
+
+					  <a style="margin-top: 5px; margin-left: 3px;" class="addthis_button_compact"></a>
+
+					</div>
+
+					<script>
+
+					  var addthis_share = {
+
+					    templates : {
+
+					      twitter : "{{title}} {{url}} (via @szzzlfzzzl)"
+
+					    }
+
+					  }
+
+					</script>
+					<!-- ADD THIS BUTTONS-->
+
 				</div>
 				<div id="szl-stack"></div>
 			</div>
 		</div>
+
 	</body>
 </html>
