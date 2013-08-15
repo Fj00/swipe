@@ -14,13 +14,29 @@ $(document).ready(function(){
 		"<p>article#4 article#4 article#4 article#4 article#4 article#4 article#4 </p>article#4 article#4 article#4 article#4 article#4 <p>article#4 article#4 article#4 article#4 article#4 article#4</p> article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 ",
 		"article5 <p>article5 article5 article5 article5 article5<p> article5 article5 article5 article5 article5 article5 article5 article5"
 	);
-
-	szl= function(e){
-		$('#topArticle').css("background", "#FF5555");
-		$('#topArticle').animate({left: '+'+width+"px"}, 500, 'swing', function(){
-			$(this).remove();
-			$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
-			$('#bottomArticle').attr('id', 'middleArticle');
+	$('.article').css('width', $('#container').css('width'));
+	var isRunning = false;
+	console.log($('#topArticle').filter(':animated').length );
+	szl = function(e){
+		if (isRunning == true){
+			alert('slow down');
+			return false;
+		}
+		else {
+			$('#topArticle').animate({left: '+'+width+"px"}, {duration: 500, queue: false, 
+			step: function(now, state){
+				if (now){
+					console.log('true')
+					isRunning = true;
+				}
+			},
+			easing: 'swing', 
+			complete: function(){
+				isRunning = false;
+				$(this).remove();
+				$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
+				$('#bottomArticle').attr('id', 'middleArticle')
+			}
 		});
 		createArticle();
 		$('#header-container div').each(function(){
@@ -40,21 +56,39 @@ $(document).ready(function(){
 			'left': 0
 		}).addClass('hello');
 		szlCount += 1;
+		}
 	}
 
 	fzl = function(e){
-		$('#topArticle').css("background", "#00CCFF").animate({left: '-'+width+"px"}, 500,'swing', function(){
+		if (isRunning == true){
+			alert('slow down');
+			return false;
+		} else {
+			$('#topArticle').animate({left: '-'+width+"px"}, {duration: 500, queue: false,
+			step: function(now, state){
+				if (now){
+					console.log('true')
+					isRunning = true;
+				}
+			}, easing: 'swing', complete: function(){
+			isRunning = false;
 			$(this).remove();
 			$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
-			$('#bottomArticle').attr('id', 'middleArticle');
+			$('#bottomArticle').attr('id', 'middleArticle')
+			}
 		});
 		createArticle();
+		}
 	}	
 
 	createArticle = function(){
-		var newCont = $("<div></div").attr('id', 'bottomArticle');//container for next article
+		var newCont = $("<div id='bottomArticle'></div");//.attr('id', 'bottomArticle');//container for next article
+		var contents = $("<div class='articleContent'></div>");
+		//$('#stream').append(newCont);
+		//$(newCont).wrap(contents);
 		$('#stream').append(newCont);
 		$('#bottomArticle').addClass('article').text(index);
+		$('#bottomArticle').append(contents);
 		index += 1;
 		if (index > 10){ index = 0;}
 	}	
@@ -110,8 +144,8 @@ $(document).ready(function(){
 				else if (distance.x < 0){
 					fzl();
 				}
-				else{
-					$('#topArticle').animate({'left': '18%'},300);
+				else {
+					$('#topArticle').animate({'left': '10%'},300);
 				}
 			}
 			else if (Math.abs(distance.x / width) > 0.25) {
@@ -123,12 +157,12 @@ $(document).ready(function(){
 				}
 			}
 			else{
-				$('#topArticle').animate({'left': '18%'},300);
+				$('#topArticle').animate({'left': '10%'},300);
 				firstDrag = false;
 			}
 		}
 		else{
-			$('#topArticle').animate({'left': '18%'},300);
+			$('#topArticle').animate({'left': '10%'},300);
 		}
 	}
 	var orig;
@@ -137,5 +171,14 @@ $(document).ready(function(){
 		$(this).css('z-index', '100');//.css('transform','rotateY(0deg)').css('z-index', '100');
 	}).on('mouseleave', '.hello', function(event){
 		$(this).css('z-index', orig);//.css('transform','rotateY(-45deg)')
+	});
+	var windowWidth = $(window).width();
+	$('#stream').click(function(e){
+		console.log('click');
+		if(e.pageX > (windowWidth - (windowWidth * .10))) {
+			szl();
+		} else if (e.pageX < (windowWidth * .10)) {
+			fzl();
+		}
 	});
 });
