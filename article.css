@@ -13,7 +13,7 @@ html {
 body {
 	margin: 0;
 	overflow-y: hidden;
-	background-color: #DEDEDE;
+	background-color: #FEF5DF;
 	height: 100%;
 }
 
@@ -28,7 +28,7 @@ footer {
 }
 
 #content{
-	height: 75%;
+	height: 80%;
 	overflow-x: hidden;
 	overflow-y: auto;
 }
@@ -37,17 +37,83 @@ footer {
 	overflow-y: hidden;
 }
 
-#logo {
-	background-image: url(img/szl_logo.png);
-	margin-top: 10px;
-	margin-left: 30px;
-	float:left;
-}
+/*#logo {
+	margin-left: 40%;
+	height: 100%;
+	width: 20%;
+	-webkit-filter: invert(100%);
+
+}*/
 
 .colorbar {
-	height: 10%;
-	background-color: #BF0729;
+	height: 5%;
+	width: 100%;
+	background-color: #FEF5DF;
+	overflow: hidden;
 }
+#username {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	text-align: left;
+}
+#username p {
+	position: relative;
+	font-size: 10pt;
+	margin-top: 2%;
+	margin-left: 1%;
+	top: 0;
+	color: black;
+}
+
+a {
+	color: black;
+}
+#share {
+	position: absolute;
+	width: 100%;
+	z-index: 5;
+	color: black;
+	text-align: right;
+}
+#share p {
+	position: relative;
+	font-size: 10pt;
+	margin-top: 2%;
+	margin-right: 1%;
+	top: 0;
+	color: black;
+}
+#shareMenu{
+
+	display: none;
+	position: relative;
+	width: 38px;
+	height: 0;
+	overflow:hidden;
+	
+}
+#shareMenu a {
+	opacity: 1.0;
+	margin: 5%;
+}
+/*#back-button{
+	position: absolute;
+	width: 40%;
+	border: 1px solid black;
+	padding: 0;
+}*/
+/*#facebook, #twitter{
+	width: 32px;
+	height: 32px;
+	float: left;
+	border: 1px solid black;
+}*/
+
+/*#back-button img {float: left; margin: 2%; height: 32px; width: 32px;}
+#back-button:active{
+	-webkit-filter:invert(100%);
+}*/
 
 #stream {
 	position: relative;
@@ -56,23 +122,25 @@ footer {
 	overflow-y: hidden;
 }
 #paper0 {
-	left: 18.5%;
-	top: 1%;
+	left: 5.5%;
+	top: .5%;
 	z-index: -2;
 }
 #paper1{
-	left: 19%;
-	top: 2%;
+	left: 6%;
+	top: 1%;
 	z-index: -3;
 }
 .article {
 	position: absolute;
-	width: 80%;
+	width: 90%;
 	height: 88%;
 	margin-top: 5%;
-	left: 10%;
+	left: 5%;
 	background-color: #FFFFFF;
-	box-shadow: 0 0 .2em black;
+	-webkit-box-shadow: 0 0 .2em black;
+	-moz-box-shadow: 0 0 .2em black;
+	-ms-box-shadow: 0 0 .2em black;
 	max-width: 705px;
 	overflow-y:auto;
 }
@@ -90,17 +158,6 @@ footer {
 }
 #bottomArticle {
 	z-index: -1;
-}
-
-#paper0 {
-	left: 10.5%;
-	top: 1%;
-	z-index: -2;
-}
-#paper1{
-	left: 11%;
-	top: 2%;
-	z-index: -3;
 }
 
 .ui-loader {
