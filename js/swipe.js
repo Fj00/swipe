@@ -13,16 +13,43 @@ $(document).ready(function(){
 		"article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 <i>article#2 article#2 article#2 article#2 article#2  article#2 </i>article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 ",
 		"article3 article3 <h1>article3 article3 article3 </h1>article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 ",
 		"<p>article#4 article#4 article#4 article#4 article#4 article#4 article#4 </p>article#4 article#4 article#4 article#4 article#4 <p>article#4 article#4 article#4 article#4 article#4 article#4</p> article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 ",
-		"article5 <p>article5 article5 article5 article5 article5<p> article5 article5 article5 article5 article5 article5 article5 article5"
+		"article5 <p>article5 article5 article5 article5 article5<p> article5 article5 article5 article5 article5 article5 article5 article5",
+		"<h1><a href=''target=''>Giant microwave blaster lets bread stay fresh-ish for over 60 days</a></h1><h2><a href='https://dvice.com/' target='_blank'>DVICE</a> November 30th, 2012 16:46 EST</h2><div id='szzzl-story-long-wrapper'><p><div><div><p>About a third of the bread that consumers buy gets tossed out or fed to ducks who don't know any better after it goes stale or gets moldy. You just cant win with bread- either you keep it moist and gross stuff grows on it, or you dry it out and it turns into a rock. A Texas company says it has a solution, in the form of a huge homogenized microwave cannon.</p><p>Microwaves, being radiation, work quite well at killing things like fungi. The reason that you cant use your microwave to kill fungi is that your microwave sucks, and due to the wavelength of the microwaves used in microwave ovens (just under five inches), you get hot spots and cold spots that show up at half of that wavelength. Microzap's microwave chamber, on the other hand, works differently, and much better. CEO Don Stull explains:</p><div>For the latest tech stories, follow DVICE on Twitter at @dvice or find us on Facebook</div></div></div></p><p><a href='https://dvice.com/archives/2012/11/giant-microwave.php' target='_blank'>Read more</a></p></div>"
 	);
-	$('.article').css('width', $('#container').css('width'));
-	var isRunning = false;
-	console.log($('#topArticle').filter(':animated').length );
+	var artPos,
+		artLeft;
+	$(window).on('resize load', function(){//adjust elements for different screen sizes
+		var w_box = $(window).width(),
+			h_box = $('#stream').height(),	
+			w_total = ((w_box - $('.article').width())/2) - 2, //400
+			h_total = (h_box - $('.article').height())/2,
+			css = {"position": 'absolute', "margin-left": w_total +"px"};
+		$('.article').css(css);
+		$('#paper0').css('margin-left', w_total + 2 + 'px');
+		$('#paper1').css('margin-left', w_total + 4 + 'px');
+		$('#paper2').css('margin-left', w_total + 6 + 'px');
+		$('#username').css('margin-left', parseInt($('.article').css('margin-left')) + 'px');
+		$('#share p').css('margin-right', $('#topArticle').css('margin-left'));
+		$('#shareMenu').css('margin-left', '-' + ($('#share p').css('margin-right')))
+		artPos = $('#topArticle').css('margin-left');
+		artLeft = $('#topArticle').css('left');
+		width = $(window).width();
+		height = $(window).height();
+	});
+
+	console.log($('#content').height())
+	console.log($('#stream').height());
+	console.log($('.article').height());
+	console.log('total: '+ $(document).height());
+	console.log('colorbar: '+ $('.colorbar').height());
+	console.log('queue: ' + $('#header-container').height());
+	$('#topArticle').html(articles[5]);
+	//console.log($('#topArticle').filter(':animated').length );
 	szl = function(e){
 		if (!isRunning){
 			isRunning = true;
 			//$('#topArticle').css('box-shadow', '0 0 1em red');
-			$('#topArticle').animate({left: '+'+width+"px"},{queue: false, duration: 500, easing: 'swing', complete: function(){
+			$('#topArticle').animate({left: '+'+width+"px"},{duration: 500, easing: 'swing', complete: function(){
 				$(this).remove();
 				$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
 				$('#bottomArticle').attr('id', 'middleArticle');
@@ -46,6 +73,8 @@ $(document).ready(function(){
 				//'transform':'rotateY(-45deg)',
 				'left': 0
 			}).addClass('szld');
+				console.log('true')
+				$('#newSzl' + szlCount).append(articles[5]);
 			szlCount += 1;
 		}
 	}
@@ -56,21 +85,21 @@ $(document).ready(function(){
 			//$('#topArticle').css('box-shadow', '0 0 1em blue');
 			$('#topArticle').animate({left: '-'+width+"px"}, {queue: false, duration: 500, easing: 'swing', complete: function(){
 				$(this).remove();
-				$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
-				$('#bottomArticle').attr('id', 'middleArticle');
+				$('#middleArticle').attr('id', 'topArticle').css('margin-left', artPos).draggable(newArticle);
+				$('#bottomArticle').attr('id', 'middleArticle').css('margin-left', artPos);
 				isRunning = false;
 				}
 			}).css({'box-shadow': '0 0 1em blue'});
 			createArticle();
 		}
 	}	
-	$('#share').click(function(){
+	$('#shareText').click(function(){
 		if ($('#shareMenu').css('display') == 'block'){
 			$('#shareMenu').animate({height: 0},500).hide('slow');
 		}
 		else {
 			$('#shareMenu').css("left", ($(window).width() - 38 + 'px'))
-			$('#shareMenu').show().animate({height: '195px'}, 500);
+			$('#shareMenu').show().animate({height: '185px'}, 500);
 		}
 	});
 	$('#shareMenu a').click(function(){
@@ -83,7 +112,7 @@ $(document).ready(function(){
 		//$('#stream').append(newCont);
 		//$(newCont).wrap(contents);
 		$('#stream').append(newCont);
-		$('#bottomArticle').addClass('article').html(articles[index])
+		$('#bottomArticle').addClass('article').html(articles[index]).css('margin-left', artPos);
 		//$('#bottomArticle').append(contents);
 		index += 1;
 		if (index >= 5){ index = 0;}
@@ -141,7 +170,7 @@ $(document).ready(function(){
 					fzl();
 				}
 				else {
-					$('#topArticle').animate({'left': '5%'},300);
+					$('#topArticle').animate({left: 0 },300);
 				}
 			}
 			else if (Math.abs(distance.x / width) > 0.25) {
@@ -153,12 +182,12 @@ $(document).ready(function(){
 				}
 			}
 			else{
-				$('#topArticle').animate({'left': '5%'},300);
+				$('#topArticle').animate({left: 0 },300);
 				firstDrag = false;
 			}
 		}
 		else{
-			$('#topArticle').animate({'left': '5%'},300);
+			$('#topArticle').animate({left: 0 },300);
 		}
 	}
 	var orig;
@@ -174,16 +203,11 @@ $(document).ready(function(){
 	$('#stream').click(function(e){
 		console.log($(e.target));
 		e.stopPropagation();
-		if(!isRunning){
 			if (e.pageX < $(document).width() * .10){//within 10% of left edge
 				fzl();
 
 			} else if (e.pageX > $(document).width() - ($(document).width() * .10)){//right edge
 				szl();
 			}
-		}
 	});
-	//$(document).click(function(e){
-	//	console.log($(e.target));
-	//});
 });

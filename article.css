@@ -1,5 +1,6 @@
 .ui-page {
 	height: 100%;
+	overflow-y:hidden;
 }
 
 html {
@@ -8,6 +9,7 @@ html {
 	border: none;
 	font-family: Verdana, Helvetica, Arial;
 	height: 100%;
+	overflow-y: hidden;
 }
 
 body {
@@ -19,7 +21,7 @@ body {
 
 footer {
 	position: relative;
-	height: 15%;
+	height: 18%;
 	background-color: #282828;
 	background-image: linear-gradient(0deg, #000000 0%, #454545 100%);
 	overflow-x: auto;
@@ -30,11 +32,12 @@ footer {
 #content{
 	height: 80%;
 	overflow-x: hidden;
-	overflow-y: auto;
+	overflow-y: hidden;
 }
 
 #header-container {
 	overflow-y: hidden;
+	height: 100%;
 }
 
 /*#logo {
@@ -46,56 +49,58 @@ footer {
 }*/
 
 .colorbar {
-	height: 5%;
+	height: 2%;
 	width: 100%;
 	background-color: #FEF5DF;
 	overflow: hidden;
+	min-height: 20px;
 }
 #username {
 	position: absolute;
 	top: 0;
-	width: 100%;
+	margin-top: 0;
 	text-align: left;
 }
 #username p {
 	position: relative;
 	font-size: 10pt;
-	margin-top: 2%;
-	margin-left: 1%;
 	top: 0;
-	color: black;
+	margin-top: 0;
+	color: #AF2F4E;
 }
 
-a {
-	color: black;
+#username a {
+	margin-top: 0;
+	color: #AF2F4E;
 }
+
 #share {
 	position: absolute;
 	width: 100%;
 	z-index: 5;
-	color: black;
+	color: #AF2F4E;
 	text-align: right;
+	margin-top: 0;
+
 }
 #share p {
 	position: relative;
 	font-size: 10pt;
-	margin-top: 2%;
-	margin-right: 1%;
+	margin-top: 0;
+	margin-right: 5%;/*adjust share work l or r*/
 	top: 0;
-	color: black;
+	color: #AF2F4E;
 }
 #shareMenu{
-
 	display: none;
 	position: relative;
+	top: -10px;/*adjust up & down*/
+	margin-left: -5%;/*adjust menu left & right*/
 	width: 38px;
 	height: 0;
 	overflow:hidden;
-	
 }
 #shareMenu a {
-	opacity: 1.0;
-	margin: 5%;
 }
 /*#back-button{
 	position: absolute;
@@ -122,29 +127,31 @@ a {
 	overflow-y: hidden;
 }
 #paper0 {
-	left: 5.5%;
-	top: .5%;
+	top: 2px;
 	z-index: -2;
 }
 #paper1{
-	left: 6%;
-	top: 1%;
+	top: 4px;
 	z-index: -3;
+}
+#paper2{
+	position: absolute;
+	top: 6px;
+	z-index: -5;
 }
 .article {
 	position: absolute;
 	width: 90%;
-	height: 88%;
-	margin-top: 5%;
-	left: 5%;
+	height: 95%;
 	background-color: #FFFFFF;
 	-webkit-box-shadow: 0 0 .2em black;
 	-moz-box-shadow: 0 0 .2em black;
 	-ms-box-shadow: 0 0 .2em black;
+	border: 1px solid black;
 	max-width: 705px;
 	overflow-y:auto;
 }
-
+/*@media all and..*/
 .articleContent{
 	position: relative;
 	width: 100%;
