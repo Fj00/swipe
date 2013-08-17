@@ -35,7 +35,7 @@ footer {
 	overflow-y: hidden;
 }
 
-#header-container {
+#queue {
 	overflow-y: hidden;
 	height: 100%;
 }
@@ -101,6 +101,7 @@ footer {
 	overflow:hidden;
 }
 #shareMenu a {
+	margin-bottom: 10%;
 }
 /*#back-button{
 	position: absolute;
@@ -169,4 +170,14 @@ footer {
 
 .ui-loader {
 	display: none;
+}
+
+#holder{
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	overflow: hidden;
+	left: 0;
+	top: 0;
+	border: 1px solid black;
 }
