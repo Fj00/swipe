@@ -46,12 +46,12 @@ $(document).ready(function(){
 	console.log('queue: ' + $('#header-container').height());
 
 	$('#topArticle').html(articles[5]);
-	
 	$('#queue').on('click','div', function(){//switch top article content with queued content
 		$('#queue div').removeClass('rerate');
 		$(this).addClass('rerate');
 		var contCopy = $(this).contents().clone();
 		$('#holder').append(contCopy);
+		$('#middleArticle').addClass('requeue').empty().append($('#topArticle').contents());
 		$('#topArticle').addClass('rerate').empty().append($('#holder').contents());
 		$('#holder').empty();
 	});
@@ -96,8 +96,8 @@ $(document).ready(function(){
 					var rerateID = $('#queue .rerate').next('.szld').attr('id');
 					$('#queue .rerate').remove();
 					$('.szld').each(function(){
-					   	var index = $(this).index();
-					   	if(index < $("#" + rerateID).index()) {
+					   	var current = $(this).index();
+					   	if(current < $("#" + rerateID).index()) {
 					     	$(this).animate({left: parseInt($(this).css('left')) - ($(window).width() * .15) + 'px'},{duration: 500});
 					   	}
 					});
@@ -134,12 +134,21 @@ $(document).ready(function(){
 	});
 
 	createArticle = function(){
+		console.log(index);
 		var newCont = $("<div id='bottomArticle'></div");//.attr('id', 'bottomArticle');//container for next article
 		var contents = $("<div class='articleContent'></div>");
 		$('#stream').append(newCont);
-		$('#bottomArticle').addClass('article').html(articles[index]).css('margin-left', artPos);
-		index += 1;
-		if (index >= 5){ index = 0;}
+		//$('#bottomArticle').addClass('article').html(articles[index]).css('margin-left', artPos);
+		if ($('#middleArticle').hasClass('requeue')){
+			console.log('true');
+			//index -= 1;
+			$('#bottomArticle').addClass('article').html(articles[index - 1]).css('margin-left', artPos);
+		}
+		else {
+			$('#bottomArticle').addClass('article').html(articles[index]).css('margin-left', artPos);
+			index += 1;
+		}
+		if (index > 5){ index = 0;}
 	}	
 
 	var initial = parseInt($('#topArticle').css('left'));
@@ -225,7 +234,6 @@ $(document).ready(function(){
 	var windowWidth = $(window).width();
 	var rightEdge = (windowWidth - (windowWidth * .10));
 	$('#stream').click(function(e){
-		console.log($(e.target));
 		e.stopPropagation();
 			if (e.pageX < $(document).width() * .10){//within 10% of left edge
 				fzl();
@@ -236,7 +244,7 @@ $(document).ready(function(){
 	});
 
 	/////
-	var sidevalue = .15;
+	var sidevalue = .10;
 	$('.arrows').mouseup(function(e){
 		if (e.pageX < $(document).width() * sidevalue){//within 10% of left edge
 			fzl();
