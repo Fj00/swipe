@@ -9,21 +9,22 @@ $(document).ready(function(){
 		szlCount = 0,
 		isRunning = false;
 	articles.push(
-		"<b>article1 article1 article1 </b>article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1",
-		"article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 <i>article#2 article#2 article#2 article#2 article#2  article#2 </i>article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 ",
-		"article3 article3 <h1>article3 article3 article3 </h1>article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 ",
-		"<p>article#4 article#4 article#4 article#4 article#4 article#4 article#4 </p>article#4 article#4 article#4 article#4 article#4 <p>article#4 article#4 article#4 article#4 article#4 article#4</p> article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 ",
-		"article5 <p>article5 article5 article5 article5 article5<p> article5 article5 article5 article5 article5 article5 article5 article5",
-		"<h1><a href=''target=''>Giant microwave blaster lets bread stay fresh-ish for over 60 days</a></h1><h2><a href='https://dvice.com/' target='_blank'>DVICE</a> November 30th, 2012 16:46 EST</h2><div id='szzzl-story-long-wrapper'><p><div><div><p>About a third of the bread that consumers buy gets tossed out or fed to ducks who don't know any better after it goes stale or gets moldy. You just cant win with bread- either you keep it moist and gross stuff grows on it, or you dry it out and it turns into a rock. A Texas company says it has a solution, in the form of a huge homogenized microwave cannon.</p><p>Microwaves, being radiation, work quite well at killing things like fungi. The reason that you cant use your microwave to kill fungi is that your microwave sucks, and due to the wavelength of the microwaves used in microwave ovens (just under five inches), you get hot spots and cold spots that show up at half of that wavelength. Microzap's microwave chamber, on the other hand, works differently, and much better. CEO Don Stull explains:</p><div>For the latest tech stories, follow DVICE on Twitter at @dvice or find us on Facebook</div></div></div></p><p><a href='https://dvice.com/archives/2012/11/giant-microwave.php' target='_blank'>Read more</a></p></div>"
+		"<p class='articleText'><b>article1 article1 article1 </b>article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1</p>",
+		"<p class='articleText'>article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 <i>article#2 article#2 article#2 article#2 article#2  article#2 </i>article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2</p>",
+		"<p class='articleText'>article3 article3 <h1>article3 article3 article3 </h1>article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 </p>",
+		"<p class='articleText'>article#4 article#4 article#4 article#4 article#4 article#4 article#4 </p>article#4 article#4 article#4 article#4 article#4 <p>article#4 article#4 article#4 article#4 article#4 article#4</p> article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 </p>",
+		"<p class='articleText'>article5 <p>article5 article5 article5 article5 article5<p> article5 article5 article5 article5 article5 article5 article5 article5<p>",
+		"<h1><a href=''target=''>Giant microwave blaster lets bread stay fresh-ish for over 60 days</a></h1><h2><a href='https://dvice.com/' target='_blank'>DVICE</a> November 30th, 2012 16:46 EST</h2><div id='szzzl-story-long-wrapper'><p><div><div><p class='articleText'>About a third of the bread that consumers buy gets tossed out or fed to ducks who don't know any better after it goes stale or gets moldy. You just cant win with bread- either you keep it moist and gross stuff grows on it, or you dry it out and it turns into a rock. A Texas company says it has a solution, in the form of a huge homogenized microwave cannon.</p><p class='articleText'>Microwaves, being radiation, work quite well at killing things like fungi. The reason that you cant use your microwave to kill fungi is that your microwave sucks, and due to the wavelength of the microwaves used in microwave ovens (just under five inches), you get hot spots and cold spots that show up at half of that wavelength. Microzap's microwave chamber, on the other hand, works differently, and much better. CEO Don Stull explains:</p><div>For the latest tech stories, follow DVICE on Twitter at @dvice or find us on Facebook</div></div></div></p><p><a href='https://dvice.com/archives/2012/11/giant-microwave.php' target='_blank'>Read more</a></p></div>"
 	);
 	var artPos,
 		artLeft;
 	$(window).on('resize load', function(){//adjust elements for different screen sizes
+		//alert(window.devicePixelRatio);
 		var w_box = $(window).width(),
 			h_box = $('#stream').height(),	
 			w_total = ((w_box - $('.article').width())/2) - 2, //400
 			h_total = (h_box - $('.article').height())/2,
-			css = {"position": 'absolute', "margin-left": w_total +"px"};
+			css = {"position": 'absolute',"margin-left": w_total +"px"};
 		$('.article').css(css);
 		$('#paper0').css('margin-left', w_total + 2 + 'px');
 		$('#paper1').css('margin-left', w_total + 4 + 'px');
@@ -57,7 +58,6 @@ $(document).ready(function(){
 
 	szl = function(e){
 		if (!isRunning){
-			szlCount += 1;
 			isRunning = true;
 			szld = $('#topArticle').contents();
 			$('#topArticle').animate({left: '+'+width+"px"},{queue: false,duration: 500, easing: 'swing', complete: function(){
@@ -101,12 +101,14 @@ $(document).ready(function(){
 		}
 	}	
 	$('#shareText').click(function(){
+		console.log($('#shareMenu').css("height"));
 		if ($('#shareMenu').css('display') == 'block'){
 			$('#shareMenu').animate({height: 0},500).hide('slow');
 		}
 		else {
-			$('#shareMenu').css("left", ($(window).width() - 38 + 'px'))
-			$('#shareMenu').show().animate({height: '185px'}, 500);
+
+			$('#shareMenu').css("left", ($(window).width() - parseInt($('#shareMenu').css('width')) + 'px'))
+			$('#shareMenu').show().animate({height: '938px'}, 500);
 		}
 	});
 	$('#shareMenu a').click(function(){
@@ -198,7 +200,7 @@ $(document).ready(function(){
 	$('#queue').on('mouseenter', 'div', function(event){
 		orig = $(this).css('z-index');
 		$(this).css('z-index', '100');//.css('transform','rotateY(0deg)').css('z-index', '100');
-	}).on('mouseleave', '.szld', function(event){
+	}).on('mouseleave', 'div', function(event){
 		$(this).css('z-index', orig);//.css('transform','rotateY(-45deg)')
 	});
 
@@ -213,5 +215,30 @@ $(document).ready(function(){
 			} else if (e.pageX > $(document).width() - ($(document).width() * .10)){//right edge
 				szl();
 			}
+	});
+
+	/////
+	var sidevalue = .15;
+	$('.arrows').mouseup(function(e){
+		if (e.pageX < $(document).width() * sidevalue){//within 10% of left edge
+			fzl();
+
+		} else if (e.pageX > $(document).width() - ($(document).width() * sidevalue)){//right edge
+			szl();
+		}
+	});
+	var arrows = true;
+	$('#content, .arrows').on('mousedown', function(e){
+		if (e.pageX > $(document).width() * sidevalue & e.pageX < $(document).width() - ($(document).width() * sidevalue)){
+			if (arrows) {
+				$('.arrows').fadeIn();
+				arrows = false;
+				setTimeout(function(){
+	                arrows = true;
+	            }, 800);
+			}
+		}
+	}).on('mouseup', function(){
+		$('.arrows').fadeOut();
 	});
 });
