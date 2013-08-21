@@ -1,3 +1,4 @@
+document.write('<style type="text/css">body{display:none}</style>');//hide content while jquery sets css
 $(document).ready(function(){
 	var index = 0,
 		articles = new Array(),
@@ -7,6 +8,9 @@ $(document).ready(function(){
 		right = width + 'px',
 		szld,
 		szlCount = 0,
+		artPos,
+		artLeft,
+		duplicate,
 		isRunning = false;
 	articles.push(
 		"<p class='articleText'><b>article1 article1 article1 </b>article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1</p>",
@@ -16,10 +20,10 @@ $(document).ready(function(){
 		"<p class='articleText'>article5 <p>article5 article5 article5 article5 article5<p> article5 article5 article5 article5 article5 article5 article5 article5<p>",
 		"<h1><a href=''target=''>Giant microwave blaster lets bread stay fresh-ish for over 60 days</a></h1><h2><a href='https://dvice.com/' target='_blank'>DVICE</a> November 30th, 2012 16:46 EST</h2><div id='szzzl-story-long-wrapper'><p><div><div><p class='articleText'>About a third of the bread that consumers buy gets tossed out or fed to ducks who don't know any better after it goes stale or gets moldy. You just cant win with bread- either you keep it moist and gross stuff grows on it, or you dry it out and it turns into a rock. A Texas company says it has a solution, in the form of a huge homogenized microwave cannon.</p><p class='articleText'>Microwaves, being radiation, work quite well at killing things like fungi. The reason that you cant use your microwave to kill fungi is that your microwave sucks, and due to the wavelength of the microwaves used in microwave ovens (just under five inches), you get hot spots and cold spots that show up at half of that wavelength. Microzap's microwave chamber, on the other hand, works differently, and much better. CEO Don Stull explains:</p><div>For the latest tech stories, follow DVICE on Twitter at @dvice or find us on Facebook</div></div></div></p><p><a href='https://dvice.com/archives/2012/11/giant-microwave.php' target='_blank'>Read more</a></p></div>"
 	);
-	var artPos,
-		artLeft;
+	
 	$(window).on('resize load', function(){//adjust elements for different screen sizes
 		//alert(window.devicePixelRatio);
+		$('body').show();
 		var w_box = $(window).width(),
 			h_box = $('#stream').height(),	
 			w_total = ((w_box - $('.article').width())/2) - 2, //400
@@ -31,13 +35,12 @@ $(document).ready(function(){
 		$('#paper2').css('margin-left', w_total + 6 + 'px');
 		$('#username').css('margin-left', parseInt($('.article').css('margin-left')) + 'px');
 		$('#share p').css('margin-right', $('#topArticle').css('margin-left'));
-		$('#shareMenu').css('margin-left', '-' + ($('#share p').css('margin-right')))
+		$('#shareMenu').css('margin-left', '-' + ($('#share p').css('margin-right')));
 		artPos = $('#topArticle').css('margin-left');
 		artLeft = $('#topArticle').css('left');
 		width = $(window).width();
 		height = $(window).height();
 	});
-
 	console.log($('#content').height())
 	console.log($('#stream').height());
 	console.log($('.article').height());
@@ -47,6 +50,7 @@ $(document).ready(function(){
 
 	$('#topArticle').html(articles[5]);
 	$('#queue').on('click','div', function(){//switch top article content with queued content
+		duplicate = true;
 		$('#queue div').removeClass('rerate');
 		$(this).addClass('rerate');
 		var contCopy = $(this).contents().clone();
@@ -57,9 +61,11 @@ $(document).ready(function(){
 	});
 
 	szl = function(e){
+		console.log(duplicate);
 		if (!isRunning){
 			isRunning = true;
 			szld = $('#topArticle').contents().clone();
+			artText = $('#topArticle').text();
 			$('#topArticle').animate({left: '+'+width+"px"},{queue: false,duration: 500, easing: 'swing', complete: function(){
 				$(this).remove();
 				$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
@@ -68,9 +74,20 @@ $(document).ready(function(){
 				}
 			}).css({'box-shadow': '0 0 1em red'});
 			createArticle();
-			$('#queue div').each(function(){
-				$(this).animate({left: parseInt($(this).css('left')) + ($(window).width() * .15) + 'px'},{duration: 500});
+			$('#queue .szld').each(function(){
+				//console.log($(this).attr('id'))
+				if ($(this).text() == artText) {
+					console.log('match');
+					duplicate = true;
+				}
 			});
+			if (duplicate){
+				duplicate = false;
+			} else {
+				console.log('add')
+				$('#queue div').each(function(){
+					$(this).animate({left: parseInt($(this).css('left')) + ($(window).width() * .15) + 'px'},{duration: 500});
+				});
 			var newDiv = document.createElement('div');
 			$('#queue').append($(newDiv).attr('id', 'newSzl' + szlCount).css({
 				'position':'absolute', 'width':'20%', 'height':'100%',
@@ -83,14 +100,14 @@ $(document).ready(function(){
 				'left': 0
 			}).addClass('szld').css('overflow','hidden').append(szld));
 			szlCount += 1;
+			duplicate = false;
+			}
 		}
 	}
 
 	fzl = function(e){
 		if (!isRunning){
 			isRunning = true;
-			//$('#topArticle').css('box-shadow', '0 0 1em blue');
-			
 			$('#topArticle').animate({left: '-'+width+"px"}, {queue: false, duration: 500, easing: 'swing', complete: function(){
 				if($(this).hasClass('rerate')) {
 					var rerateID = $('#queue .rerate').next('.szld').attr('id');
@@ -111,29 +128,27 @@ $(document).ready(function(){
 			createArticle();
 		}
 	}	
+
+	//share menu
 	$('#shareText').click(function(){
 		console.log($('#shareMenu').css("height"));
-		if ($('#shareMenu').css('display') == 'block'){
-			$('#shareMenu').animate({height: 0},500).hide('slow');
+		if (parseInt($('#shareMenu').css('height')) > 0){
+			$('#shareMenu').animate({height: 0},500);
 		}
 		else {
-
 			$('#shareMenu').css("left", ($(window).width() - parseInt($('#shareMenu').css('width')) + 'px'))
-			$('#shareMenu').show().animate({height: '938px'}, 500);
+			$('#shareMenu').animate({height: '938px'}, 500);
 		}
-	});
-	$('#shareMenu a').click(function(){
-		$('#shareMenu').animate({height: 0},500).hide();
 	});
 
 	createArticle = function(){
-		console.log(index);
 		var newCont = $("<div id='bottomArticle'></div");//.attr('id', 'bottomArticle');//container for next article
 		var contents = $("<div class='articleContent'></div>");
 		$('#stream').append(newCont);
 		//$('#bottomArticle').addClass('article').html(articles[index]).css('margin-left', artPos);
 		if ($('#middleArticle').hasClass('requeue')){
 			if(index == 0){
+				console.log('its 0');
 				$('#bottomArticle').addClass('article').html(articles[index + 5]).css('margin-left', artPos);
 			} else {
 				$('#bottomArticle').addClass('article').html(articles[index-1]).css('margin-left', artPos);
@@ -146,26 +161,23 @@ $(document).ready(function(){
 		if (index > 5){ index = 0;}
 	}	
 
-	var initial = parseInt($('#topArticle').css('left'));
-	var firstDrag = true;
+	//var initial = parseInt($('#topArticle').css('left'));
+	//var firstDrag = true;
 	var newArticle = {
 		axis: 'x',
-		start: function(ui, event){},
-		drag: function(ui,event){},
-		stop: function(ui, event){}
+		//start: function(ui, event){},
+		//drag: function(ui,event){},
+		//stop: function(ui, event){}
 	}
 	$('.article').draggable(newArticle);
 
 	////
-	startPos = {x:0, y:0}
-	distance = {x:0, y:0}
-	scaledDistance = 0
-
-	swipeTime = 0;
-
-	angle = 0;
-
 	var start_time;
+		startPos = {x:0, y:0},
+		distance = {x:0, y:0},
+		scaledDistance = 0,
+		swipeTime = 0,
+		angle = 0;
 	function start(e) {
 	    start_time = new Date();
 		startPos.x = e.pageX;
@@ -201,7 +213,7 @@ $(document).ready(function(){
 					$('#topArticle').animate({left: 0 },300);
 				}
 			}
-			else if (Math.abs(distance.x / width) > 0.25) {
+			else if (Math.abs(distance.x / width) > 0.25){
 				if (distance.x > 0) {
 					szl();
 				}
@@ -209,15 +221,16 @@ $(document).ready(function(){
 					fzl();
 				}
 			}
-			else{
+			else {
 				$('#topArticle').animate({left: 0 },300);
 				firstDrag = false;
 			}
 		}
-		else{
+		else {
 			$('#topArticle').animate({left: 0 },300);
 		}
 	}
+
 	var orig;
 	$('#queue').on('mouseenter', 'div', function(event){
 		orig = $(this).css('z-index');
@@ -226,29 +239,25 @@ $(document).ready(function(){
 		$(this).css('z-index', orig);//.css('transform','rotateY(-45deg)')
 	});
 
-	var windowWidth = $(window).width();
-	var rightEdge = (windowWidth - (windowWidth * .10));
 	$('#stream').click(function(e){
 		e.stopPropagation();
-			if (e.pageX < $(document).width() * .10){//within 10% of left edge
-				fzl();
-
-			} else if (e.pageX > $(document).width() - ($(document).width() * .10)){//right edge
-				szl();
-			}
+		if (e.pageX < $(document).width() * .10){//within 10% of left edge
+			fzl();
+		} else if (e.pageX > $(document).width() - ($(document).width() * .10)){//right edge
+			szl();
+		}
 	});
 
 	/////
-	var sidevalue = .10;
+	var sidevalue = .10,
+		arrows = true;
 	$('.arrows').mouseup(function(e){
 		if (e.pageX < $(document).width() * sidevalue){//within 10% of left edge
 			fzl();
-
 		} else if (e.pageX > $(document).width() - ($(document).width() * sidevalue)){//right edge
 			szl();
 		}
 	});
-	var arrows = true;
 	$('#content, .arrows').on('mousedown', function(e){
 		if (e.pageX > $(document).width() * sidevalue & e.pageX < $(document).width() - ($(document).width() * sidevalue)){
 			if (arrows) {
