@@ -15,13 +15,13 @@ html {
 body {
 	margin: 0;
 	overflow-y: hidden;
-	background-color: #FEF5DF;
+	background-color: #CEFFFF;
 	height: 100%;
 }
 
 footer {
 	position: relative;
-	height: 18%;
+	height: 20%;
 	background-color: #282828;
 	background-image: linear-gradient(0deg, #000000 0%, #454545 100%);
 	overflow-x: auto;
@@ -30,7 +30,7 @@ footer {
 }
 
 #content{
-	height: 80%;
+	height: 78%;
 	overflow-x: hidden;
 	overflow-y: hidden;
 }
@@ -49,9 +49,9 @@ footer {
 }*/
 
 .colorbar {
-	height: 2%;
+	height: 3%;
 	width: 100%;
-	background-color: #FEF5DF;
+	background: -webkit-linear-gradient(270deg, #CEFFFF 0%, #A2BCD8 100%);
 	overflow: hidden;
 	min-height: 20px;
 }
@@ -92,23 +92,24 @@ footer {
 	color: #AF2F4E;
 }
 #shareMenu{
-	display:none;
 	position: relative;
 	top: -10px;/*adjust up & down*/
 	margin-left: -5%;/*adjust menu left & right*/
-	width: 64px;
+	width: 32px;
 	height: 0;
 	overflow:hidden;
 }
 #shareMenu a {
 }
 .addthis_toolbox .custom_images a {
-    width: 64px;
-    height: 64px;
+    width: 32px;
+    height: 32px;
     padding: 0;
 }
 .addthis_toolbox .custom_images a img {
     opacity: 1.0;
+    width: 32px;
+    height: 32px;
 }
 .addthis_toolbox .custom_images a:hover img {
     opacity: 0.75;
@@ -131,7 +132,12 @@ footer {
 	-webkit-filter:invert(100%);
 }*/
 p {
-	font-size: 16px;
+	font-size: 1em;
+}
+
+span {
+	font-size: 1em;
+
 }
 #stream {
 	position: relative;
@@ -157,6 +163,7 @@ p {
 	width: 90%;
 	height: 95%;
 	margin-left:5%;
+	margin-top: 5px;
 	background-color: #FFFFFF;
 	-webkit-box-shadow: 0 0 .2em black;
 	-moz-box-shadow: 0 0 .2em black;
@@ -182,23 +189,22 @@ p {
 }
 
 .arrows {
-		display: none;
-		position: absolute;
-		top: 35%;
-	}
-	#fzlarrow {
-		left: 5%;
-		width: 10%;
-		height: 10%;
-		z-index: 2;
-	}
-	#szlarrow {
-		left: 85%;
-		width: 10%;
-		height: 10%;
-		z-index: 2;
-	}
-
+	display: none;
+	position: absolute;
+	top: 35%;
+}
+#fzlarrow {
+	left: 5%;
+	width: 10%;
+	height: 10%;
+	z-index: 2;
+}
+#szlarrow {
+	left: 85%;
+	width: 10%;
+	height: 10%;
+	z-index: 2;
+}
 
 .ui-loader {
 	display: none;
@@ -245,12 +251,13 @@ p {
 	}
 
 	.colorbar {
-		height: 2%;
+		height: 5%;
 		width: 100%;
-		background-color: #FEF5DF;
 		overflow: hidden;
 		min-height: 40px;
+		background: -webkit-linear-gradient(270deg, #FFE6FF 0%, #A2BCD8 100%);
 	}
+
 	#username {
 		position: absolute;
 		text-align: left;
@@ -258,7 +265,8 @@ p {
 	}
 	#username p {
 		position: relative;
-		color: #AF2F4E;
+		color: black;
+		font-style: Helvetica;
 	}
 
 	#username a {
@@ -268,20 +276,19 @@ p {
 	#share {
 		position: absolute;
 		z-index: 5;
-		color: #AF2F4E;
+		color: black;
+		font-style: Lucida;
 		text-align: right;
 		margin-top: .5em;
 	}
 	#share p {
 		position: relative;
 		margin-right: 5%;/*adjust share work l or r*/
-		color: #AF2F4E;
-		width:;
+		color: black;
 	}
 	#shareMenu{
-		display:none;
 		position: relative;
-		top: -10px;/*adjust up & down*/
+		/*top: -10px;adjust up & down*/
 		margin-left: -5%;/*adjust menu left & right*/
 		width: 128px;
 		height: 0;
@@ -290,7 +297,7 @@ p {
 	#shareMenu a {
 	}
 	span {
-		font-size: 32px;
+		font-size: 3em;
 	}
 	.articleText {
 		font-size: 1em;
