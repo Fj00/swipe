@@ -10,22 +10,56 @@
 
 		<title> Don't just browse the internet, Szl it! </title>
 		<link href="article.css" rel="stylesheet" type="text/css"/>
+		<link type="text/css" href="demos.css" rel="stylesheet" />
+		<link type="text/css" href="coverflow.css" rel="stylesheet" />
 		<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
 		<script src="https://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
 		<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 		<script src="touchAndPunch.js"></script>
 		<script src="js/swipe.js"></script>
+		<script src="coverflow.js"></script>
 		<script src="https://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4f8a5d0021a3fa5a" type="text/javascript"></script>
+		<script type="text/javascript">
+		$(function(){
+
+			var $coverflowContainer = $( '#coverflow' ),
+				$coverflowItems = $coverflowContainer.children(),
+				$imageCaption = $( '#imageCaption' ),
+				$playlistItems = $( '#playlist li' );
+
+
+			$coverflowContainer.coverflow({
+				select : function( ev, ui ) {
+
+					var $item = $playlistItems.eq( ui.index );
+
+					$playlistItems.removeClass( 'ui-selected' );
+					$item
+						.addClass( 'ui-selected' )
+						.get(0);
+						//.scrollIntoView();
+				}
+			});
+
+			//$playlistItems.on( 'mouseenter', function( ev ) {
+			//	ev.preventDefault();
+
+			//	$coverflowContainer.coverflow( 'select', $playlistItems.index( $( this ) ) );
+			//});
+			$('#coverflow').css({ 'padding-top': '0', 'padding-bottom': '0' });
+
+		});
+		</script>
 	</head>
 	<body>
 		<div class='colorbar'>
 			<div id="share"><p><span id="shareText">Share</span></p>
-				<div class="addthis_toolbox" id="shareMenu" addthis:url="http://www.szzzl.com/buzzes/1000000" addthis:title="Szl it" addthis:description="(via www.szzzl.com)">
+				<div class="addthis_toolbox" id="shareMenu">
 				 	<div class="custom_images">
 					  <a class="addthis_button_facebook"><img src="img/facebook.png" width="64" height="64" alt="Share to Facebook" /></a>
 					  <a class="addthis_button_twitter"><img src="img/twitter.png" width="64" height="64" alt="Share to Twitter" /></a>
 					  <a class="addthis_button_linkedin"><img src="img/linkedin.png" width="64" height="64" alt="Share to MySpace" /></a>
-					  <a class="addthis_button_reddit"><img src="img/reddit.png" width="64" height="64" alt="Share to Reddit" /></a>
+					  <!--<a class="addthis_button_reddit"><img src="img/reddit.png" width="64" height="64" alt="Share to Reddit" /></a>-->
 					  <a class="addthis_button_digg"><img src="img/digg.png" width="64" height="64" alt="Share to Delicious" /></a>
 					  <a class="addthis_button_more"><img src="https://www.addthis.com/cms-content/images/gallery/addthis_64.png" width="64" height="64" alt="More..." /></a>
 					</div>
@@ -33,7 +67,7 @@
 			</div>
 			<!--<img src="img/back-arrow.png" style="height: 20px; width: 20px;"/>-->
 			<!--<a href="#"><img src="img/szl_logo.png" id="logo" width='15%' height='70%'/></a>-->
-			<div id="username"><p><span id="userText">Username</span><span style="color:#888888;"> | 618</span><span> Tzls</span></p></div>
+			<div id="username"><p><span id="userText">Username</span><span style="color:black;"> | 618</span><span> Tzls</span></p></div>
 		</div>
 		<div id="content">
 			<div id="stream">
@@ -47,7 +81,7 @@
   				</div>
   				<div id="paper0" class="article"></div>
   				<div id="paper1" class="article"></div>
-  				<!--<div id="paper2" class="article"></div>-->
+  				<div id="paper2" class="article"></div>
 			</div>
 		</div>
 		<img class="arrows" id="fzlarrow" src="img/fzlarrow.jpg">
@@ -56,7 +90,20 @@
 			<div id="queue">
 				<!--logo-->
 				<!--<a href="#"><img src="img/szl_logo.png" id="logo" width='15%' height='70%'/></a>-->
-
+				<div id="coverflow">
+		            <img src="img/gorillaz-plasticbeach.jpg" data-artist="Gorillaz" data-album="Plastic Beach"/>
+					<img src="img/kingsofleon-comearoundsunshine.jpg" data-artist="Kings Of Leon" data-album="Come Around Sunshine"/>
+					<img src="img/kidrock-bornfree.jpg" data-artist="Kid Rock" data-album="Born Free"/>
+					<img src="img/recovery-recovery.jpg" data-artist="Eminem" data-album="Recovery"/>
+					<img src="img/lilwayne-iamnotahumanbeing.jpg" data-artist="Lil Wayne" data-album="I Am Not A Human Being"/>
+					<img src="img/taylorswift-speaknow.jpg" data-artist="Taylor Swift" data-album="Speak Now"/>
+					<img src="img/thebandperry-thebandperry.jpg" data-artist="The Band Perry" data-album="The Band Perry"/>
+					<img src="img/maroon5-handsallover.jpg" data-artist="Maroon 5" data-album="Hands All Over"/>
+					<img src="img/mychemicalromance-dangerdays.jpg" data-artist="My Chemical Romance" data-album="Danger Days"/>
+					<img src="img/ironmaiden-thefinalfrontier.jpg" data-artist="Iron Maiden" data-album="The Final Frontier"/>
+					<img src="img/order of the black - black label society.jpg" data-artist="Order Of The Black" data-album="Black Label Society"/>
+					<img src="img/usher-raymondvraymond.jpg" data-artist="Usher" data-album="Raymond V Raymond"/>
+				</div>
 			</div>
 		</footer>
 		<div id="holder"></div>
