@@ -10,46 +10,14 @@
 
 		<title> Don't just browse the internet, Szl it! </title>
 		<link href="article.css" rel="stylesheet" type="text/css"/>
-		<link type="text/css" href="demos.css" rel="stylesheet" />
-		<link type="text/css" href="coverflow.css" rel="stylesheet" />
+		<!--<link type="text/css" href="coverflow.css" rel="stylesheet" />-->
 		<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
 		<script src="https://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
 		<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 		<script src="touchAndPunch.js"></script>
+		<!--<script src="coverflow.js"></script>-->
 		<script src="js/swipe.js"></script>
-		<script src="coverflow.js"></script>
 		<script src="https://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4f8a5d0021a3fa5a" type="text/javascript"></script>
-		<script type="text/javascript">
-		$(function(){
-
-			var $coverflowContainer = $( '#coverflow' ),
-				$coverflowItems = $coverflowContainer.children(),
-				$imageCaption = $( '#imageCaption' ),
-				$playlistItems = $( '#playlist li' );
-
-
-			$coverflowContainer.coverflow({
-				select : function( ev, ui ) {
-
-					var $item = $playlistItems.eq( ui.index );
-
-					$playlistItems.removeClass( 'ui-selected' );
-					$item
-						.addClass( 'ui-selected' )
-						.get(0);
-						//.scrollIntoView();
-				}
-			});
-
-			//$playlistItems.on( 'mouseenter', function( ev ) {
-			//	ev.preventDefault();
-
-			//	$coverflowContainer.coverflow( 'select', $playlistItems.index( $( this ) ) );
-			//});
-			$('#coverflow').css({ 'padding-top': '0', 'padding-bottom': '0' });
-
-		});
-		</script>
 	</head>
 	<body>
 		<div class='colorbar'>
@@ -90,7 +58,7 @@
 			<div id="queue">
 				<!--logo-->
 				<!--<a href="#"><img src="img/szl_logo.png" id="logo" width='15%' height='70%'/></a>-->
-				<div id="coverflow">
+				<!--<div id="coverflow">
 		            <img src="img/gorillaz-plasticbeach.jpg" data-artist="Gorillaz" data-album="Plastic Beach"/>
 					<img src="img/kingsofleon-comearoundsunshine.jpg" data-artist="Kings Of Leon" data-album="Come Around Sunshine"/>
 					<img src="img/kidrock-bornfree.jpg" data-artist="Kid Rock" data-album="Born Free"/>
@@ -103,8 +71,9 @@
 					<img src="img/ironmaiden-thefinalfrontier.jpg" data-artist="Iron Maiden" data-album="The Final Frontier"/>
 					<img src="img/order of the black - black label society.jpg" data-artist="Order Of The Black" data-album="Black Label Society"/>
 					<img src="img/usher-raymondvraymond.jpg" data-artist="Usher" data-album="Raymond V Raymond"/>
-				</div>
+				</div>-->
 			</div>
+			<a title="szl.it"><img src="img/szl_logo.png" id="logo" width='15%' height='70%'/></a>
 		</footer>
 		<div id="holder"></div>
 	</body>
