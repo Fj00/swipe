@@ -15,7 +15,7 @@ html {
 body {
 	margin: 0;
 	overflow-y: hidden;
-	background-image: linear-gradient(180deg, #FFFFFF 0%, #F0F8FF 100%);
+	background-image: linear-gradient(180deg, #FFFFFF 0%, #BAF1FF 100%);
 	height: 100%;
 }
 
@@ -30,8 +30,7 @@ footer {
 
 #content{
 	height: 78%;
-	overflow-x: hidden;
-	overflow-y: hidden;
+	overflow: hidden;
 }
 
 #queue {
@@ -48,52 +47,39 @@ footer {
 }
 
 .colorbar {
+	position: relative;
 	height: 3%;
 	width: 100%;
 	background: #FFFFFF;
-	overflow: hidden;
 	min-height: 20px;
+	background-image: linear-gradient(180deg, #FFFFFF 0%, #B3BCBC 100%);
+	border-bottom: 1px solid #979D9D; 
 }
 #username {
 	position: absolute;
 	text-align: left;
 	margin-top: 0;
-	top: 0;
-}
-#username p {
-	position: relative;
+	padding-top: .5%;
 	font-size: 10pt;
-	color: #AF2F4E;
-	margin-top: 0;
-	top: 0;
-}
-
-#username a {
-	color: #AF2F4E;
-	margin-top: 0;
+	color: black;
 }
 
 #share {
 	position: absolute;
-	width: 100%;
-	z-index: 5;
-	color: #AF2F4E;
 	text-align: right;
-	margin-top: 0;
-
-}
-#share p {
-	position: relative;
+	margin: 0;
+	width: 100%;
 	font-size: 10pt;
-	margin-top: 0;
-	margin-right: 5%;/*adjust share work l or r*/
-	top: 0;
-	color: #AF2F4E;
+	/*adjust share work l or r*/
+	padding-top: .5%;
+	color: black;
+	z-index: 5;
 }
+
 #shareMenu{
 	position: relative;
-	top: -10px;/*adjust up & down*/
-	margin-left: -5%;/*adjust menu left & right*/
+	top: 3%;/*adjust up & down*/
+	/*adjust menu left & right*/
 	width: 32px;
 	height: 0;
 	overflow:hidden;
