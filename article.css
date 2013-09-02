@@ -1,3 +1,8 @@
+@font-face {
+font-family: myriad;
+src: url('MYRIADPRO-REGULAR.otf');
+}
+
 .ui-page {
 	height: 100%;
 	overflow-y:hidden;
@@ -7,7 +12,7 @@ html {
 	padding: 0;
 	margin: 0;
 	border: none;
-	font-family: Verdana, Helvetica, Arial;
+	font-family: 'myriad';
 	height: 100%;
 	overflow-y: hidden;
 }
@@ -25,7 +30,6 @@ footer {
 	background-color: #282828;
 	background-image: linear-gradient(0deg, #000000 0%, #454545 100%);
 	overflow: hidden;
-	border-top: 1px solid black;
 }
 
 #content{
@@ -36,6 +40,12 @@ footer {
 #queue {
 	overflow: visible;
 	height: 100%;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: -moz-none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 #logo {
@@ -59,8 +69,8 @@ footer {
 	position: absolute;
 	text-align: left;
 	margin-top: 0;
-	padding-top: .5%;
-	font-size: 10pt;
+	padding-top: .25%;
+	font-size: 1em;
 	color: black;
 }
 
@@ -69,9 +79,9 @@ footer {
 	text-align: right;
 	margin: 0;
 	width: 100%;
-	font-size: 10pt;
+	font-size: 1em;
 	/*adjust share work l or r*/
-	padding-top: .5%;
+	padding-top: .25%;
 	color: black;
 	z-index: 5;
 }
@@ -84,8 +94,7 @@ footer {
 	height: 0;
 	overflow:hidden;
 }
-#shareMenu a {
-}
+
 .addthis_toolbox .custom_images a {
     width: 32px;
     height: 32px;
@@ -142,6 +151,7 @@ span {
 	position: absolute;
 	top: 6px;
 	z-index: -5;
+	box-shadow: -1px 0 10px black;
 
 }
 .article {
@@ -151,9 +161,9 @@ span {
 	margin-left:5%;
 	margin-top: 5px;
 	background-color: #FFFFFF;
-	-webkit-box-shadow: 0 0em .2em black;
-	-moz-box-shadow: 0 0em .2em black;
-	-ms-box-shadow: 0 0em .2em black;
+	
+	-webkit-box-shadow: 0 0 .2em black;
+	-ms-box-shadow: 0 0 .2em black;
 	border: 1px solid black;
 	overflow-y:auto;
 	max-width: 705px;
@@ -242,6 +252,7 @@ span {
 		overflow: hidden;
 		min-height: 40px;
 		background: -webkit-linear-gradient(270deg, #FFE6FF 0%, #A2BCD8 100%);
+		background: -moz-linear-gradient(top,  #FFE6FF,  #A2BCD8);
 	}
 
 	#username {
