@@ -64,18 +64,39 @@ $(document).ready(function(){
 	$('#queue').on('click','div', function(){//switch top article content with queued content
 		//duplicate = true;
 		var closestLeft = $(this).next().attr('id');//article to the left of the clicked one
+		console.log($('.szld:last').attr('id'));
 		$(this).remove();
-		$('#' + closestLeft).prevAll().each(function(){
-			$(this).animate({left: parseInt($(this).css('left'), 10) - ($(window).width() * 0.10) + 'px'},{duration: 300, complete: function(){
-				$('.szld').each(function() {
+		//if leftmost one clicked
+		if(closestLeft == undefined){
+			console.log('true');
+			$('.szld').each(function() {
+				$(this).animate({left: parseInt($(this).css('left'), 10) - ($(window).width() * 0.10) + 'px'},{duration: 300, complete: function(){
+					$('.szld').each(function(){
 					var szldItem = $(this).offset().left / $(window).width() * 100;
-					if (szldItem > 5){
-						console.log('true');
-						$(this).animate({'top': 10 + szldItem + '%'}, {duration:  300, queue: false});
+					if (szldItem > 0){
+						//console.log('true');
+						$(this).animate({'top': 8 + (szldItem/2) + '%'}, {duration:  300, queue: false});
+						$('.szld:last').css('top', '10%');
 					}
-				});
-			}});
-		});
+					if ($('.szld').length == 1){
+						$('.szld').css('top', '10%');
+					}
+					});
+				}});
+			});
+		} else {
+			$('#' + closestLeft).prevAll().each(function(){
+				$(this).animate({left: parseInt($(this).css('left'), 10) - ($(window).width() * 0.10) + 'px'},{duration: 300, complete: function(){
+					$('.szld').each(function() {
+						var szldItem = $(this).offset().left / $(window).width() * 100;
+						if (szldItem > 5){
+							console.log('true');
+							$(this).animate({'top': 8 + (szldItem/2) + '%'}, {duration:  300, queue: false});
+						}
+					});
+				}});
+			});
+		}
 		$('#queue div').removeClass('rerate');
 		$(this).addClass('rerate');
 		var contCopy = $(this).contents().clone();
@@ -129,8 +150,9 @@ $(document).ready(function(){
 				}).addClass('szld').css('overflow','hidden').append(szld).scrollLeft(0));
 				console.log('last in queue: ' + $('.szld:last').attr('id'));
 				$('.szld:last').prevAll().each(function(index){
+					$(this).css({'z-index' : $(this).next().css('z-index') - 1});
 					$(this).css({'box-shadow': '0 0 .8em black', 'border':'none'});
-					$(this).css('top', parseInt($(this).next().css('top'), 10) + (parseInt($('#queue').css('height'), 10) * 0.10) + 'px');
+					$(this).css('top', parseInt($(this).next().css('top'), 10) + (parseInt($('#queue').css('height'), 10) * 0.05) + 'px');
 				}).andSelf().css('z-index', $(this).prev().css('index') + 1);
 
 				/*if (dragged) {
@@ -282,16 +304,17 @@ $(document).ready(function(){
 
 	var zCount = {left: 1000, right: 1000};
 	var orig;
+	var prevX = -1;
 	$('#queue').draggable({
 		axis: "x",
 		scroll: false,
-
-		start: function(){
+		start: function(ui, e){
 			dragged = true;
 			console.log('dragged');
+			ui.containment = false;
 		},
 
-		drag: function(){
+		drag: function(e, ui){
 			/*if ($('.szld:last').offset().left > $(window).width() - ($(window).width() * .10)){
 			//return false;
 			}*/
@@ -328,13 +351,14 @@ $(document).ready(function(){
 				}*/
 
 				//////article with focus on left
+
 				if (szldItem < 0) {
 					//console.log('< 38');
 					$(this).css({//adjust z-index for elements left of center & set top
-						"z-index": $(this).prev().css("z-index") - 1, "top": 10 - szldItem + '%'});//.css('width', 60 - szldItem + '%');
+						"z-index": $(this).prev().css("z-index") - 1, "top": 8 - (szldItem/2) + '%'});//.css('width', 60 - szldItem + '%');
 				} else if (szldItem > 0) {
 					//console.log('> 38: ' + $(this).offset().left / $(window).width() * 100);
-					$(this).css({'top': 10 + szldItem + '%'});
+					$(this).css({'top': 8 + (szldItem/2) + '%'});
 				}
 
 				//set border shadow for central item
@@ -357,50 +381,68 @@ $(document).ready(function(){
 					//zCount.right = zCount.right + 1;
 				}
 				//////
-
-
-				/*else if (szldItem > 35 && szldItem < 38) {
-					//console.log('35-38');
-					//$(this).css({'z-index' : zCount.left });
-					//zCount.left = zCount.left + 1;
-				}*/
-
-				/*if (szldItem > -6 & szldItem < 5) {
-					$(this).css({'z-index' : '1', 'box-shadow':'0 0 .8em black'});
-				}
-				if (szldItem > 5 & szldItem < 15) {
-					$(this).css({'z-index' : '2', 'box-shadow':'0 0 .8em black'});
-				}
-				if (szldItem > 15 & szldItem < 25) {
-					$(this).css({'z-index' : '3', 'box-shadow':'0 0 .8em black'});
-				}
-				if (szldItem > 25 & szldItem < 35) {
-					$(this).css({'z-index' : '4', 'box-shadow':'0 0 .8em black'});
-				}
-				if (szldItem > 35 & szldItem < 45) {
-					$(this).css({'z-index' : '5', 'box-shadow':'0 0 .8em black'});
-				}*/
-				/*if (szldItem < 50){
-					$(this).css('top', parseInt($(this).next().css('top')) + (parseInt($(this).next().css('top')) * szldItem) + 'px');
-				}
-				if (szldItem > 49 && szldItem < 51){
-					//console.log('true');
-					$(this).css('top', '10%').css('box-shadow','0 0 .8em red').css('z-index','100').nextAll().each(function(){
-					$(this).css('top', parseInt($(this).prev().css('top')) + (parseInt($(this).prev().css('top')) * szldItem / 100) + 'px');
-				}).end().prevAll().each(function(){
-					$(this).css('top', parseInt($(this).next().css('top')) + (parseInt($(this).next().css('top')) * szldItem / 100) + 'px');
-				});
-				} else {
-					$(this).css('box-shadow','0 0 .5em black');
-				}*/
 			});
-		},
+
+			//console.log(ui.containment);
+			//console.log(e.pageX);
+				/*if(prevX == -1) {
+					prevX = e.pageX;
+					//return false;
+				}
+				// dragged left
+				if(prevX > e.pageX) {
+					//console.log('dragged left');
+
+				}
+				
+				else if(prevX < e.pageX) { // dragged right
+					
+					//console.log('dragged right');
+					console.log($('.szld:last').offset().left)
+					if ($('.szld:last').offset().left > 0){
+						console.log('go')
+						//ui.containment = 'parent';
+						$(ui.helper).offset().left = 0;
+						//$(e.toElement).trigger('mouseup');
+						//ui.revert = true;
+						//$(e.toElement).trigger('mouseup');
+
+						/*var w1 = ui.helper.outerWidth(),
+						w2 = $container.width();
+						//console.log([ui.position.left, w1, w2].join(' : '));
+						ui.position.left = Math.max(Math.min(ui.position.left, w2 - w1), 0);
+
+
+
+
+
+
+					}
+				}
+				prevX = e.pageX;*/
+			},
+
 		stop: function(event){
 			//http://stackoverflow.com/questions/3486760/how-to-avoid-jquery-ui-draggable-from-also-triggering-click-event/13973319#13973319
 			$(event.toElement ).one('click', function(e){
 				e.stopImmediatePropagation();
 			});
-			console.log(dragged);
+			if ($('.szld:last').offset().left > 0 || $('.szld:first').offset().left < 0){
+				$('#queue').animate({left: 0}, {duration: 300, queue: false, complete: function(){
+					$('.szld').each(function(){
+						var szldItem = $(this).offset().left / $(window).width() * 100;
+						$(this).animate({ top: 8 + (szldItem/2) + '%'}, {duration: 300, queue: false});
+						$(this).css({'z-index' : $(this).closest().css('z-index') - 1});
+					});
+					$('.szld:last').prevAll().each(function(){
+					$(this).css({'z-index' : $(this).next().css('z-index') - 1});
+					});
+				}});
+				$('.szld').css({'box-shadow':'0 0 1em black','border': 'none'})
+				$('.szld:last').css({'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'});
+			}
+			console.log('stopped')
+			//console.log(dragged);
 		}
 	});
 
@@ -419,7 +461,7 @@ $(document).ready(function(){
 	});
 
 	/////
-	/*var sidevalue = 0.15,
+	var sidevalue = 0.15,
 		arrows = true;
 	$('.arrows').mouseup(function(e){
 		if (e.pageX < $(document).width() * sidevalue){//within 10% of left edge
@@ -440,5 +482,5 @@ $(document).ready(function(){
 		}
 	}).on('mouseup', function(){
 		$('.arrows').fadeOut();
-	});*/
+	});
 });

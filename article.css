@@ -50,6 +50,7 @@ footer {
 	-moz-user-select: -moz-none;
 	-ms-user-select: none;
 	user-select: none;
+	border: 1px solid white;
 }
 
 #logo {
