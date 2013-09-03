@@ -60,12 +60,21 @@ $(document).ready(function(){
 	//console.log('queue: ' + $('#header-container').height());
 
 	$('#topArticle').html(articles[5]);
+	var dragged = false;
 	$('#queue').on('click','div', function(){//switch top article content with queued content
 		//duplicate = true;
 		var closestLeft = $(this).next().attr('id');//article to the left of the clicked one
 		$(this).remove();
 		$('#' + closestLeft).prevAll().each(function(){
-			$(this).animate({left: parseInt($(this).css('left'), 10) - ($(window).width() * 0.10) + 'px'},{duration: 500});
+			$(this).animate({left: parseInt($(this).css('left'), 10) - ($(window).width() * 0.10) + 'px'},{duration: 300, complete: function(){
+				$('.szld').each(function() {
+					var szldItem = $(this).offset().left / $(window).width() * 100;
+					if (szldItem > 5){
+						console.log('true');
+						$(this).animate({'top': 10 + szldItem + '%'}, {duration:  300, queue: false});
+					}
+				});
+			}});
 		});
 		$('#queue div').removeClass('rerate');
 		$(this).addClass('rerate');
@@ -75,7 +84,7 @@ $(document).ready(function(){
 		$('#topArticle').addClass('rerate').empty().append(contCopy);
 		//$('#holder').empty();
 	});
-	var dragged = false;
+
 	szl = function(e){
 		//console.log(duplicate);
 		if (!isRunning){
@@ -104,20 +113,24 @@ $(document).ready(function(){
 				////console.log('add')//if not in queue, add it
 			$('#queue').scrollLeft(0);
 				$('#queue div').each(function(){
+
 					$(this).animate({left: parseInt($(this).css('left'), 10) + ($(window).width() * 0.10) + 'px'},{duration: 500});
 				});
 				var newDiv = document.createElement('div');
+
 				$('#queue').append($(newDiv).attr('id', 'newSzl' + szlCount).css({
 					'position':'absolute', 'width':'20%', 'height': '90%',
 					'background':'white',
-					'box-shadow':'0 0 .8em black',
+					'border': '1px solid #FF4D4D',
+					'box-shadow':'0 0 1em #FF4D4D',
 					'z-index': szlCount + 1,
 					'top':'10%',
 					'left': 0
 				}).addClass('szld').css('overflow','hidden').append(szld).scrollLeft(0));
 				console.log('last in queue: ' + $('.szld:last').attr('id'));
 				$('.szld:last').prevAll().each(function(index){
-					$(this).css('top', parseInt($(this).next().css('top'), 10) + (parseInt($(this).next().css('top'), 10) * 0.15) + 'px');
+					$(this).css({'box-shadow': '0 0 .8em black', 'border':'none'});
+					$(this).css('top', parseInt($(this).next().css('top'), 10) + (parseInt($('#queue').css('height'), 10) * 0.10) + 'px');
 				}).andSelf().css('z-index', $(this).prev().css('index') + 1);
 
 				/*if (dragged) {
@@ -129,7 +142,7 @@ $(document).ready(function(){
 					});
 				}*/
 				$('#queue, footer').scrollLeft(0);
-				$('#queue').animate({left: 0}, 500).find('div').css({'box-shadow':'0 0 .8em black', 'border':'none'});
+				//$('#queue').animate({left: 0}, 500).find('div').css({'box-shadow':'0 0 .8em black', 'border':'none'});
 				szlCount += 1;
 			}
 		}
@@ -275,6 +288,7 @@ $(document).ready(function(){
 
 		start: function(){
 			dragged = true;
+			console.log('dragged');
 		},
 
 		drag: function(){
@@ -282,8 +296,9 @@ $(document).ready(function(){
 			//return false;
 			}*/
 			$('.szld').each(function(){
+				//article with focus in center
 				var szldItem = $(this).offset().left / $(window).width() * 100;
-				if (szldItem < 40) {
+				/*if (szldItem < 40) {
 					console.log('< 38');
 					$(this).css({//adjust z-index for elements left of center & set top
 						"z-index": $(this).prev().css("z-index") - 1, "top": 50 - szldItem + '%'});//.css('width', 60 - szldItem + '%');
@@ -310,9 +325,42 @@ $(document).ready(function(){
 					console.log('48-55');
 					$(this).css({'z-index' : $(this).closest().css('z-index') - 1});
 					//zCount.right = zCount.right + 1;
+				}*/
+
+				//////article with focus on left
+				if (szldItem < 0) {
+					//console.log('< 38');
+					$(this).css({//adjust z-index for elements left of center & set top
+						"z-index": $(this).prev().css("z-index") - 1, "top": 10 - szldItem + '%'});//.css('width', 60 - szldItem + '%');
+				} else if (szldItem > 0) {
+					//console.log('> 38: ' + $(this).offset().left / $(window).width() * 100);
+					$(this).css({'top': 10 + szldItem + '%'});
 				}
+
+				//set border shadow for central item
+				if (szldItem > -5 &&  szldItem < 5) {
+					//console.log('38-48: ' + $(this).offset().left / $(window).width() * 100);
+					$(this).css({
+						'z-index': '200000',
+						'box-shadow':'0 0 1em #FF4D4D',
+						'border': '1px solid #FF4D4D'
+					});
+					$(this).nextAll().css({'border':'none', 'box-shadow':'0 0 .8em black'});
+					$(this).prevAll().css({'border':'none', 'box-shadow':'0 0 .8em black'});
+					//console.log($(this).closest());
+				}
+
+				//set shadow for peripheral items
+				if (szldItem > 8 && szldItem < 15) {
+					//console.log('48-55');
+					$(this).css({'z-index' : $(this).closest().css('z-index') - 1});
+					//zCount.right = zCount.right + 1;
+				}
+				//////
+
+
 				/*else if (szldItem > 35 && szldItem < 38) {
-					console.log('35-38');
+					//console.log('35-38');
 					//$(this).css({'z-index' : zCount.left });
 					//zCount.left = zCount.left + 1;
 				}*/
@@ -336,7 +384,7 @@ $(document).ready(function(){
 					$(this).css('top', parseInt($(this).next().css('top')) + (parseInt($(this).next().css('top')) * szldItem) + 'px');
 				}
 				if (szldItem > 49 && szldItem < 51){
-					console.log('true');
+					//console.log('true');
 					$(this).css('top', '10%').css('box-shadow','0 0 .8em red').css('z-index','100').nextAll().each(function(){
 					$(this).css('top', parseInt($(this).prev().css('top')) + (parseInt($(this).prev().css('top')) * szldItem / 100) + 'px');
 				}).end().prevAll().each(function(){
@@ -346,6 +394,13 @@ $(document).ready(function(){
 					$(this).css('box-shadow','0 0 .5em black');
 				}*/
 			});
+		},
+		stop: function(event){
+			//http://stackoverflow.com/questions/3486760/how-to-avoid-jquery-ui-draggable-from-also-triggering-click-event/13973319#13973319
+			$(event.toElement ).one('click', function(e){
+				e.stopImmediatePropagation();
+			});
+			console.log(dragged);
 		}
 	});
 

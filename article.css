@@ -20,7 +20,9 @@ html {
 body {
 	margin: 0;
 	overflow-y: hidden;
-	background-image: linear-gradient(180deg, #FFFFFF 0%, #BAF1FF 100%);
+	background: linear-gradient(180deg, #FFFFFF 0%, #BFFFFF 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, white), color-stop(100%, #BFFFFF)); /* Safari 4+, Chrome 2+ */  
+	background: -webkit-linear-gradient(white, #BFFFFF);
 	height: 100%;
 }
 
@@ -29,6 +31,8 @@ footer {
 	height: 20%;
 	background-color: #282828;
 	background-image: linear-gradient(0deg, #000000 0%, #454545 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #454545), color-stop(100%, black)); /* Safari 4+, Chrome 2+ */  
+	background: -webkit-linear-gradient(#454545, black);
 	overflow: hidden;
 }
 
@@ -63,6 +67,8 @@ footer {
 	background: #FFFFFF;
 	min-height: 20px;
 	background-image: linear-gradient(180deg, #FFFFFF 0%, #B3BCBC 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, white), color-stop(100%, #B3BCBC)); /* Safari 4+, Chrome 2+ */  
+	background: -webkit-linear-gradient(white, #B3BCBC);
 	border-bottom: 1px solid #979D9D; 
 }
 #username {
