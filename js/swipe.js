@@ -1,4 +1,4 @@
-document.write('<style type="text/css">body{display:none}</style>');//hide content while jquery sets css
+document.write('<style type="text/css">body{display:none}</style>');//hide content while jquery sets some css
 $(document).ready(function(){
 	var index = 0,
 		articles = [],
@@ -20,7 +20,7 @@ $(document).ready(function(){
 		"<p class='articleText'>article5 <p>article5 article5 article5 article5 article5<p> article5 article5 article5 article5 article5 article5 article5 article5<p>",
 		"<h1><a href=''target=''>Giant microwave blaster lets bread stay fresh-ish for over 60 days</a></h1><h2><a href='https://dvice.com/' target='_blank'>DVICE</a> November 30th, 2012 16:46 EST</h2><div id='szzzl-story-long-wrapper'><p><div><div><p class='articleText'>About a third of the bread that consumers buy gets tossed out or fed to ducks who don't know any better after it goes stale or gets moldy. You just cant win with bread- either you keep it moist and gross stuff grows on it, or you dry it out and it turns into a rock. A Texas company says it has a solution, in the form of a huge homogenized microwave cannon.</p><p class='articleText'>Microwaves, being radiation, work quite well at killing things like fungi. The reason that you cant use your microwave to kill fungi is that your microwave sucks, and due to the wavelength of the microwaves used in microwave ovens (just under five inches), you get hot spots and cold spots that show up at half of that wavelength. Microzap's microwave chamber, on the other hand, works differently, and much better. CEO Don Stull explains:</p><div>For the latest tech stories, follow DVICE on Twitter at @dvice or find us on Facebook</div></div></div></p><p><a href='https://dvice.com/archives/2012/11/giant-microwave.php' target='_blank'>Read more</a></p></div>"
 	);
-	//could put this in self-executing function
+	//could put this in self-executing function?
 	startSize = $(window).width();
 	$(window).on('resize load', function(){//adjust elements for different screen sizes
 		//alert(window.devicePixelRatio);
@@ -59,12 +59,11 @@ $(document).ready(function(){
 	//console.log('colorbar: '+ $('.colorbar').height());
 	//console.log('queue: ' + $('#header-container').height());
 
-	$('#topArticle').html(articles[5]);
+	//$('#topArticle').html(articles[5]);
 	var dragged = false;
 	$('#queue').on('click','div', function(){//switch top article content with queued content
 		//duplicate = true;
 		var closestLeft = $(this).next().attr('id');//article to the left of the clicked one
-		console.log($('.szld:last').attr('id'));
 		$(this).remove();
 		//if leftmost one clicked
 		if(closestLeft == undefined){
@@ -77,11 +76,13 @@ $(document).ready(function(){
 						//console.log('true');
 						$(this).animate({'top': 8 + (szldItem/2) + '%'}, {duration:  300, queue: false});
 						$('.szld:last').css('top', '10%');
+			
 					}
 					if ($('.szld').length == 1){
 						$('.szld').css('top', '10%');
 					}
 					});
+
 				}});
 			});
 		} else {
@@ -111,6 +112,9 @@ $(document).ready(function(){
 		if (!isRunning){
 			isRunning = true;
 			var szld = $('#topArticle').contents().clone();
+			var thecontent = [];
+			thecontent.push(szld);
+			//var theIMG = $('#topArticle').find('img').clone();  // pull out just the img from article content
 			var artText = $('#topArticle').text();
 			$('#topArticle').animate({left: '+'+width+"px"},{queue: false,duration: 500, easing: 'swing', complete: function(){
 				$(this).remove();
@@ -134,12 +138,10 @@ $(document).ready(function(){
 				////console.log('add')//if not in queue, add it
 			$('#queue').scrollLeft(0);
 				$('#queue div').each(function(){
-
 					$(this).animate({left: parseInt($(this).css('left'), 10) + ($(window).width() * 0.10) + 'px'},{duration: 500});
 				});
 				var newDiv = document.createElement('div');
-
-				$('#queue').append($(newDiv).attr('id', 'newSzl' + szlCount).css({
+				$('#queue').append($(newDiv).attr('id', 'newSzl' + szlCount).css({  //use szlcount number as position in array to pull text from
 					'position':'absolute', 'width':'20%', 'height': '90%',
 					'background':'white',
 					'border': '1px solid #FF4D4D',
@@ -150,21 +152,16 @@ $(document).ready(function(){
 				}).addClass('szld').css('overflow','hidden').append(szld).scrollLeft(0));
 				console.log('last in queue: ' + $('.szld:last').attr('id'));
 				$('.szld:last').prevAll().each(function(index){
-					$(this).css({'z-index' : $(this).next().css('z-index') - 1});
-					$(this).css({'box-shadow': '0 0 .8em black', 'border':'none'});
-					$(this).css('top', parseInt($(this).next().css('top'), 10) + (parseInt($('#queue').css('height'), 10) * 0.05) + 'px');
-				}).andSelf().css('z-index', $(this).prev().css('index') + 1);
-
-				/*if (dragged) {
-				$('#queue').animate({
-					left: 0
-				}, 500).find('div').css({'box-shadow':'0 0 .8em black', 'z-index':'100'}).end()
-					.find('.szld').each(function(){
-						$(this).css('z-index', $(this).prev().css('z-index') + 1);
-					});
-				}*/
+					$(this).css({'z-index' : $(this).next().css('z-index') - 1,
+					'box-shadow': '0 0 .8em black', 'border':'none',
+					//'top': parseInt($(this).next().css('top'), 10) + (parseInt($('#queue').css('height'), 10) * 0.05) + 'px'});
+					//'top': parseInt($(this).next().css('top'), 10) + (($(this).position().top + szldItem)/5) + 'px'}); //drop gets larger
+					//'top': parseInt($(this).next().css('top'), 10) + (index * -2) + 20 + 'px'}); // drop gets smaller
+					'top': $(this).css('top') !== $(this).next().css('top') ? $(this).css('top', parseInt($(this).next().css('top'), 1000000) + 0.5 + 'px') : ( parseInt($(this).next().css('top'), 10) + Math.round(Math.abs( (index * -1) + (parseInt($('#queue').css('height'), 10) * 0.08) )) )/ parseInt($('#queue').css('height'), 10) * 100 + '%'}); // drop gets smaller
+					console.log($(this).css('top'));
+				
+				});
 				$('#queue, footer').scrollLeft(0);
-				//$('#queue').animate({left: 0}, 500).find('div').css({'box-shadow':'0 0 .8em black', 'border':'none'});
 				szlCount += 1;
 			}
 		}
@@ -359,6 +356,7 @@ $(document).ready(function(){
 				} else if (szldItem > 0) {
 					//console.log('> 38: ' + $(this).offset().left / $(window).width() * 100);
 					$(this).css({'top': 8 + (szldItem/2) + '%'});
+					//$(this).css('width', $(this).width() - $(this).position().top  + 'px');
 				}
 
 				//set border shadow for central item
@@ -383,8 +381,7 @@ $(document).ready(function(){
 				//////
 			});
 
-			//console.log(ui.containment);
-			//console.log(e.pageX);
+			
 				/*if(prevX == -1) {
 					prevX = e.pageX;
 					//return false;
@@ -392,13 +389,17 @@ $(document).ready(function(){
 				// dragged left
 				if(prevX > e.pageX) {
 					//console.log('dragged left');
-
+					$('.szld').each(function() {
+						$(this).width($(this).width() - 1);
+					});
 				}
 				
 				else if(prevX < e.pageX) { // dragged right
-					
+					$('.szld').each(function() {
+						$(this).width($(this).width() + 1);
+					});
 					//console.log('dragged right');
-					console.log($('.szld:last').offset().left)
+					/*console.log($('.szld:last').offset().left)
 					if ($('.szld:last').offset().left > 0){
 						console.log('go')
 						//ui.containment = 'parent';
@@ -411,12 +412,6 @@ $(document).ready(function(){
 						w2 = $container.width();
 						//console.log([ui.position.left, w1, w2].join(' : '));
 						ui.position.left = Math.max(Math.min(ui.position.left, w2 - w1), 0);
-
-
-
-
-
-
 					}
 				}
 				prevX = e.pageX;*/
@@ -435,31 +430,25 @@ $(document).ready(function(){
 						$(this).css({'z-index' : $(this).closest().css('z-index') - 1});
 					});
 					$('.szld:last').prevAll().each(function(){
-					$(this).css({'z-index' : $(this).next().css('z-index') - 1});
+						$(this).css({'z-index' : $(this).next().css('z-index') - 1});
 					});
 				}});
-				$('.szld').css({'box-shadow':'0 0 1em black','border': 'none'})
+				$('.szld').css({'box-shadow':'0 0 1em black','border': 'none'});
 				$('.szld:last').css({'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'});
 			}
-			console.log('stopped')
-			//console.log(dragged);
 		}
 	});
-
 
 	$('#stream').click(function(e){
 		e.stopPropagation();
 		if (!isRunning){
 			if (e.pageX < $(document).width() * 0.10){//within 10% of left edge
-				//console.log('fzl');
 				fzl();
 			} else if (e.pageX > $(document).width() - ($(document).width() * 0.10)){//right edge
-				//console.log('szl');
 				szl();
 			}
 		}
 	});
-
 	/////
 	var sidevalue = 0.15,
 		arrows = true;
