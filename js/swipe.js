@@ -91,7 +91,7 @@ $(document).ready(function(){
 					$('.szld').each(function() {
 						var szldItem = $(this).offset().left / $(window).width() * 100;
 						if (szldItem > 5){
-							console.log('true');
+							//console.log('true');
 							$(this).animate({'top': 8 + (szldItem/2) + '%'}, {duration:  300, queue: false});
 						}
 					});
@@ -158,7 +158,7 @@ $(document).ready(function(){
 					//'top': parseInt($(this).next().css('top'), 10) + (($(this).position().top + szldItem)/5) + 'px'}); //drop gets larger
 					//'top': parseInt($(this).next().css('top'), 10) + (index * -2) + 20 + 'px'}); // drop gets smaller
 					//'top': Math.round(parseInt($(this).next().css('top'), 10) + Math.abs( (index * -1) + ($(window).width() - $(this).offset().left) / 80 ) / 100) + '%'//drop gets larger as %
-					'top': (parseInt($(this).next().css('top'), 10) / $('#queue').height()) * 100  +  parseInt($('.szld:last').css('top'), 10) * 2 + 'px'
+					'top': (parseInt($(this).next().css('top'), 10) / $('#queue').height()) * 80  +  Math.round(parseInt($('.szld:last').css('top'), 10) * 2) + '%'
 					//'top': ( parseInt($(this).next().css('top'), 10) + Math.round(Math.abs( (index * -1) + (parseInt($('#queue').css('height'), 10) * 0.08) )) )/ parseInt($('#queue').css('height'), 10) * 100 + '%'}); // drop gets smaller
 					});
 					console.log((parseInt($(this).next().css('top'), 10) / $('#queue').height()) * 100  +  parseInt($('.szld:last').css('top'), 10) + 'px');
