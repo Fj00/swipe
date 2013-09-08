@@ -62,7 +62,6 @@ $(document).ready(function(){
 	//$('#topArticle').html(articles[5]);
 	var dragged = false;
 	$('#queue').on('click','div', function(){//switch top article content with queued content
-		//duplicate = true;
 		var closestLeft = $(this).next().attr('id');//article to the left of the clicked one
 		$(this).remove();
 		//if leftmost one clicked
@@ -73,7 +72,6 @@ $(document).ready(function(){
 					$('.szld').each(function(){
 					var szldItem = $(this).offset().left / $(window).width() * 100;
 					if (szldItem > 0){
-						//console.log('true');
 						$(this).animate({'top': 8 + (szldItem/2) + '%'}, {duration:  300, queue: false});
 						$('.szld:last').css('top', '10%');
 			
@@ -91,7 +89,6 @@ $(document).ready(function(){
 					$('.szld').each(function() {
 						var szldItem = $(this).offset().left / $(window).width() * 100;
 						if (szldItem > 5){
-							//console.log('true');
 							$(this).animate({'top': 8 + (szldItem/2) + '%'}, {duration:  300, queue: false});
 						}
 					});
@@ -101,14 +98,11 @@ $(document).ready(function(){
 		$('#queue div').removeClass('rerate');
 		$(this).addClass('rerate');
 		var contCopy = $(this).contents().clone();
-		//$('#holder').append(contCopy);
 		$('#middleArticle').addClass('requeue').empty().append($('#topArticle').contents());
 		$('#topArticle').addClass('rerate').empty().append(contCopy);
-		//$('#holder').empty();
 	});
 
 	szl = function(e){
-		//console.log(duplicate);
 		if (!isRunning){
 			isRunning = true;
 			var szld = $('#topArticle').contents().clone();
@@ -125,13 +119,6 @@ $(document).ready(function(){
 				}
 			}).css({'box-shadow': '0 0 .5em red'});
 			createArticle();
-			/*$('#queue .szld').each(function(){//loop through szld list
-				if ($(this).text() == artText) {//compare text inside topArticle and queue div
-					//////console.log('match');
-					duplicate = true;
-				}
-			});*/
-
 			if (duplicate){//if article already in queue, don't add it
 				duplicate = false;//next article will be different, so this allows the else block to run
 			} else {
@@ -142,7 +129,7 @@ $(document).ready(function(){
 				});
 				var newDiv = document.createElement('div');
 				$('#queue').append($(newDiv).attr('id', 'newSzl' + szlCount).css({  //use szlcount number as position in array to pull text from
-					'position':'absolute', 'width':'20%', 'height': '90%',
+					'position':'absolute', 'width': width * 0.2 + 'px', 'height': '90%',
 					'background':'white',
 					'border': '1px solid #FF4D4D',
 					'box-shadow':'0 0 1em #FF4D4D',
@@ -150,15 +137,19 @@ $(document).ready(function(){
 					'top':'10%',
 					'left': 0
 				}).addClass('szld').css('overflow','hidden').append(szld).scrollLeft(0));
+				$('#queue').css('width', $('#queue').width() + $('.szld').width() + 'px');
 				console.log('last in queue: ' + $('.szld:last').attr('id'));
+				console.log($('#queue').width());
 				$('.szld:last').prevAll().each(function(index){
 					$(this).css({'z-index' : $(this).next().css('z-index') - 1,
 					'box-shadow': '0 0 .8em black', 'border':'none',
+					//old one
 					//'top': parseInt($(this).next().css('top'), 10) + (parseInt($('#queue').css('height'), 10) * 0.05) + 'px'});
+					
 					//'top': parseInt($(this).next().css('top'), 10) + (($(this).position().top + szldItem)/5) + 'px'}); //drop gets larger
 					//'top': parseInt($(this).next().css('top'), 10) + (index * -2) + 20 + 'px'}); // drop gets smaller
 					//'top': Math.round(parseInt($(this).next().css('top'), 10) + Math.abs( (index * -1) + ($(window).width() - $(this).offset().left) / 80 ) / 100) + '%'//drop gets larger as %
-					'top': (parseInt($(this).next().css('top'), 10) / $('#queue').height()) * 80  +  Math.round(parseInt($('.szld:last').css('top'), 10) * 2) + '%'
+					'top': (parseInt($(this).next().css('top'), 10) / $('#queue').height()) * 75  +  Math.round(parseInt($('.szld:last').css('top'), 10) * 2) + '%'
 					//'top': ( parseInt($(this).next().css('top'), 10) + Math.round(Math.abs( (index * -1) + (parseInt($('#queue').css('height'), 10) * 0.08) )) )/ parseInt($('#queue').css('height'), 10) * 100 + '%'}); // drop gets smaller
 					});
 					console.log((parseInt($(this).next().css('top'), 10) / $('#queue').height()) * 100  +  parseInt($('.szld:last').css('top'), 10) + 'px');
@@ -193,26 +184,12 @@ $(document).ready(function(){
 		}
 	};
 
-	//share menu
-	$('#shareText').click(function(){
-		////console.log($('#shareMenu').css("height"));
-		if (parseInt($('#shareMenu').css('height'), 10) > 0){
-			$('#shareMenu').animate({height: 0},500);
-		}
-		else {
-			$('#shareMenu').css("left", ($(window).width() - parseInt($('#shareMenu').css('width'), 10) + 'px'));
-			$('#shareMenu').animate({height: '938px'}, 500);
-		}
-	});
-
 	createArticle = function(){
-		var newCont = $("<div id='bottomArticle'></div");//.attr('id', 'bottomArticle');//container for next article
+		var newCont = $("<div id='bottomArticle'></div");//container for next article
 		var contents = $("<div class='articleContent'></div>");
 		$('#stream').append(newCont);
-		//$('#bottomArticle').addClass('article').html(articles[index]).css('margin-left', artPos);
 		if ($('#middleArticle').hasClass('requeue')){
 			if(index === 0){
-				//console.log('its 0');
 				$('#bottomArticle').addClass('article').html(articles[index + 5]).css('margin-left', artPos);
 			} else {
 				$('#bottomArticle').addClass('article').html(articles[index-1]).css('margin-left', artPos);
@@ -225,13 +202,8 @@ $(document).ready(function(){
 		if (index > 5){ index = 0;}
 	};
 
-	//var initial = parseInt($('#topArticle').css('left'));
-	//var firstDrag = true;
 	var newArticle = {
 		axis: 'x',
-		//start: function(ui, event){},
-		//drag: function(ui,event){},
-		//stop: function(ui, event){}
 	};
 	$('.article').draggable(newArticle);
 
@@ -301,8 +273,18 @@ $(document).ready(function(){
 	}).on('mouseleave', 'div', function(event){
 		//$(this).css('z-index', orig);//.css('transform','rotateY(-45deg)')
 	});
+	//share menu
+	$('#shareText').click(function(){
+		////console.log($('#shareMenu').css("height"));
+		if (parseInt($('#shareMenu').css('height'), 10) > 0){
+			$('#shareMenu').animate({height: 0},500);
+		}
+		else {
+			$('#shareMenu').css("left", ($(window).width() - parseInt($('#shareMenu').css('width'), 10) + 'px'));
+			$('#shareMenu').animate({height: '938px'}, 500);
+		}
+	});
 
-	var zCount = {left: 1000, right: 1000};
 	var orig;
 	var prevX = -1;
 	$('#queue').draggable({
@@ -310,14 +292,10 @@ $(document).ready(function(){
 		scroll: false,
 		start: function(ui, e){
 			dragged = true;
-			console.log('dragged');
-			ui.containment = false;
+				
 		},
 
 		drag: function(e, ui){
-			/*if ($('.szld:last').offset().left > $(window).width() - ($(window).width() * .10)){
-			//return false;
-			}*/
 			$('.szld').each(function(){
 				//article with focus in center
 				var szldItem = $(this).offset().left / $(window).width() * 100;
@@ -351,20 +329,45 @@ $(document).ready(function(){
 				}*/
 
 				//////article with focus on left
-
+				/*var firstPos = $('.szld').filter(function() {
+				    return $(this).offset().left == 0;
+				});*/
+				//console.log($(firstPos).attr('id'));
+				
 				if (szldItem < 0) {
-					//console.log('< 38');
-					$(this).css({//adjust z-index for elements left of center & set top
-						"z-index": $(this).prev().css("z-index") - 1, "top": 8 - (szldItem/2) + '%'});//.css('width', 60 - szldItem + '%');
-				} else if (szldItem > 0) {
-					//console.log('> 38: ' + $(this).offset().left / $(window).width() * 100);
-					$(this).css({'top': 8 + (szldItem/2) + '%'});
-					//$(this).css('width', $(this).width() - $(this).position().top  + 'px');
+					/*var nextTop1 = parseInt($(this).prev().css('top'), 10) / $('#queue').height() * 100;
+					var thisTop1 =parseInt($(this).css('top'), 10) / $('#queue').height() * 100;
+					var nextLeft1 = parseInt($(this).prev().css('left'), 10) / $(window).width() * 100;
+					var thisLeft1 = parseInt($(this).css('left'), 10) / $(window).width() * 100;
+					var theirTopDiff1 = nextTop1 - thisTop1;
+					var theirLeftDiff1 = nextLeft1 - thisLeft1;
+					console.log(index + ': ' + theirTopDiff1 / theirLeftDiff1);
+					//$(this).css({"z-index": $(this).prev().css("z-index") - 1, "top": 8 - (szldItem/2) + '%'});
+					//adjust z-index for elements left of center & set top
+					$(this).css({
+						"top": thisTop1 - ((theirTopDiff1/10) / (theirLeftDiff1/10))/10 + '%',
+						"z-index": $(this).prev().css("z-index") - 1
+					});*/
+					//parseInt($(this).prev().css('top'), 10)/ $('#queue').height() + ($('#queue').height() * 0.2) + '%'//do something based on left position
+					
+				}
+				if (szldItem > 0) {
+					var nextTop = parseInt($(this).next().css('top'), 10) / $('#queue').height() * 100;
+					var thisTop = parseInt($(this).css('top'), 10) / $('#queue').height() * 100;
+					var nextLeft = parseInt($(this).next().css('left'), 10) / $(window).width() * 100;
+					var thisLeft = parseInt($(this).css('left'), 10) / $(window).width() * 100;
+					var theirTopDiff = thisTop - nextTop;
+					var theirLeftDiff = thisLeft - nextLeft;
+					console.log(index + ': ' + theirTopDiff / theirLeftDiff);
+					$(this).css({'top': thisTop - ((theirTopDiff/10) / (theirLeftDiff/10))/10 + '%'});
+					//as drag left, 'this' should go up by the difference in top position divided by difference in left position?
+					//console.log('% top of next: ' + parseInt($(this).next().css('top'), 10) / $('#queue').height() + '%');
+					//$(this).css({'top': 8 + (szldItem/2) + '%'});
+					//$(this).css({'top': ($(window).width() -  $(this).offset().left) /20 + (parseInt($(this).next().css('top'), 10) / $('#queue').height()) * 100 + '%' });
 				}
 
 				//set border shadow for central item
 				if (szldItem > -5 &&  szldItem < 5) {
-					//console.log('38-48: ' + $(this).offset().left / $(window).width() * 100);
 					$(this).css({
 						'z-index': '200000',
 						'box-shadow':'0 0 1em #FF4D4D',
@@ -372,16 +375,13 @@ $(document).ready(function(){
 					});
 					$(this).nextAll().css({'border':'none', 'box-shadow':'0 0 .8em black'});
 					$(this).prevAll().css({'border':'none', 'box-shadow':'0 0 .8em black'});
-					//console.log($(this).closest());
 				}
 
 				//set shadow for peripheral items
 				if (szldItem > 8 && szldItem < 15) {
-					//console.log('48-55');
+			
 					$(this).css({'z-index' : $(this).closest().css('z-index') - 1});
-					//zCount.right = zCount.right + 1;
 				}
-				//////
 			});
 
 			
