@@ -11,7 +11,8 @@ $(document).ready(function(){
 		artPos,
 		artLeft,
 		duplicate,
-		isRunning = false;
+		isRunning = false,
+		dragged = false;
 	articles.push(
 		"<p class='articleText'><b>article1 article1 article1 </b>article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1</p>",
 		"<p class='articleText'>article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 <i>article#2 article#2 article#2 article#2 article#2  article#2 </i>article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2</p>",
@@ -60,47 +61,10 @@ $(document).ready(function(){
 	//console.log('queue: ' + $('#header-container').height());
 
 	//$('#topArticle').html(articles[5]);
-	var dragged = false;
-	$('#queue').on('click','div', function(){//switch top article content with queued content
-		var closestLeft = $(this).next().attr('id');//article to the left of the clicked one
-		$(this).remove();
-		//if leftmost one clicked
-		if(closestLeft == undefined){
-			console.log('true');
-			$('.szld').each(function() {
-				$(this).animate({left: parseInt($(this).css('left'), 10) - ($(window).width() * 0.10) + 'px'},{duration: 300, complete: function(){
-					$('.szld').each(function(){
-					var szldItem = $(this).offset().left / $(window).width() * 100;
-					if (szldItem > 0){
-						$(this).animate({'top': 8 + (szldItem/2) + '%'}, {duration:  300, queue: false});
-						$('.szld:last').css('top', '10%');
-			
-					}
-					if ($('.szld').length == 1){
-						$('.szld').css('top', '10%');
-					}
-					});
 
-				}});
-			});
-		} else {
-			$('#' + closestLeft).prevAll().each(function(){
-				$(this).animate({left: parseInt($(this).css('left'), 10) - ($(window).width() * 0.10) + 'px'},{duration: 300, complete: function(){
-					$('.szld').each(function() {
-						var szldItem = $(this).offset().left / $(window).width() * 100;
-						if (szldItem > 5){
-							$(this).animate({'top': 8 + (szldItem/2) + '%'}, {duration:  300, queue: false});
-						}
-					});
-				}});
-			});
-		}
-		$('#queue div').removeClass('rerate');
-		$(this).addClass('rerate');
-		var contCopy = $(this).contents().clone();
-		$('#middleArticle').addClass('requeue').empty().append($('#topArticle').contents());
-		$('#topArticle').addClass('rerate').empty().append(contCopy);
-	});
+	adjustTop = function(offset){
+		return 100 * (1.0-Math.min(1.0,(0.75 + ( 0.25/ (Math.exp(0.008*offset))) )) ) + '%';
+	};
 
 	szl = function(e){
 		if (!isRunning){
@@ -123,10 +87,11 @@ $(document).ready(function(){
 				duplicate = false;//next article will be different, so this allows the else block to run
 			} else {
 				////console.log('add')//if not in queue, add it
-			$('#queue').scrollLeft(0);
-				$('#queue div').each(function(){
+				$('.szld').each(function(){
+					//put it here
 					$(this).animate({left: parseInt($(this).css('left'), 10) + ($(window).width() * 0.10) + 'px'},{duration: 500});
 				});
+
 				var newDiv = document.createElement('div');
 				$('#queue').append($(newDiv).attr('id', 'newSzl' + szlCount).css({  //use szlcount number as position in array to pull text from
 					'position':'absolute', 'width': width * 0.2 + 'px', 'height': '90%',
@@ -134,28 +99,24 @@ $(document).ready(function(){
 					'border': '1px solid #FF4D4D',
 					'box-shadow':'0 0 1em #FF4D4D',
 					'z-index': szlCount + 1,
-					'top':'10%',
+					'top': '1px',
 					'left': 0
-				}).addClass('szld').css('overflow','hidden').append(szld).scrollLeft(0));
-				$('#queue').css('width', $('#queue').width() + $('.szld').width() + 'px');
+				}).addClass('szld').css('overflow','hidden').append(szld));
+
+				$('#queue').animate({'left': 0, 'width': $('#queue').width() + $('.szld').width() + 'px'},{duration: 300, 
+					step: function(){
+						$('.szld').each(function(){
+							//console.log($(this).css('left') + ' ,' + $(this).offset().left);
+							$(this).css('top', adjustTop($(this).offset().left) );
+						});
+					}
+				});
 				//console.log('last in queue: ' + $('.szld:last').attr('id'));
 				//console.log($('#queue').width());
 				$('.szld:last').prevAll().each(function(index){
 					$(this).css({'z-index' : $(this).next().css('z-index') - 1,
-					'box-shadow': '0 0 .8em black', 'border':'none',
-					//old one
-					//'top': parseInt($(this).next().css('top'), 10) + (parseInt($('#queue').css('height'), 10) * 0.05) + 'px'});
-					
-					//'top': parseInt($(this).next().css('top'), 10) + (($(this).position().top + szldItem)/5) + 'px'}); //drop gets larger
-					//'top': parseInt($(this).next().css('top'), 10) + (index * -2) + 20 + 'px'}); // drop gets smaller
-					//'top': Math.round(parseInt($(this).next().css('top'), 10) + Math.abs( (index * -1) + ($(window).width() - $(this).offset().left) / 80 ) / 100) + '%'//drop gets larger as %
-					'top': (parseInt($(this).next().css('top'), 10) / $('#queue').height()) * 75  +  Math.round(parseInt($('.szld:last').css('top'), 10) * 2) + '%'
-					//'top': ( parseInt($(this).next().css('top'), 10) + Math.round(Math.abs( (index * -1) + (parseInt($('#queue').css('height'), 10) * 0.08) )) )/ parseInt($('#queue').css('height'), 10) * 100 + '%'}); // drop gets smaller
-					});
-					//console.log((parseInt($(this).next().css('top'), 10) / $('#queue').height()) * 100  +  parseInt($('.szld:last').css('top'), 10) + 'px');
-				
+					'box-shadow': '0 0 .8em black', 'border':'none'});				
 				});
-				$('#queue, footer').scrollLeft(0);
 				szlCount += 1;
 			}
 		}
@@ -285,16 +246,42 @@ $(document).ready(function(){
 		}
 	});
 
-	var orig;
-	var prevX = -1;
+	//var orig;
+	//var prevX = -1;
+
+	/*var x1, x2,
+        y1, y2,
+        t1, t2;  // Time
+
+    var minDistance = 40; // Minimum px distance object must be dragged to enable momentum.
+
+    var onMouseMove = function(e) {
+        var mouseEvents = $('#queue').data("mouseEvents");
+        if (e.timeStamp - mouseEvents[mouseEvents.length-1].timeStamp > 40) {
+            mouseEvents.push(e);
+            if (mouseEvents.length > 2) {
+                mouseEvents.shift();
+            }
+        }
+    }
+
+    var onMouseUp = function() {
+        $(document).unbind("mousemove mouseup");
+    }*/
+
+
 	$('#queue').draggable({
 		axis: "x",
 		scroll: false,
 		start: function(ui, e){
 			dragged = true;
 				$('.szld').each(function(){
-					console.log($(this).offset().left);
+					//console.log($(this).offset().left);
 				});
+				/*$('#queue').data("mouseEvents", [e]);
+            	$(document)
+                .mousemove(onMouseMove)
+                .mouseup(onMouseUp);*/
 		},
 
 		drag: function(e, ui){
@@ -337,38 +324,14 @@ $(document).ready(function(){
 				//console.log($(firstPos).attr('id'));
 				
 				if (szldItem < 0) {
-					/*var nextTop1 = parseInt($(this).prev().css('top'), 10) / $('#queue').height() * 100;
-					var thisTop1 =parseInt($(this).css('top'), 10) / $('#queue').height() * 100;
-					var nextLeft1 = parseInt($(this).prev().css('left'), 10) / $(window).width() * 100;
-					var thisLeft1 = parseInt($(this).css('left'), 10) / $(window).width() * 100;
-					var theirTopDiff1 = nextTop1 - thisTop1;
-					var theirLeftDiff1 = nextLeft1 - thisLeft1;
-					console.log(index + ': ' + theirTopDiff1 / theirLeftDiff1);
-					//$(this).css({"z-index": $(this).prev().css("z-index") - 1, "top": 8 - (szldItem/2) + '%'});
-					//adjust z-index for elements left of center & set top*/
 					$(this).css({
 						//"top": '10%',
 						"z-index": $(this).prev().css("z-index") - 1
-					});
-					//parseInt($(this).prev().css('top'), 10)/ $('#queue').height() + ($('#queue').height() * 0.2) + '%'//do something based on left position
-					
+					});					
 				}
 				if (szldItem > 0) {
-					/*var minTop = ($('#queue').height() * 0.10);
-					var nextTop = parseInt($(this).next().css('top'), 10) / $('#queue').height() * 100;
-					var thisTop = parseInt($(this).css('top'), 10) / $('#queue').height() * 100;
-					var nextLeft = parseInt($(this).next().css('left'), 10) / $(window).width() * 100;
-					var thisLeft = parseInt($(this).css('left'), 10) / $(window).width() * 100;
-					var theirTopDiff = thisTop - nextTop;
-					var theirLeftDiff = thisLeft - nextLeft;*/
-					//console.log(index + ': ' + theirTopDiff / theirLeftDiff);
-					//console.log($(this).offset().left);
-					$(this).css({'top': 100 * (1.0-Math.min(1.0,(0.75 + ( 0.25/ (Math.exp(0.008*$(this).offset().left))) )) ) + '%'});
-					//this.top - (difference between this.top and 10% of queue height) / this left offset ?
-					//as drag left, 'this' should go up by the difference in top position divided by difference in left position?
-					//console.log('% top of next: ' + parseInt($(this).next().css('top'), 10) / $('#queue').height() + '%');
-					//$(this).css({'top': 8 + (szldItem/2) + '%'});
-					//$(this).css({'top': ($(window).width() -  $(this).offset().left) /20 + (parseInt($(this).next().css('top'), 10) / $('#queue').height()) * 100 + '%' });
+					$(this).css({ 'top': adjustTop($(this).offset().left) });
+					//$(this).css({ 'height': $(this).height() - $(this).position().top + 'px'})
 				}
 
 				//set border shadow for central item
@@ -389,7 +352,10 @@ $(document).ready(function(){
 				}
 			});
 
-			
+				leftofZero = $(".szld").filter(function() {return ($(this).offset().left > 0 && $(this).offset().left < 5);});
+				$(leftofZero).each(function(){
+					console.log($(this).attr('id'));
+				});
 				/*if(prevX == -1) {
 					prevX = e.pageX;
 					//return false;
@@ -425,16 +391,17 @@ $(document).ready(function(){
 				prevX = e.pageX;*/
 			},
 
-		stop: function(event){
+		stop: function(e, ui){
+
 			//http://stackoverflow.com/questions/3486760/how-to-avoid-jquery-ui-draggable-from-also-triggering-click-event/13973319#13973319
-			$(event.toElement ).one('click', function(e){
+			$(e.toElement ).one('click', function(e){
 				e.stopImmediatePropagation();
 			});
 			if ($('.szld:last').offset().left > 0 || $('.szld:first').offset().left < 0){
-				$('#queue').animate({left: 0}, {duration: 300, queue: false, complete: function(){
+				$('#queue').animate({left: 0}, {duration: (Math.abs($('.szld:last').offset().left) > 100 ? Math.abs($('.szld:last').offset().left) : 200), step: function(){
 					$('.szld').each(function(){
 						var szldItem = $(this).offset().left / $(window).width() * 100;
-						$(this).animate({ top: 8 + (szldItem/2) + '%'}, {duration: 300, queue: false});
+						$(this).animate({ top: adjustTop($(this).offset().left) }, {duration: 300, queue: false});
 						$(this).css({'z-index' : $(this).closest().css('z-index') - 1});
 					});
 					$('.szld:last').prevAll().each(function(){
@@ -444,7 +411,85 @@ $(document).ready(function(){
 				$('.szld').css({'box-shadow':'0 0 1em black','border': 'none'});
 				$('.szld:last').css({'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'});
 			}
+
+			/*$('#queue').stop();
+            $('#queue').css("text-indent", 100);
+
+            var lastE = $('#queue').data("mouseEvents").shift();
+
+            x1 = lastE.pageX;
+            y1 = lastE.pageY;
+            t1 = lastE.timeStamp;
+            x2 = e.pageX;
+            y2 = e.pageY;
+            t2 = e.timeStamp;
+
+            // Deltas
+            var dX = x2 - x1,
+                dY = y2 - y1,
+                dMs = Math.max(t2 - t1, 1);
+
+            // Speeds
+            var speedX = Math.max(Math.min(dX/dMs, 1), -1),
+                speedY = Math.max(Math.min(dY/dMs, 1), -1);
+
+            // Distance moved (Euclidean distance)
+            var distance = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+
+            if (distance > minDistance) {
+                // Momentum
+                var lastStepTime = new Date();
+                $d.animate({ textIndent: 0 }, {
+                    duration: Math.max(Math.abs(speedX), Math.abs(speedY)) * 2000,
+                    step: function(currentStep){
+                        speedX *= (currentStep / 100);
+                        speedY *= (currentStep / 100);
+
+                        var now = new Date();
+                        var stepDuration = now.getTime() - lastStepTime.getTime();
+
+                        lastStepTime = now;
+
+                        var position = $d.position();
+
+                        var newLeft = (position.left + (speedX * stepDuration / 4)),
+                            newTop = (position.top + (speedY * stepDuration / 4));
+
+                        $('#queue').css({
+                            left: newLeft+"px",
+                            //top: newTop+"px"
+                        });
+                    }
+                });
+            }*/
 		}
+	});
+	/*$('#queue').overscroll();
+	$('footer').scroll(function(){
+		console.log($('.szld:last').offset().left);
+		$('.szld').each(function() {
+
+			if ($(this).offset().left > 0) {
+			$(this).css({ 'top': adjustTop($(this).offset().left) });
+			//$(this).css({ 'height': $(this).height() - $(this).position().top + 'px'})
+			}
+		});
+		
+	});*/
+
+	$('#queue').on('click','div', function(){//switch top article content with queued content
+		var clicked = $(this).attr('id');//clicked one
+
+		$('#queue').css('left', $('#queue').offset().left - $('#' + clicked).offset().left + 'px');
+		$('#' + clicked).css('z-index', $(this).next().css('z-index') + 1);
+		$('.szld').each(function(){
+			$(this).css('top', adjustTop($(this).offset().left) );
+		});
+		$('#queue div').removeClass('rerate');
+		$(this).addClass('rerate');
+		var contCopy = $(this).contents().clone();
+		$('#middleArticle').addClass('requeue').empty().append($('#topArticle').contents());
+		$('#topArticle').addClass('rerate').empty().append(contCopy);
 	});
 
 	$('#stream').click(function(e){
