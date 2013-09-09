@@ -138,8 +138,8 @@ $(document).ready(function(){
 					'left': 0
 				}).addClass('szld').css('overflow','hidden').append(szld).scrollLeft(0));
 				$('#queue').css('width', $('#queue').width() + $('.szld').width() + 'px');
-				console.log('last in queue: ' + $('.szld:last').attr('id'));
-				console.log($('#queue').width());
+				//console.log('last in queue: ' + $('.szld:last').attr('id'));
+				//console.log($('#queue').width());
 				$('.szld:last').prevAll().each(function(index){
 					$(this).css({'z-index' : $(this).next().css('z-index') - 1,
 					'box-shadow': '0 0 .8em black', 'border':'none',
@@ -152,7 +152,7 @@ $(document).ready(function(){
 					'top': (parseInt($(this).next().css('top'), 10) / $('#queue').height()) * 75  +  Math.round(parseInt($('.szld:last').css('top'), 10) * 2) + '%'
 					//'top': ( parseInt($(this).next().css('top'), 10) + Math.round(Math.abs( (index * -1) + (parseInt($('#queue').css('height'), 10) * 0.08) )) )/ parseInt($('#queue').css('height'), 10) * 100 + '%'}); // drop gets smaller
 					});
-					console.log((parseInt($(this).next().css('top'), 10) / $('#queue').height()) * 100  +  parseInt($('.szld:last').css('top'), 10) + 'px');
+					//console.log((parseInt($(this).next().css('top'), 10) / $('#queue').height()) * 100  +  parseInt($('.szld:last').css('top'), 10) + 'px');
 				
 				});
 				$('#queue, footer').scrollLeft(0);
@@ -292,7 +292,9 @@ $(document).ready(function(){
 		scroll: false,
 		start: function(ui, e){
 			dragged = true;
-				
+				$('.szld').each(function(){
+					console.log($(this).offset().left);
+				});
 		},
 
 		drag: function(e, ui){
@@ -343,23 +345,26 @@ $(document).ready(function(){
 					var theirLeftDiff1 = nextLeft1 - thisLeft1;
 					console.log(index + ': ' + theirTopDiff1 / theirLeftDiff1);
 					//$(this).css({"z-index": $(this).prev().css("z-index") - 1, "top": 8 - (szldItem/2) + '%'});
-					//adjust z-index for elements left of center & set top
+					//adjust z-index for elements left of center & set top*/
 					$(this).css({
-						"top": thisTop1 - ((theirTopDiff1/10) / (theirLeftDiff1/10))/10 + '%',
+						//"top": '10%',
 						"z-index": $(this).prev().css("z-index") - 1
-					});*/
+					});
 					//parseInt($(this).prev().css('top'), 10)/ $('#queue').height() + ($('#queue').height() * 0.2) + '%'//do something based on left position
 					
 				}
 				if (szldItem > 0) {
+					/*var minTop = ($('#queue').height() * 0.10);
 					var nextTop = parseInt($(this).next().css('top'), 10) / $('#queue').height() * 100;
 					var thisTop = parseInt($(this).css('top'), 10) / $('#queue').height() * 100;
 					var nextLeft = parseInt($(this).next().css('left'), 10) / $(window).width() * 100;
 					var thisLeft = parseInt($(this).css('left'), 10) / $(window).width() * 100;
 					var theirTopDiff = thisTop - nextTop;
-					var theirLeftDiff = thisLeft - nextLeft;
-					console.log(index + ': ' + theirTopDiff / theirLeftDiff);
-					$(this).css({'top': thisTop - ((theirTopDiff/10) / (theirLeftDiff/10))/10 + '%'});
+					var theirLeftDiff = thisLeft - nextLeft;*/
+					//console.log(index + ': ' + theirTopDiff / theirLeftDiff);
+					//console.log($(this).offset().left);
+					$(this).css({'top': 100 * (1.0-Math.min(1.0,(0.75 + ( 0.25/ (Math.exp(0.008*$(this).offset().left))) )) ) + '%'});
+					//this.top - (difference between this.top and 10% of queue height) / this left offset ?
 					//as drag left, 'this' should go up by the difference in top position divided by difference in left position?
 					//console.log('% top of next: ' + parseInt($(this).next().css('top'), 10) / $('#queue').height() + '%');
 					//$(this).css({'top': 8 + (szldItem/2) + '%'});
