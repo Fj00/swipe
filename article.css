@@ -50,7 +50,7 @@ footer {
 	-moz-user-select: -moz-none;
 	-ms-user-select: none;
 	user-select: none;
-	border: 1px solid white;
+	z-index: 1;
 }
 
 #logo {
@@ -257,47 +257,40 @@ span {
 	.colorbar {
 		height: 5%;
 		width: 100%;
-		overflow: hidden;
+		overflow: visible;
 		min-height: 40px;
-		background: -webkit-linear-gradient(270deg, #FFE6FF 0%, #A2BCD8 100%);
-		background: -moz-linear-gradient(top,  #FFE6FF,  #A2BCD8);
+		background-image: linear-gradient(180deg, #FFFFFF 0%, #B3BCBC 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, white), color-stop(100%, #B3BCBC)); /* Safari 4+, Chrome 2+ */  
+		background: -webkit-linear-gradient(white, #B3BCBC);
 	}
 
 	#username {
-		position: absolute;
-		text-align: left;
-		margin-top: .5em;
-	}
-	#username p {
-		position: relative;
-		color: black;
-		font-style: Helvetica;
-	}
+	position: absolute;
+	text-align: left;
+	margin-top: 0;
+	padding-top: .25%;
+	font-size: 1em;
+	color: black;
+}
 
-	#username a {
-		color: #AF2F4E;
-	}
-
-	#share {
-		position: absolute;
-		z-index: 5;
-		color: black;
-		font-style: Lucida;
-		text-align: right;
-		margin-top: .5em;
-	}
-	#share p {
-		position: relative;
-		margin-right: 5%;/*adjust share work l or r*/
-		color: black;
-	}
+#share {
+	position: absolute;
+	text-align: right;
+	margin: 0;
+	width: 100%;
+	font-size: 1em;
+	/*adjust share work l or r*/
+	padding-top: .25%;
+	color: black;
+	z-index: 5;
+}
 	#shareMenu{
-		position: relative;
-		/*top: -10px;adjust up & down*/
-		margin-left: -5%;/*adjust menu left & right*/
-		width: 128px;
-		height: 0;
-		overflow:hidden;
+	position: relative;
+	top: 3%;/*adjust up & down*/
+	/*adjust menu left & right*/
+	width: 128px;
+	height: 0;
+	overflow:hidden;
 	}
 	#shareMenu a {
 	}

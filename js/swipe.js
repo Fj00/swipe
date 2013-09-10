@@ -1,3 +1,4 @@
+
 document.write('<style type="text/css">body{display:none}</style>');//hide content while jquery sets some css
 $(document).ready(function(){
 	var index = 0,
@@ -13,7 +14,7 @@ $(document).ready(function(){
 		duplicate,
 		isRunning = false,
 		dragged = false,
-		startHeight = 95,
+		startHeight = 85,
 		$article = $('#stream div.article'),
 		$szlQueue = $('#queue'),
 		$topArticle = $('#topArticle'),
@@ -73,7 +74,7 @@ $(document).ready(function(){
 	//$('#topArticle').html(articles[5]);
 
 	adjustTop = function(offset){
-		return 100 * (1.0-Math.min(0.98,(0.80 + ( 0.20/ (Math.exp(0.004*offset))) )) ) + '%';
+		return 100 * (1.0-Math.min(0.98,(0.75 + ( 0.25/ (Math.exp(0.003*offset))) )) ) + '%';
 	};
 
 	szl = function(e){
@@ -100,13 +101,16 @@ $(document).ready(function(){
 				////console.log('add')//if not in queue, add it
 				if (szlCount > 0){
 					$queueItems.each(function(){
-						$(this).animate({left: parseInt($(this).css('left'), 10) + ($(window).width() * 0.15) + 'px'},{duration: 500});
+						$(this).animate({left: parseInt($(this).css('left'), 10) + ($(window).width() * 0.18) + 'px'},{duration: 500, complete:function(){
+							console.log($('.szld:first').offset().left);
+							borg.containment = [-1 * ($('.szld:first').offset().left + $(window).width() * .18), 0, $(window).width()/2, 0];
+						}});
 					});
 				}
 
 				var newDiv = document.createElement('div');
 				$szlQueue.append($(newDiv).attr('id', 'newSzl' + szlCount).css({  //use szlcount number as position in array to pull text from
-					'position':'absolute', 'width': $(window).width() * 0.20, 'height': '90%',
+					'position':'absolute', 'width': $(window).width() * 0.20, 'height': '90%', 
 					'background':'white',
 					'border': '1px solid #FF4D4D',
 					'box-shadow':'0 0 1em #FF4D4D',
@@ -121,12 +125,13 @@ $(document).ready(function(){
 						$queueItems.each(function(){
 							//console.log($(this).css('left') + ' ,' + $(this).offset().left);
 							$(this).css({
-								'top': adjustTop($(this).offset().left) ,
-								'height': startHeight - ($(this).position().top) + '%'
+								'top': adjustTop($(this).offset().left),
+								'height': startHeight - ($(this).position().top)/2 + '%'
 							});
 						});
 					}
 				});
+				console.log($('.szld:first').offset().left)
 				//console.log('last in queue: ' + $('.szld:last').attr('id'));
 				//console.log($('#queue').width());
 				$lastSzld.prevAll().each(function(index){
@@ -134,7 +139,10 @@ $(document).ready(function(){
 					'box-shadow': '0 0 .8em black', 'border':'none'});
 				});
 				szlCount += 1;
-				//$szlQueue.css('width', $(this).width() + $queueItems.width() * $queueItems.length + 'px').draggable(borg);
+				$szlQueue.css('width', $('#queue').width() + ($queueItems.width() * 0.90) + 'px');
+				//console.log($('.szld:first').offset().left);
+				//borg.containment = [-1 * ($('.szld:first').offset().left - $('.szld:first').width()), 0, $(window).width()/2, 0];
+				$szlQueue.draggable(borg);
 			}
 		}
 	};
@@ -286,11 +294,10 @@ $(document).ready(function(){
     var onMouseUp = function() {
         $(document).unbind("mousemove mouseup");
     }*/
-    //var leftContainment = -1 * ($('#queue').width() - $('.startHeight:last').width());
 	var borg = {
 		axis: "x",
 		scroll: false,
-		//containment: $('#div_containment'),//[ leftContainment, 0, $('#queue').width() + ($(window).width()/2), 0 ],
+		//containment: [ -1 * ($('#queue').width - ($(window).width() * 0.1)) , 0, $(window).width()/2, 0 ],
 		/*helper: function (event, ui) {
 			var target = $(this).clone();
 			var oBody = $(document).find('footer');
@@ -310,18 +317,19 @@ $(document).ready(function(){
 		start: function(ui, e){
 			dragged = true;
 				$queueItems.each(function(index){
-					console.log($(this).attr('id') + ', ' + index);
+					//console.log($(this).attr('id') + ', ' + index);
 				});
 				/*$('#queue').data("mouseEvents", [e]);
             	$(document)
                 .mousemove(onMouseMove)
                 .mouseup(onMouseUp);*/
+                //borg.containment = [-1 * ($('.szld:first').offset().left - $('.szld:first').width()), 0, $(window).width()/2, 0];
+                console.log(borg.containment);
+
 		},
 
 		drag: function(e, ui){
-			//console.log()
 			//ui.containment = [ -1 * ($('#queue').width() - $('.szld:last').width()), 0, $('#queue').width() + ($(window).width()/2), 0 ];
-			console.log(ui.containment);
 			$queueItems.each(function(){
 				//article with focus in center
 				var szldItem = $(this).offset().left / $(window).width() * 100;
@@ -369,7 +377,7 @@ $(document).ready(function(){
 				if (szldItem > 0) {
 					$(this).css({
 						'top': adjustTop($(this).offset().left),
-						'height': startHeight - ($(this).position().top) + '%'
+						'height': startHeight - ($(this).position().top)/2 + '%'
 					});//adjust height in relation to top position
 				}
 
@@ -442,7 +450,7 @@ $(document).ready(function(){
 							//console.log($(this).css('left') + ' ,' + $(this).offset().left);
 							$(this).css({
 								'top': adjustTop($(this).offset().left) ,
-								'height': startHeight - ($(this).position().top) + '%'
+								'height': startHeight - ($(this).position().top)/2 + '%'
 							});
 						});
 						$(this).css({'z-index' : $(this).closest().css('z-index') - 1});
@@ -506,7 +514,6 @@ $(document).ready(function(){
             }*/
 		}
 	};
-	$szlQueue.draggable(borg);
 	
 	/*$('footer').scroll(function(){
 		console.log($('.szld:last').offset().left);
@@ -529,7 +536,7 @@ $(document).ready(function(){
 					//console.log($(this).css('left') + ' ,' + $(this).offset().left);
 					$(this).css({
 						'top': adjustTop($(this).offset().left) ,
-						'height': startHeight - ($(this).position().top) + '%'
+						'height': startHeight - ($(this).position().top)/2 + '%'
 					});
 				});
 			}
@@ -537,7 +544,7 @@ $(document).ready(function(){
 		$queueItems.each(function(){
 			$(this).css({
 				'top': adjustTop($(this).offset().left),
-				'height': startHeight - ($(this).position().top) + '%'
+				'height': startHeight - ($(this).position().top)/2 + '%'
 			});
 		});
 		$('#queue div').removeClass('rerate');
