@@ -12,7 +12,13 @@ $(document).ready(function(){
 		artLeft,
 		duplicate,
 		isRunning = false,
-		dragged = false;
+		dragged = false,
+		startHeight = 95,
+		$article = $('#stream div.article'),
+		$szlQueue = $('#queue'),
+		$topArticle = $('#topArticle'),
+		$middleArticle = $('#middleArticle');
+
 	articles.push(
 		"<p class='articleText'><b>article1 article1 article1 </b>article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1</p>",
 		"<p class='articleText'>article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 <i>article#2 article#2 article#2 article#2 article#2  article#2 </i>article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2</p>",
@@ -34,10 +40,10 @@ $(document).ready(function(){
 		//console.log(difference);
 		var w_box = $(window).width(),
 			h_box = $('#stream').height(),
-			w_total = ((w_box - $('.article').width())/2) - 2, //400
-			h_total = (h_box - $('.article').height())/2,
+			w_total = ((w_box - $article.width())/2) - 2, //400
+			h_total = (h_box - $article.height())/2,
 			css = {"position": 'absolute',"margin-left": w_total +"px"};
-		$('.article').css(css);
+		$article.css(css);
 		$('#paper0').css('margin-left', w_total + 2 + 'px');
 		$('#paper1').css('margin-left', w_total + 4 + 'px');
 		$('#paper2').css('margin-left', w_total + 6 + 'px');
@@ -45,10 +51,13 @@ $(document).ready(function(){
 		$('#share').css('margin-left', parseInt($('#topArticle').css('margin-left'), 10) * -1 + 'px' );
 		//$('#shareMenu').css('margin-left', '-' + ($('#share').css('margin-left')));
 		$('#shareMenu').css("left", ($(window).width() - parseInt($('#shareMenu').css('width'), 10) + 'px'));
-		$('.szld').css('width', '10%');
+
+		//TODO: adjust szld items on window resize
+		/*$queueItems.css('width', '10%');
 		$('.szld:last').prevAll().each(function(){
 			$(this).css('left', parseInt($(this).css('left'), 10) - 0.10 + 'px');
-		});
+		});*/
+
 		artPos = $('#topArticle').css('margin-left');
 		artLeft = $('#topArticle').css('left');
 		width = $(window).width();
@@ -64,18 +73,19 @@ $(document).ready(function(){
 	//$('#topArticle').html(articles[5]);
 
 	adjustTop = function(offset){
-		return 100 * (1.0-Math.min(0.98,(0.90 + ( 0.10/ (Math.exp(0.007*offset))) )) ) + '%';
+		return 100 * (1.0-Math.min(0.98,(0.80 + ( 0.20/ (Math.exp(0.004*offset))) )) ) + '%';
 	};
 
 	szl = function(e){
 		if (!isRunning){
 			isRunning = true;
 			var szld = $('#topArticle').contents().clone();
+			$topArticle = $('#topArticle');
 			var thecontent = [];
 			thecontent.push(szld);
 			//var theIMG = $('#topArticle').find('img').clone();  // pull out just the img from article content
-			var artText = $('#topArticle').text();
-			$('#topArticle').animate({left: '+'+width+"px"},{queue: false,duration: 500, complete: function(){
+			var artText = $topArticle.text();
+			$topArticle.animate({left: width},{queue: false,duration: 500, complete: function(){
 				$(this).remove();
 				$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
 				$('#bottomArticle').attr('id', 'middleArticle');
@@ -88,13 +98,15 @@ $(document).ready(function(){
 				duplicate = false;//next article will be different, so this allows the else block to run
 			} else {
 				////console.log('add')//if not in queue, add it
-				$('.szld').each(function(){
-					$(this).animate({left: parseInt($(this).css('left'), 10) + ($(window).width() * 0.15) + 'px'},{duration: 500});
-				});
+				if (szlCount > 0){
+					$queueItems.each(function(){
+						$(this).animate({left: parseInt($(this).css('left'), 10) + ($(window).width() * 0.15) + 'px'},{duration: 500});
+					});
+				}
 
 				var newDiv = document.createElement('div');
-				$('#queue').append($(newDiv).attr('id', 'newSzl' + szlCount).css({  //use szlcount number as position in array to pull text from
-					'position':'absolute', 'width': $(window).width() * .20, 'height': '90%',
+				$szlQueue.append($(newDiv).attr('id', 'newSzl' + szlCount).css({  //use szlcount number as position in array to pull text from
+					'position':'absolute', 'width': $(window).width() * 0.20, 'height': '90%',
 					'background':'white',
 					'border': '1px solid #FF4D4D',
 					'box-shadow':'0 0 1em #FF4D4D',
@@ -102,26 +114,27 @@ $(document).ready(function(){
 					'top': '1px',
 					'left': '5px'
 				}).addClass('szld').css('overflow','hidden').append(szld));
-
-				$('#queue').animate({left: 0},{duration: 300,
+				$queueItems = $('#queue div.szld');
+				$lastSzld = $queueItems.filter(':last');
+				$szlQueue.animate({left: 0},{duration: 300,
 					step: function(){
-						$('.szld').each(function(){
+						$queueItems.each(function(){
 							//console.log($(this).css('left') + ' ,' + $(this).offset().left);
 							$(this).css({
 								'top': adjustTop($(this).offset().left) ,
-								'height': 90 - ($(this).position().top) + '%'
+								'height': startHeight - ($(this).position().top) + '%'
 							});
 						});
 					}
 				});
 				//console.log('last in queue: ' + $('.szld:last').attr('id'));
 				//console.log($('#queue').width());
-				$('.szld:last').prevAll().each(function(index){
+				$lastSzld.prevAll().each(function(index){
 					$(this).css({'z-index' : $(this).next().css('z-index') - 1,
 					'box-shadow': '0 0 .8em black', 'border':'none'});
 				});
 				szlCount += 1;
-				$('#queue').css('width', $(this).width() + $('.szld').width() * $('.szld').length + 'px').draggable(borg);
+				//$szlQueue.css('width', $(this).width() + $queueItems.width() * $queueItems.length + 'px').draggable(borg);
 			}
 		}
 	};
@@ -131,8 +144,8 @@ $(document).ready(function(){
 			$('#topArticle').animate({left: '-'+width+"px"}, {queue: false, duration: 500, easing: 'swing', complete: function(){
 				if($(this).hasClass('rerate')) {
 					var rerateID = $('#queue .rerate').next('.szld').attr('id');
-					$('#queue .rerate').remove();
-					$('.szld').each(function(){
+					$('#queue div.rerate').remove();
+					$queueItems.each(function(){
 						var current = $(this).index();
 						if(current < $("#" + rerateID).index() || rerateID === undefined) {
 							//$(this).animate({left: parseInt($(this).css('left')) - ($(window).width() * .15) + 'px'},{duration: 500});
@@ -170,7 +183,7 @@ $(document).ready(function(){
 	var newArticle = {
 		axis: 'x',
 	};
-	$('.article').draggable(newArticle);
+	$article.draggable(newArticle);
 
 	////
 	var start_time,
@@ -203,6 +216,7 @@ $(document).ready(function(){
 	});
 
 	checkForSwipe = function(){
+		$topArticle = $('#topArticle');
 		if (Math.abs(swipeAngle) <= 45){
 			if (scaledDistance / swipeTime > 3){
 				if (distance.x > 0){
@@ -212,7 +226,7 @@ $(document).ready(function(){
 					fzl();
 				}
 				else {
-					$('#topArticle').animate({left: 0 },300);
+					$topArticle.animate({left: 0 },300);
 				}
 			}
 			else if (Math.abs(distance.x / width) > 0.25){
@@ -224,15 +238,15 @@ $(document).ready(function(){
 				}
 			}
 			else {
-				$('#topArticle').animate({left: 0 },300);
+				$topArticle.animate({left: 0 },300);
 			}
 		}
 		else {
-			$('#topArticle').animate({left: 0 },300);
+			$topArticle.animate({left: 0 },300);
 		}
 	};
 
-	$('#queue').on('mouseenter', 'div', function(event){
+	$szlQueue.on('mouseenter', 'div', function(event){
 		//orig = $(this).css('z-index');
 		//$(this).css('z-index', '100');//.css('transform','rotateY(0deg)').css('z-index', '100');
 	}).on('mouseleave', 'div', function(event){
@@ -272,7 +286,7 @@ $(document).ready(function(){
     var onMouseUp = function() {
         $(document).unbind("mousemove mouseup");
     }*/
-    //var leftContainment = -1 * ($('#queue').width() - $('.szld:last').width());
+    //var leftContainment = -1 * ($('#queue').width() - $('.startHeight:last').width());
 	var borg = {
 		axis: "x",
 		scroll: false,
@@ -295,7 +309,7 @@ $(document).ready(function(){
         containment: [$('#div_containment').width() * -1,0, $('#div_containment').width() + ($(window).width()/2), 0],*/
 		start: function(ui, e){
 			dragged = true;
-				$('.szld').each(function(index){
+				$queueItems.each(function(index){
 					console.log($(this).attr('id') + ', ' + index);
 				});
 				/*$('#queue').data("mouseEvents", [e]);
@@ -308,7 +322,7 @@ $(document).ready(function(){
 			//console.log()
 			//ui.containment = [ -1 * ($('#queue').width() - $('.szld:last').width()), 0, $('#queue').width() + ($(window).width()/2), 0 ];
 			console.log(ui.containment);
-			$('.szld').each(function(){
+			$queueItems.each(function(){
 				//article with focus in center
 				var szldItem = $(this).offset().left / $(window).width() * 100;
 				/*if (szldItem < 40) {
@@ -355,7 +369,7 @@ $(document).ready(function(){
 				if (szldItem > 0) {
 					$(this).css({
 						'top': adjustTop($(this).offset().left),
-						'height': 90 - ($(this).position().top) + '%'
+						'height': startHeight - ($(this).position().top) + '%'
 					});//adjust height in relation to top position
 				}
 
@@ -376,7 +390,7 @@ $(document).ready(function(){
 				}
 			});
 
-				leftofZero = $(".szld").filter(function() {return ($(this).offset().left > 0 && $(this).offset().left < 5);});
+				leftofZero = $queueItems.filter(function() {return ($(this).offset().left > 0 && $(this).offset().left < 5);});
 				$(leftofZero).each(function(){
 					console.log($(this).attr('id'));
 				});
@@ -421,23 +435,23 @@ $(document).ready(function(){
 			$(e.toElement ).one('click', function(e){
 				e.stopImmediatePropagation();
 			});
-			if ($('.szld:last').offset().left > 0 || $('.szld:first').offset().left < 0){
-				$('#queue').animate({left: 0}, {duration: (Math.abs($('.szld:last').offset().left) > $(window).width() * 0.25 ? Math.abs($('.szld:last').offset().left) : 300), 
+			if ($lastSzld.offset().left > 0 || $('.szld:first').offset().left < 0){
+				$szlQueue.animate({left: 0}, {duration: (Math.abs($lastSzld.offset().left) > $(window).width() * 0.25 ? Math.abs($lastSzld.offset().left) : 300), 
 					step: function(){
-						$('.szld').each(function(){
+						$queueItems.each(function(){
 							//console.log($(this).css('left') + ' ,' + $(this).offset().left);
 							$(this).css({
 								'top': adjustTop($(this).offset().left) ,
-								'height': 90 - ($(this).position().top) + '%'
+								'height': startHeight - ($(this).position().top) + '%'
 							});
 						});
 						$(this).css({'z-index' : $(this).closest().css('z-index') - 1});
-					$('.szld:last').prevAll().each(function(){
+					$lastSzld.prevAll().each(function(){
 						$(this).css({'z-index' : $(this).next().css('z-index') - 1});
 					});
 				}});
-				$('.szld').css({'box-shadow':'0 0 1em black','border': 'none'});
-				$('.szld:last').css({'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'});
+				$queueItems.css({'box-shadow':'0 0 1em black','border': 'none'});
+				$lastSzld.css({'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'});
 			}
 
 			/*$('#queue').stop();
@@ -492,7 +506,7 @@ $(document).ready(function(){
             }*/
 		}
 	};
-	$('#queue').draggable(borg);
+	$szlQueue.draggable(borg);
 	
 	/*$('footer').scroll(function(){
 		console.log($('.szld:last').offset().left);
@@ -505,24 +519,25 @@ $(document).ready(function(){
 		});
 		
 	});*/
-	$('#queue').on('click', '.szld' , function(){//switch top article content with queued content
+
+	$szlQueue.on('click', '.szld' , function(){//switch top article content with queued content
 		var clicked = $(this).attr('id');//clicked one
-		$('#' + clicked).css('z-index', $(this).next().css('z-index') + 1);
-		$('#queue').animate({left: $('#queue').offset().left - $('#' + clicked).offset().left}, {duration: 500,
+		$('#' + clicked).css({'z-index': $(this).next().css('z-index') + 1, 'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'});
+		$szlQueue.animate({left: $szlQueue.offset().left - $('#' + clicked).offset().left + 10}, {duration: 500,
 			step: function(){
-				$('.szld').each(function(){
+				$queueItems.each(function(){
 					//console.log($(this).css('left') + ' ,' + $(this).offset().left);
 					$(this).css({
 						'top': adjustTop($(this).offset().left) ,
-						'height': 90 - ($(this).position().top) + '%'
+						'height': startHeight - ($(this).position().top) + '%'
 					});
 				});
 			}
 		});
-		$('.szld').each(function(){
+		$queueItems.each(function(){
 			$(this).css({
 				'top': adjustTop($(this).offset().left),
-				'height': 90 - ($(this).position().top) + '%'
+				'height': startHeight - ($(this).position().top) + '%'
 			});
 		});
 		$('#queue div').removeClass('rerate');
