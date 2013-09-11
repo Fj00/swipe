@@ -18,7 +18,9 @@ $(document).ready(function(){
 		$article = $('#stream div.article'),
 		$szlQueue = $('#queue'),
 		$topArticle = $('#topArticle'),
-		$middleArticle = $('#middleArticle');
+		$middleArticle = $('#middleArticle'),
+		startSize = $(window).width();
+		overlap = $(window).width() * 0.10;
 
 	articles.push(
 		"<p class='articleText'><b>article1 article1 article1 </b>article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1</p>",
@@ -30,6 +32,8 @@ $(document).ready(function(){
 	);
 	//could put this in self-executing function?
 	startSize = $(window).width();
+	//TODO: orientation change messes up element sizes
+
 	$(window).on('resize load', function(){//adjust elements for different screen sizes
 		//alert(window.devicePixelRatio);
 		$('body').show();
@@ -64,6 +68,11 @@ $(document).ready(function(){
 		width = $(window).width();
 		height = $(window).height();
 	});
+
+	$('body').bind('touchmove', function (ev) {
+		ev.preventDefault();//prevent browser window from scrolling on iphone
+	});
+
 	//console.log($('#content').height())
 	//console.log($('#stream').height());
 	//console.log($('.article').height());
@@ -98,19 +107,18 @@ $(document).ready(function(){
 			if (duplicate){//if article already in queue, don't add it
 				duplicate = false;//next article will be different, so this allows the else block to run
 			} else {
-				////console.log('add')//if not in queue, add it
+				//if not in queue, add it
 				if (szlCount > 0){
 					$queueItems.each(function(){
-						$(this).animate({left: parseInt($(this).css('left'), 10) + ($(window).width() * 0.18) + 'px'},{duration: 500, complete:function(){
-							console.log($('.szld:first').offset().left);
-							borg.containment = [-1 * ($('.szld:first').offset().left + $(window).width() * .18), 0, $(window).width()/2, 0];
+						$(this).animate({left: parseInt($(this).css('left'), 10) + overlap + 'px'},{duration: 500, complete:function(){
+							borg.containment = [-1 * ($('.szld:first').offset().left + overlap), 0, $(window).width()/2, 0];//adjust left containment based on far right item in queue
 						}});
 					});
 				}
 
 				var newDiv = document.createElement('div');
 				$szlQueue.append($(newDiv).attr('id', 'newSzl' + szlCount).css({  //use szlcount number as position in array to pull text from
-					'position':'absolute', 'width': $(window).width() * 0.20, 'height': '90%', 
+					'position':'absolute', 'width': $(window).width() * 0.20, 'height': '90%',
 					'background':'white',
 					'border': '1px solid #FF4D4D',
 					'box-shadow':'0 0 1em #FF4D4D',
@@ -131,17 +139,17 @@ $(document).ready(function(){
 						});
 					}
 				});
-				console.log($('.szld:first').offset().left)
-				//console.log('last in queue: ' + $('.szld:last').attr('id'));
-				//console.log($('#queue').width());
 				$lastSzld.prevAll().each(function(index){
 					$(this).css({'z-index' : $(this).next().css('z-index') - 1,
 					'box-shadow': '0 0 .8em black', 'border':'none'});
 				});
 				szlCount += 1;
-				$szlQueue.css('width', $('#queue').width() + ($queueItems.width() * 0.90) + 'px');
-				//console.log($('.szld:first').offset().left);
-				//borg.containment = [-1 * ($('.szld:first').offset().left - $('.szld:first').width()), 0, $(window).width()/2, 0];
+				//if not kindle..
+				if (navigator.userAgent.indexOf("Silk") == -1) {
+					//alert('kindle');
+					$szlQueue.css('width', $('#queue').width() + ($queueItems.width() * 0.90));
+				}
+				//$szlQueue.css('width', $('#queue').width() + ($queueItems.width() * 0.90))
 				$szlQueue.draggable(borg);
 			}
 		}
@@ -297,23 +305,6 @@ $(document).ready(function(){
 	var borg = {
 		axis: "x",
 		scroll: false,
-		//containment: [ -1 * ($('#queue').width - ($(window).width() * 0.1)) , 0, $(window).width()/2, 0 ],
-		/*helper: function (event, ui) {
-			var target = $(this).clone();
-			var oBody = $(document).find('footer');
-			var containmentDiv = $('<div id="div_containment"></div>');
-			containmentDiv
-				.css('top', 0)
-				.css('left',$('#queue').offset().left + 'px')
-				.css('width',$('#queue').width() + 'px')
-				.css('height',$('#queue').height() + 'px')
-				.css('position','absolute');
-			containmentDiv.appendTo(oBody);
-			target.children('div').remove();
-			target.css('background-color','#f00');
-			return target;
-        },
-        containment: [$('#div_containment').width() * -1,0, $('#div_containment').width() + ($(window).width()/2), 0],*/
 		start: function(ui, e){
 			dragged = true;
 				$queueItems.each(function(index){
@@ -323,13 +314,9 @@ $(document).ready(function(){
             	$(document)
                 .mousemove(onMouseMove)
                 .mouseup(onMouseUp);*/
-                //borg.containment = [-1 * ($('.szld:first').offset().left - $('.szld:first').width()), 0, $(window).width()/2, 0];
-                console.log(borg.containment);
-
 		},
 
 		drag: function(e, ui){
-			//ui.containment = [ -1 * ($('#queue').width() - $('.szld:last').width()), 0, $('#queue').width() + ($(window).width()/2), 0 ];
 			$queueItems.each(function(){
 				//article with focus in center
 				var szldItem = $(this).offset().left / $(window).width() * 100;
@@ -377,8 +364,8 @@ $(document).ready(function(){
 				if (szldItem > 0) {
 					$(this).css({
 						'top': adjustTop($(this).offset().left),
-						'height': startHeight - ($(this).position().top)/2 + '%'
-					});//adjust height in relation to top position
+						'height': startHeight - ($(this).position().top)/2 + '%'//adjust height in relation to top position
+					});
 				}
 
 				//set border shadow for central item
@@ -396,45 +383,34 @@ $(document).ready(function(){
 				if (szldItem > 8 && szldItem < 15) {
 					//$(this).css({'z-index' : $(this).closest().css('z-index') - 1});
 				}
-			});
-
-				leftofZero = $queueItems.filter(function() {return ($(this).offset().left > 0 && $(this).offset().left < 5);});
-				$(leftofZero).each(function(){
-					console.log($(this).attr('id'));
-				});
-				/*if(prevX == -1) {
-					prevX = e.pageX;
-					//return false;
-				}
-				// dragged left
-				if(prevX > e.pageX) {
-					//console.log('dragged left');
-					$('.szld').each(function() {
-						$(this).width($(this).width() - 1);
-					});
-				}
-				
-				else if(prevX < e.pageX) { // dragged right
-					$('.szld').each(function() {
-						$(this).width($(this).width() + 1);
-					});
-					//console.log('dragged right');
-					/*console.log($('.szld:last').offset().left)
-					if ($('.szld:last').offset().left > 0){
-						console.log('go')
-						//ui.containment = 'parent';
-						$(ui.helper).offset().left = 0;
-						//$(e.toElement).trigger('mouseup');
-						//ui.revert = true;
-						//$(e.toElement).trigger('mouseup');
-
-						/*var w1 = ui.helper.outerWidth(),
-						w2 = $container.width();
-						//console.log([ui.position.left, w1, w2].join(' : '));
-						ui.position.left = Math.max(Math.min(ui.position.left, w2 - w1), 0);
+				if ($(this).offset().left > 0 && $(this).offset().left < overlap){
+					var rotation = (-90 * (1-($(this).offset().left/overlap)));
+					if (rotation >= -45){
+						$(this).next().offset({left:0}).css({
+							//'left':'1px',
+							'transform-origin' : '0px 0px' ,
+							'perspective-origin': '0% 50%',
+							'transform' : 'perspective( 600px ) rotateY('+ 2 * rotation +'deg)'
+						});
 					}
+					//$(this).next().offset().left = 0;
 				}
-				prevX = e.pageX;*/
+			});//     
+
+				/*leftofZero = $('.szld').filter(function() {return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.18));});
+						//var rotate = (90 * (1-(($(leftofZero).offset().left - $(window).width() * 0.18)/$(window).width() * 0.18)));
+						//console.log(rotate);
+				if ($(leftofZero).next().css('-webkit-transform') !== 'perspective( 600px ) rotateY(0deg)'){
+					console.log('true')
+					//$(this).next.offset().left = 0 ;
+				}
+				$(leftofZero).each(function(){
+					$(this).next().css({
+						'left':'1px',
+						'-webkit-transform-origin' : '0px 0px' ,
+						'-webkit-transform' : 'perspective( 600px ) rotateY('+(-90 * (1-($(this).offset().left/($(window).width() * 0.18))))+'deg)'
+					});
+				});*/
 			},
 
 		stop: function(e, ui){
@@ -443,9 +419,16 @@ $(document).ready(function(){
 			$(e.toElement ).one('click', function(e){
 				e.stopImmediatePropagation();
 			});
-			if ($lastSzld.offset().left > 0 || $('.szld:first').offset().left < 0){
+			if ($lastSzld.offset().left > 0){
 				$szlQueue.animate({left: 0}, {duration: (Math.abs($lastSzld.offset().left) > $(window).width() * 0.25 ? Math.abs($lastSzld.offset().left) : 300), 
 					step: function(){
+						leftofZero = $('.szld').filter(function() {return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.18));});
+						//var rotate = (90 * (1-(($(leftofZero).offset().left - $(window).width() * 0.18)/$(window).width() * 0.18)));
+						//console.log(rotate);
+						$(leftofZero).each(function(){
+							$(this).next().css({'-webkit-transform-origin' : '0px 0px' ,
+							'-webkit-transform' : 'perspective( 600px ) rotateY(0deg)'});
+						});
 						$queueItems.each(function(){
 							//console.log($(this).css('left') + ' ,' + $(this).offset().left);
 							$(this).css({
@@ -514,7 +497,6 @@ $(document).ready(function(){
             }*/
 		}
 	};
-	
 	/*$('footer').scroll(function(){
 		console.log($('.szld:last').offset().left);
 		$('.szld').each(function() {
