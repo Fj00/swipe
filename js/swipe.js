@@ -436,15 +436,18 @@ $(document).ready(function(){
 					});
 				}*/
 				console.log($(leftofZero).attr('id'));
+				var theID = $(leftofZero).attr('id');
 				$(leftofZero).next().prevAll().each(function(){
 					$(this).animate({ left: $(this).position().left + (($(window).width() * 0.10) - $(leftofZero).offset().left)}, {duration: 500,
 						step:function(){
-							$(leftofZero).next().css({
+							console.log($(leftofZero).attr('id'));
+							$('#' + theID).next().css({
 									//'left':'1px',
 									'transform-origin' : '0px 0px' ,
 									'perspective-origin': '0% 50%',
-									'transform' : 'perspective( 600px ) rotateY('+ (-90 * (1-($(leftofZero).offset().left/($(window).width() * 0.10))))/$(leftofZero).prevAll().length +'deg)'
+									'transform' : 'perspective( 600px ) rotateY('+ (-90 * (1-($('#' + theID).offset().left/($(window).width() * 0.10)))) +'deg)'
 							});
+							//$(leftofZero).css({'transform':'none'})*/
 						}
 					});
 
