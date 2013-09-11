@@ -394,6 +394,11 @@ $(document).ready(function(){
 						});
 					}
 					//$(this).next().offset().left = 0;
+				} else if ($(this).offset().left >= overlap){
+					$(this).next().css({
+						//'left':'1px',
+						'transform' : 'perspective( 600px ) rotateY(0deg)'
+					});
 				}
 			});//     
 
@@ -414,20 +419,52 @@ $(document).ready(function(){
 			},
 
 		stop: function(e, ui){
-
 			//http://stackoverflow.com/questions/3486760/how-to-avoid-jquery-ui-draggable-from-also-triggering-click-event/13973319#13973319
 			$(e.toElement ).one('click', function(e){
 				e.stopImmediatePropagation();
 			});
+				leftofZero = $('.szld').filter(function() {
+					return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.10));
+				});
+				/*var rotation = (-90 * (1-($(this).offset().left/($(window).width() * 0.10))));
+				if (rotation >= -45){
+					$(this).next().css({
+						//'left':'1px',
+						'transform-origin' : '0px 0px' ,
+						'perspective-origin': '0% 50%',
+						'transform' : 'perspective( 600px ) rotateY('+ -90 * (1-($(this).offset().left/($(window).width() * 0.10))) +'deg)'
+					});
+				}*/
+				console.log($(leftofZero).attr('id'));
+				$(leftofZero).next().prevAll().each(function(){
+					$(this).animate({ left: $(this).position().left + (($(window).width() * 0.10) - $(leftofZero).offset().left)}, {duration: 500,
+						step:function(){
+							$(leftofZero).next().css({
+									//'left':'1px',
+									'transform-origin' : '0px 0px' ,
+									'perspective-origin': '0% 50%',
+									'transform' : 'perspective( 600px ) rotateY('+ (-90 * (1-($(leftofZero).offset().left/($(window).width() * 0.10))))/$(leftofZero).prevAll().length +'deg)'
+							});
+						}
+					});
+
+
+				});
+			leftofZero = $('.szld').filter(function() {
+				return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.18));
+			});
+			//console.log($(leftofZero).attr('id'));
+			var leftBound = ( (e.pageX > $(window).width() * 0.38) ? leftBound = -5 : leftBound = 0 );
+			
 			if ($lastSzld.offset().left > 0){
-				$szlQueue.animate({left: 0}, {duration: (Math.abs($lastSzld.offset().left) > $(window).width() * 0.25 ? Math.abs($lastSzld.offset().left) : 300), 
+				$szlQueue.animate({left: leftBound}, {duration: (Math.abs($lastSzld.offset().left) > $(window).width() * 0.25 ? Math.abs($lastSzld.offset().left) : 300),
 					step: function(){
 						leftofZero = $('.szld').filter(function() {return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.18));});
 						//var rotate = (90 * (1-(($(leftofZero).offset().left - $(window).width() * 0.18)/$(window).width() * 0.18)));
 						//console.log(rotate);
 						$(leftofZero).each(function(){
-							$(this).next().css({'-webkit-transform-origin' : '0px 0px' ,
-							'-webkit-transform' : 'perspective( 600px ) rotateY(0deg)'});
+							$(this).next().css({'transform-origin' : '0px 0px' ,
+							'transform' : 'perspective( 600px ) rotateY(0deg)'});
 						});
 						$queueItems.each(function(){
 							//console.log($(this).css('left') + ' ,' + $(this).offset().left);
@@ -440,6 +477,11 @@ $(document).ready(function(){
 					$lastSzld.prevAll().each(function(){
 						$(this).css({'z-index' : $(this).next().css('z-index') - 1});
 					});
+				}, complete: function(){
+					//queue bounces back after hitting left edge
+					if (e.pageX > $(window).width() * 0.38){
+						$(this).animate({left: 0}, 400);
+					}
 				}});
 				$queueItems.css({'box-shadow':'0 0 1em black','border': 'none'});
 				$lastSzld.css({'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'});
@@ -511,7 +553,9 @@ $(document).ready(function(){
 
 	$szlQueue.on('click', '.szld' , function(){//switch top article content with queued content
 		var clicked = $(this).attr('id');//clicked one
-		$('#' + clicked).css({'z-index': $(this).next().css('z-index') + 1, 'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'});
+		$('#' + clicked).css({'z-index': $(this).next().css('z-index') + 1, 'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'}).next().css({
+			'box-shadow':'0 0 8em black','border': 'none'
+		});
 		$szlQueue.animate({left: $szlQueue.offset().left - $('#' + clicked).offset().left + 10}, {duration: 500,
 			step: function(){
 				$queueItems.each(function(){
