@@ -30,16 +30,12 @@ $(document).ready(function(){
 		"<p class='articleText'>article5 <p>article5 article5 article5 article5 article5<p> article5 article5 article5 article5 article5 article5 article5 article5<p>",
 		"<h1><a href=''target=''>Giant microwave blaster lets bread stay fresh-ish for over 60 days</a></h1><h2><a href='https://dvice.com/' target='_blank'>DVICE</a> November 30th, 2012 16:46 EST</h2><div id='szzzl-story-long-wrapper'><p><div><div><p class='articleText'>About a third of the bread that consumers buy gets tossed out or fed to ducks who don't know any better after it goes stale or gets moldy. You just cant win with bread- either you keep it moist and gross stuff grows on it, or you dry it out and it turns into a rock. A Texas company says it has a solution, in the form of a huge homogenized microwave cannon.</p><p class='articleText'>Microwaves, being radiation, work quite well at killing things like fungi. The reason that you cant use your microwave to kill fungi is that your microwave sucks, and due to the wavelength of the microwaves used in microwave ovens (just under five inches), you get hot spots and cold spots that show up at half of that wavelength. Microzap's microwave chamber, on the other hand, works differently, and much better. CEO Don Stull explains:</p><div>For the latest tech stories, follow DVICE on Twitter at @dvice or find us on Facebook</div></div></div></p><p><a href='https://dvice.com/archives/2012/11/giant-microwave.php' target='_blank'>Read more</a></p></div>"
 	);
-	//could put this in self-executing function?
-	startSize = $(window).width();
 	//TODO: orientation change messes up element sizes
-
+	//could put this in self-executing function?
 	$(window).on('resize load', function(){//adjust elements for different screen sizes
 		//alert(window.devicePixelRatio);
 		$('body').show();
-		//$('#overscroll').overscroll();
 		var difference = Math.abs($(window).width() - startSize);
-
 		var adjust = difference / startSize * $(window).width();
 		//console.log(adjust);
 		//console.log(difference);
@@ -54,23 +50,21 @@ $(document).ready(function(){
 		$('#paper2').css('margin-left', w_total + 6 + 'px');
 		$('#username').css('margin-left', parseInt($('.article').css('margin-left'), 10) + 'px');
 		$('#share').css('margin-left', parseInt($('#topArticle').css('margin-left'), 10) * -1 + 'px' );
-		//$('#shareMenu').css('margin-left', '-' + ($('#share').css('margin-left')));
 		$('#shareMenu').css("left", ($(window).width() - parseInt($('#shareMenu').css('width'), 10) + 'px'));
-
 		//TODO: adjust szld items on window resize
 		/*$queueItems.css('width', '10%');
 		$('.szld:last').prevAll().each(function(){
 			$(this).css('left', parseInt($(this).css('left'), 10) - 0.10 + 'px');
 		});*/
-
 		artPos = $('#topArticle').css('margin-left');
 		artLeft = $('#topArticle').css('left');
 		width = $(window).width();
 		height = $(window).height();
 	});
 
+	//prevent browser window from scrolling on iphone
 	$('body').bind('touchmove', function (ev) {
-		ev.preventDefault();//prevent browser window from scrolling on iphone
+		ev.preventDefault();
 	});
 
 	//console.log($('#content').height())
@@ -91,7 +85,7 @@ $(document).ready(function(){
 			isRunning = true;
 			var szld = $('#topArticle').contents().clone();
 			$topArticle = $('#topArticle');
-			var thecontent = [];
+			var thecontent = [];//holder for article content in case user clicks picture from the queue..retrieve it from this array
 			thecontent.push(szld);
 			//var theIMG = $('#topArticle').find('img').clone();  // pull out just the img from article content
 			var artText = $topArticle.text();
@@ -111,7 +105,7 @@ $(document).ready(function(){
 				if (szlCount > 0){
 					$queueItems.each(function(){
 						$(this).animate({left: parseInt($(this).css('left'), 10) + overlap + 'px'},{duration: 500, complete:function(){
-							borg.containment = [-1 * ($('.szld:first').offset().left + overlap), 0, $(window).width()/2, 0];//adjust left containment based on far right item in queue
+							queueDrag.containment = [-1 * ($('.szld:first').offset().left + overlap), 0, $(window).width()/2, 0];//adjust left containment based on far right item in queue
 						}});
 					});
 				}
@@ -150,7 +144,7 @@ $(document).ready(function(){
 					$szlQueue.css('width', $('#queue').width() + ($queueItems.width() * 0.90));
 				}
 				//$szlQueue.css('width', $('#queue').width() + ($queueItems.width() * 0.90))
-				$szlQueue.draggable(borg);
+				$szlQueue.draggable(queueDrag);
 			}
 		}
 	};
@@ -201,7 +195,6 @@ $(document).ready(function(){
 	};
 	$article.draggable(newArticle);
 
-	////
 	var start_time,
 		startPos = {x:0, y:0},
 		distance = {x:0, y:0},
@@ -226,6 +219,8 @@ $(document).ready(function(){
 
 	$('#content').mousedown(function(e){
 		start(e);
+	}).mousemove(function(e){
+		//console.log(e.pageX);
 	}).mouseup(function(e){
 		end(e);
 		if (!isRunning) checkForSwipe();
@@ -268,15 +263,17 @@ $(document).ready(function(){
 	}).on('mouseleave', 'div', function(event){
 		//$(this).css('z-index', orig);//.css('transform','rotateY(-45deg)')
 	});
+
 	//share menu
+	var $shareMenu = $('#shareMenu');
 	$('#shareText').click(function(){
 		////console.log($('#shareMenu').css("height"));
-		if (parseInt($('#shareMenu').css('height'), 10) > 0){
-			$('#shareMenu').animate({height: 0},500);
+		if (parseInt($shareMenu.css('height'), 10) > 0){
+			$shareMenu.animate({height: 0},500);
 		}
 		else {
-			$('#shareMenu').css("left", ($(window).width() - parseInt($('#shareMenu').css('width'), 10) + 'px'));
-			$('#shareMenu').animate({height: '938px'}, 500);
+			$shareMenu.css("left", ($(window).width() - parseInt($shareMenu.css('width'), 10) + 'px'));
+			$shareMenu.animate({height: '938px'}, 500);
 		}
 	});
 
@@ -302,23 +299,94 @@ $(document).ready(function(){
     var onMouseUp = function() {
         $(document).unbind("mousemove mouseup");
     }*/
-	var borg = {
+	var dragMomentum = new function () { 
+    var howMuch = 30;  // change this for greater or lesser momentum
+    var minDrift = 6; // minimum drift after a drag move
+    var easeType = 'easeOutBack';
+
+    //  This easing type requires the plugin:  
+    //  jquery.easing.1.3.js  http://gsgd.co.uk/sandbox/jquery/easing/
+
+    var dXa =[0];
+    var dYa =[0];
+    var dTa =[0];
+
+    this.start = function (elemId, Xa, Ya, Ta)  {
+          dXa[elemId] = Xa;
+        dYa[elemId] = Ya;
+        dTa[elemId] = Ta;
+
+      }; // END dragmomentum.start()
+
+    this.end = function (elemId, Xb, Yb, Tb)  {        
+        var Xa = dXa[elemId];
+        var Ya = dYa[elemId];
+        var Ta = dTa[elemId];
+        var Xc = 0;
+        var Yc = 0;
+
+        var dDist = Math.sqrt(Math.pow(Xa-Xb, 2) + Math.pow(Ya-Yb, 2));
+        var dTime = Tb - Ta;
+        var dSpeed = dDist / dTime;
+        dSpeed=Math.round(dSpeed*100)/100;
+
+        var distX =  Math.abs(Xa - Xb);
+        //var distY =  Math.abs(Ya - Yb);
+
+        var dVelX = (minDrift+(Math.round(distX*dSpeed*howMuch / (distX))));
+        //var dVelY = (minDrift+(Math.round(distY*dSpeed*howMuch / (distX+distY))));
+
+        var position = $('#'+elemId).position();
+        var locX = position.left;
+        //var locY = position.top;
+
+        if ( Xa > Xb ){  // we are moving left
+            Xc = locX - dVelX;
+        } else {  //  we are moving right
+            Xc = locX + dVelX;
+        }
+
+        /*if ( Ya > Yb ){  // we are moving up
+            Yc = (locY - dVelY);
+        } else {  // we are moving down
+            Yc = (locY + dVelY);
+        }*/
+
+        var newLocX = Xc + 'px';
+        //var newLocY = Yc + 'px';
+
+        $('#'+elemId).animate({ left:newLocX}, 700, easeType );
+
+    }; // END  dragmomentum.end()
+
+};  // END dragMomentum()
+	var startTime;
+	var theTime = [];
+	var pos = [];
+	var startPoint;
+	var endPoint;
+	var dateLog = [];
+	var queueDrag = { //needs better name
 		axis: "x",
 		scroll: false,
+
 		start: function(ui, e){
 			dragged = true;
-				$queueItems.each(function(index){
-					//console.log($(this).attr('id') + ', ' + index);
-				});
 				/*$('#queue').data("mouseEvents", [e]);
             	$(document)
                 .mousemove(onMouseMove)
                 .mouseup(onMouseUp);*/
+                startTime = new Date();
+               // dateLog = setInterval(function(){
+                //	console.log(new Date() + ', ' + e.pageX);
+                //	//dateLog.push[new Date()]
+                //}, 100)
 		},
 
 		drag: function(e, ui){
 			$queueItems.each(function(){
 				//article with focus in center
+				//console.log(e.pageX);
 				var szldItem = $(this).offset().left / $(window).width() * 100;
 				/*if (szldItem < 40) {
 					console.log('< 38');
@@ -350,14 +418,8 @@ $(document).ready(function(){
 				}*/
 
 				//////article with focus on left
-				/*var firstPos = $('.szld').filter(function() {
-				    return $(this).offset().left == 0;
-				});*/
-				//console.log($(firstPos).attr('id'));
-				
 				if (szldItem < 0) {
 					$(this).css({
-						//"top": '1px',
 						"z-index": $(this).prev().css("z-index") - 1
 					});
 				}
@@ -393,84 +455,81 @@ $(document).ready(function(){
 							'transform' : 'perspective( 600px ) rotateY('+ 2 * rotation +'deg)'
 						});
 					}
-					//$(this).next().offset().left = 0;
 				} else if ($(this).offset().left >= overlap){
 					$(this).next().css({
-						//'left':'1px',
 						'transform' : 'perspective( 600px ) rotateY(0deg)'
 					});
 				}
-			});//     
+			});
+			//dragMomentum.start(this.id, e.clientX, e.clientY, e.timeStamp);
+			current = new Date();
+			theTime.push(current);
+			pos.push(e.pageX);
 
-				/*leftofZero = $('.szld').filter(function() {return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.18));});
-						//var rotate = (90 * (1-(($(leftofZero).offset().left - $(window).width() * 0.18)/$(window).width() * 0.18)));
-						//console.log(rotate);
-				if ($(leftofZero).next().css('-webkit-transform') !== 'perspective( 600px ) rotateY(0deg)'){
-					console.log('true')
-					//$(this).next.offset().left = 0 ;
-				}
-				$(leftofZero).each(function(){
-					$(this).next().css({
-						'left':'1px',
-						'-webkit-transform-origin' : '0px 0px' ,
-						'-webkit-transform' : 'perspective( 600px ) rotateY('+(-90 * (1-($(this).offset().left/($(window).width() * 0.18))))+'deg)'
-					});
-				});*/
-			},
+		},
 
 		stop: function(e, ui){
+			//clearInterval(dateLog);
+			var endTime = new Date(),
+				endPoint = e.pageX;
+				pos.push(endPoint);
+				theTime.push(new Date());
+				timeDiff = ((endTime - startTime)/1000);
+				distance = Math.abs((endPoint - pos[0]));
+				velocity = distance/timeDiff;
+			//console.log(theTime.length + ', ' + pos.length);
+
+			//time and distance between final two points during drag
+				endOfDragDistance = Math.abs(pos[pos.length - 1] - pos[pos.length - 2]);
+				endOfDragTime = (theTime[theTime.length - 1] - theTime[theTime.length - 2]);
+				//console.log(theTime);
+				console.log(endOfDragDistance + 'px');
+				console.log(endOfDragTime + 'ms');
+				finalVelocity = endOfDragDistance/endOfDragTime;// in seconds
+				console.log(finalVelocity);
+				pos = [];
+				theTime = [];
+				/*$(this).animate({left: $(this).offset().left + (-1 * endOfDragTime/100 * velocity)}, {duration: finalVelocity * 200, step: function(){
+					console.log(velocity);
+					velocity -= .05
+				}});*/
+			//console.log('timeDiff: ' + timeDiff + ', distance:' + distance + ', velocity:' + velocity);
 			//http://stackoverflow.com/questions/3486760/how-to-avoid-jquery-ui-draggable-from-also-triggering-click-event/13973319#13973319
-			$(e.toElement ).one('click', function(e){
-				e.stopImmediatePropagation();
-			});
-				leftofZero = $('.szld').filter(function() {
-					return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.10));
-				});
-				/*var rotation = (-90 * (1-($(this).offset().left/($(window).width() * 0.10))));
-				if (rotation >= -45){
-					$(this).next().css({
-						//'left':'1px',
-						'transform-origin' : '0px 0px' ,
-						'perspective-origin': '0% 50%',
-						'transform' : 'perspective( 600px ) rotateY('+ -90 * (1-($(this).offset().left/($(window).width() * 0.10))) +'deg)'
-					});
-				}*/
-				console.log($(leftofZero).attr('id'));
-				var theID = $(leftofZero).attr('id');
-				$(leftofZero).next().prevAll().each(function(){
-					$(this).animate({ left: $(this).position().left + (($(window).width() * 0.10) - $(leftofZero).offset().left)}, {duration: 500,
-						step:function(){
-							console.log($(leftofZero).attr('id'));
-							$('#' + theID).next().css({
-									//'left':'1px',
-									'transform-origin' : '0px 0px' ,
-									'perspective-origin': '0% 50%',
-									'transform' : 'perspective( 600px ) rotateY('+ (-90 * (1-($('#' + theID).offset().left/($(window).width() * 0.10)))) +'deg)'
-							});
-							//$(leftofZero).css({'transform':'none'})*/
-						}
-					});
-
-
-				});
-			leftofZero = $('.szld').filter(function() {
-				return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.18));
-			});
-			//console.log($(leftofZero).attr('id'));
 			var leftBound = ( (e.pageX > $(window).width() * 0.38) ? leftBound = -5 : leftBound = 0 );
+				/*rightofZero = $('.szld').filter(function() {
+					return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.10));
+				}),
+				theID = $(rightofZero).attr('id');//needs a better name
 			
+			//prevent click from firing if touchend is over one of the szld elements
+			*/$(e.toElement ).one('click', function(e){
+				e.stopImmediatePropagation();
+			});/*
+
+			//adjust elements left based on initial distance of 'rightofZero' at time of mouseup
+			$(rightofZero).next().prevAll().each(function(){
+				$(this).animate({ left: $(this).position().left + (($(window).width() * 0.10) - $(rightofZero).offset().left)}, {duration: 500,
+					//reset rotate back to 0 as elements reset right
+					step:function(){
+						$('#' + theID).next().css({
+							'transform-origin' : '0px 0px' ,
+							'perspective-origin': '0% 50%',
+							'transform' : 'perspective( 600px ) rotateY('+ (-90 * (1-($('#' + theID).offset().left/($(window).width() * 0.10)))) +'deg)'
+						});
+					}
+				});
+			});*/
+
+			//move queue back to initial position when last szld element is > 0
 			if ($lastSzld.offset().left > 0){
 				$szlQueue.animate({left: leftBound}, {duration: (Math.abs($lastSzld.offset().left) > $(window).width() * 0.25 ? Math.abs($lastSzld.offset().left) : 300),
 					step: function(){
-						leftofZero = $('.szld').filter(function() {return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.18));});
-						//var rotate = (90 * (1-(($(leftofZero).offset().left - $(window).width() * 0.18)/$(window).width() * 0.18)));
-						//console.log(rotate);
-						$(leftofZero).each(function(){
+						rightofZero = $('.szld').filter(function() {return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.18));});
+						$(rightofZero).each(function(){
 							$(this).next().css({'transform-origin' : '0px 0px' ,
 							'transform' : 'perspective( 600px ) rotateY(0deg)'});
 						});
 						$queueItems.each(function(){
-							//console.log($(this).css('left') + ' ,' + $(this).offset().left);
 							$(this).css({
 								'top': adjustTop($(this).offset().left) ,
 								'height': startHeight - ($(this).position().top)/2 + '%'
@@ -540,6 +599,7 @@ $(document).ready(function(){
                     }
                 });
             }*/
+            //dragMomentum.end(this.id, e.clientX, e.clientY, e.timeStamp);
 		}
 	};
 	/*$('footer').scroll(function(){
