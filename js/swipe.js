@@ -73,10 +73,6 @@ var startWidth = $(window).width();
 		height = $(window).height();
 	});
 
-	//prevent browser window from scrolling on iphone
-	$('body').bind('touchmove', function (ev) {
-		ev.preventDefault();
-	});
 	//$('#topArticle').html(articles[5]);
 
 	adjustTop = function(offset){
@@ -194,6 +190,7 @@ var startWidth = $(window).width();
 		if (index > 5){ index = 0;}
 	};
 
+	//enable article dragging
 	var newArticle = {
 		axis: 'x',
 	};
@@ -261,24 +258,36 @@ var startWidth = $(window).width();
 		}
 	};
 
-	//share menu
-	var $shareMenu = $('#shareMenu');
-	$('#shareText').click(function(){
-		if (parseInt($shareMenu.css('height'), 10) > 0){
-			$shareMenu.animate({height: 0},500);
+	//set queue item z-indexes based on their position
+	setZ = function(szldItem, $this){
+		if (szldItem < 0) {
+			$this.css({
+				"z-index": $this.prev().css("z-index") - 1
+			});
 		}
-		else {
-			$shareMenu.css("left", ($(window).width() - parseInt($shareMenu.css('width'), 10) + 'px'));
-			$shareMenu.animate({height: '938px'}, 500);
+		if (szldItem > 0) {
+			$this.css({
+				'top': adjustTop($this.offset().left),
+				'height': startHeight - ($this.position().top)/2 + '%',//adjust height in relation to top position
+			});
 		}
-	});
+
+		//set border shadow for central item
+		if (szldItem > -5 &&  szldItem < 5) {
+			$this.css({
+				'z-index': '200000',
+				'box-shadow':'0 0 1em #FF4D4D',
+				'border': '1px solid #FF4D4D'
+			}).siblings().css({'border':'none', 'box-shadow':'0 0 .8em black'});
+		}
+	};
 	
-	var startTime;
-	var theTime = [];
-	var pos = [];
-	var startPoint;
-	var endPoint;
-	var dateLog = [];
+	var startTime,
+		theTime = [],
+		pos = [],
+		startPoint,
+		endPoint;
+	//object passed to draggable method
 	var queueDrag = {
 		axis: "x",
 		scroll: false,
@@ -292,29 +301,8 @@ var startWidth = $(window).width();
 			$queueItems.each(function(){
 				var szldItem = $(this).offset().left / $(window).width() * 100;
 				//////article with focus on left
-				if (szldItem < 0) {
-					$(this).css({
-						"z-index": $(this).prev().css("z-index") - 1
-					});
-				}
-				if (szldItem > 0) {
-					$(this).css({
-						'top': adjustTop($(this).offset().left),
-						'height': startHeight - ($(this).position().top)/2 + '%',//adjust height in relation to top position
-						'z-index' : $(this).next().css('z-index') - 1
-					});
-				}
-
-				//set border shadow for central item
-				if (szldItem > -5 &&  szldItem < 5) {
-					$(this).css({
-						'z-index': '200000',
-						'box-shadow':'0 0 1em #FF4D4D',
-						'border': '1px solid #FF4D4D'
-					});
-					$(this).nextAll().css({'border':'none', 'box-shadow':'0 0 .8em black'});
-					$(this).prevAll().css({'border':'none', 'box-shadow':'0 0 .8em black'});
-				}
+				var $this = $(this);
+				setZ(szldItem, $this);
 
 				//set shadow for peripheral items
 				if (szldItem > 8 && szldItem < 15) {
@@ -362,59 +350,56 @@ var startWidth = $(window).width();
 
 				if (endPoint < pos[0]){
 					//increase negative left value
-					$(this).animate({left: $(this).offset().left + (-1 * endOfDragTime/100 * velocity)}, {duration: 300, easing: 'easeOutCirc',//need to calculate this 
+					$(this).animate({left: $(this).offset().left + (-1 * endOfDragTime/100 * velocity)}, {duration: 300, easing: 'easeOutCirc',//duration should be length of time it takes the velocity to decay 
 						step: function(){
 							//decrement velocity for deceleration
 							//console.log(velocity);
 							velocity -= 0.01;
 							if ($(this).offset().left > 0 && $(this).offset().left < overlap){
-					var rotation = (-90 * (1-($(this).offset().left/overlap)));
-					if (rotation >= -45){
-						$(this).next().offset({left:0}).css({
-							//'left':'1px',
-							'transform-origin' : '0px 0px' ,
-							'perspective-origin': '0% 50%',
-							'transform' : 'perspective( 600px ) rotateY('+ 2 * rotation +'deg)'
-						});
-					}
-				} else if ($(this).offset().left >= overlap){
-					$(this).next().css({
-						'transform' : 'perspective( 600px ) rotateY(0deg)'
-					});
-				}
+							var rotation = (-90 * (1-($(this).offset().left/overlap)));
+								if (rotation >= -45){
+									$(this).next().offset({left:0}).css({
+										//'left':'1px',
+										'transform-origin' : '0px 0px' ,
+										'perspective-origin': '0% 50%',
+										'transform' : 'perspective( 600px ) rotateY('+ 2 * rotation +'deg)'
+									});
+								}
+							} else if ($(this).offset().left >= overlap){
+								$(this).next().css({
+									'transform' : 'perspective( 600px ) rotateY(0deg)'
+								});
+							}
 						}
 					});
 				} else {
 					//increase positive left value
-					$(this).animate({left: $(this).offset().left + (endOfDragDistance/100 * velocity)}, {duration: 300, easing: 'easeOutCirc',//need to calculate this 
+					$(this).animate({left: $(this).offset().left + (endOfDragDistance/100 * velocity)}, {duration: 300, easing: 'easeOutCirc',
 						step: function(){
 							//decrement velocity for deceleration
 							//console.log(velocity);
 							velocity -= 0.01;
 							if ($(this).offset().left > 0 && $(this).offset().left < overlap){
-					var rotation = (-90 * (1-($(this).offset().left/overlap)));
-					if (rotation >= -45){
-						$(this).next().offset({left:0}).css({
-							//'left':'1px',
-							'transform-origin' : '0px 0px' ,
-							'perspective-origin': '0% 50%',
-							'transform' : 'perspective( 600px ) rotateY('+ 2 * rotation +'deg)'
-						});
-					}
-				} else if ($(this).offset().left >= overlap){
-					$(this).next().css({
-						'transform' : 'perspective( 600px ) rotateY(0deg)'
-					});
-				}
+							var rotation = (-90 * (1-($(this).offset().left/overlap)));
+								if (rotation >= -45){
+									$(this).next().offset({left:0}).css({
+										//'left':'1px',
+										'transform-origin' : '0px 0px' ,
+										'perspective-origin': '0% 50%',
+										'transform' : 'perspective( 600px ) rotateY('+ 2 * rotation +'deg)'
+									});
+								}
+							} else if ($(this).offset().left >= overlap){
+								$(this).next().css({
+									'transform' : 'perspective( 600px ) rotateY(0deg)'
+								});
+							}
 						}
 					});
 				}
-
 				//fresh arrays for next drag
 				pos = [];
 				theTime = [];
-				//console.log('timeDiff: ' + timeDiff + ', distance:' + distance + ', velocity:' + velocity);
-
 			//http://stackoverflow.com/questions/3486760/how-to-avoid-jquery-ui-draggable-from-also-triggering-click-event/13973319#13973319
 			var leftBound = ( (e.pageX > $(window).width() * 0.38) ? leftBound = -5 : leftBound = 0 );
 				/*rightofZero = $('.szld').filter(function() {
@@ -453,13 +438,15 @@ var startWidth = $(window).width();
 						$queueItems.each(function(){
 							$(this).css({
 								'top': adjustTop($(this).offset().left) ,
-								'height': startHeight - ($(this).position().top)/2 + '%'
+								'height': startHeight - ($(this).position().top)/2 + '%',
+								'left': $(this).offset().left - ($('.szld:last').offset().left - 5)
 							});
 						});
 						$(this).css({'z-index' : $(this).closest().css('z-index') - 1});
 					$lastSzld.prevAll().each(function(){
 						$(this).css({'z-index' : $(this).next().css('z-index') - 1});
 					});
+					//$(this).width($(this).width - ($(this).find('.szld:last').offset().left - 5));
 				}, complete: function(){
 					//queue bounces back after hitting left edge
 					if (e.pageX > $(window).width() * 0.38){
@@ -475,31 +462,41 @@ var startWidth = $(window).width();
 	$szlQueue.on('click', '.szld' , function(){//switch top article content with queued content
 		duplicate = true;
 		var clicked = $(this).attr('id');//clicked one
-		$('#' + clicked).css({'z-index': $(this).next().css('z-index') + 1, 'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'}).next().css({
-			'box-shadow':'0 0 8em black','border': 'none'
+		$('#' + clicked).css({'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'}).siblings().css({
+			'box-shadow':'0 0 .8em black','border': 'none'
 		});
 		$szlQueue.animate({left: $szlQueue.offset().left - $('#' + clicked).offset().left + 10}, {duration: 500,
 			step: function(){
 				$queueItems.each(function(){
-					//console.log($(this).css('left') + ' ,' + $(this).offset().left);
 					$(this).css({
 						'top': adjustTop($(this).offset().left) ,
 						'height': startHeight - ($(this).position().top)/2 + '%'
 					});
+					var szldItem = $(this).offset().left / $(window).width() * 100;
+					var $this = $(this);
+					setZ(szldItem, $this);
 				});
 			}
 		});
-		$queueItems.each(function(){
-			$(this).css({
-				'top': adjustTop($(this).offset().left),
-				'height': startHeight - ($(this).position().top)/2 + '%'
-			});
-		});
+
+		//$(this).next().css('z-index', $(this).css('z-index') - 1);
 		$('#queue div').removeClass('rerate');
 		$(this).addClass('rerate');
 		var contCopy = $(this).contents().clone();
 		$('#middleArticle').addClass('requeue').empty().append($('#topArticle').contents());
 		$('#topArticle').addClass('rerate').empty().append(contCopy);
+	});
+
+	//share menu
+	var $shareMenu = $('#shareMenu');
+	$('#shareText').click(function(){
+		if (parseInt($shareMenu.css('height'), 10) > 0){
+			$shareMenu.animate({height: 0},500);
+		}
+		else {
+			$shareMenu.css("left", ($(window).width() - parseInt($shareMenu.css('width'), 10) + 'px'));
+			$shareMenu.animate({height: '938px'}, 500);
+		}
 	});
 
 	$('#stream').click(function(e){
@@ -535,4 +532,9 @@ var startWidth = $(window).width();
 	}).on('mouseup', function(){
 		$('.arrows').fadeOut();
 	});*/
+
+	//prevent browser window from scrolling on iphone
+	$('body').bind('touchmove', function (ev) {
+		ev.preventDefault();
+	});
 });
