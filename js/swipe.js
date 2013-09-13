@@ -477,7 +477,7 @@ $(document).ready(function(){
 				timeDiff = ((endTime - startTime)/1000);
 				distance = Math.abs((endPoint - pos[0]));
 				velocity = distance/timeDiff;
-			//console.log(theTime.length + ', ' + pos.length);
+				//console.log(theTime.length + ', ' + pos.length);
 
 			//time and distance between final two points during drag
 				endOfDragDistance = Math.abs(pos[pos.length - 1] - pos[pos.length - 2]);
@@ -487,13 +487,24 @@ $(document).ready(function(){
 				console.log(endOfDragTime + 'ms');
 				finalVelocity = endOfDragDistance/endOfDragTime;// in seconds
 				console.log(finalVelocity);
+
+				if (endPoint < pos[0]){
+					console.log('left');
+					//add negative left value
+					$(this).animate({left: $(this).offset().left + (-1 * endOfDragTime/100 * velocity)}, {duration: 300, easing: 'easeOutCirc',//need to calculate this 
+						step: function(){
+							//decrement velocity for deceleration
+							console.log(velocity);
+							velocity -= .05
+						}
+					});
+				} else {
+					//add positive left
+				}
 				pos = [];
 				theTime = [];
-				/*$(this).animate({left: $(this).offset().left + (-1 * endOfDragTime/100 * velocity)}, {duration: finalVelocity * 200, step: function(){
-					console.log(velocity);
-					velocity -= .05
-				}});*/
-			//console.log('timeDiff: ' + timeDiff + ', distance:' + distance + ', velocity:' + velocity);
+				//console.log('timeDiff: ' + timeDiff + ', distance:' + distance + ', velocity:' + velocity);
+
 			//http://stackoverflow.com/questions/3486760/how-to-avoid-jquery-ui-draggable-from-also-triggering-click-event/13973319#13973319
 			var leftBound = ( (e.pageX > $(window).width() * 0.38) ? leftBound = -5 : leftBound = 0 );
 				/*rightofZero = $('.szld').filter(function() {
