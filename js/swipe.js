@@ -1,4 +1,3 @@
-
 document.write('<style type="text/css">body{display:none}</style>');//hide content while jquery sets some css
 $(document).ready(function(){
 	var index = 0,
@@ -30,21 +29,28 @@ $(document).ready(function(){
 		"<p class='articleText'>article5 <p>article5 article5 article5 article5 article5<p> article5 article5 article5 article5 article5 article5 article5 article5<p>",
 		"<h1><a href=''target=''>Giant microwave blaster lets bread stay fresh-ish for over 60 days</a></h1><h2><a href='https://dvice.com/' target='_blank'>DVICE</a> November 30th, 2012 16:46 EST</h2><div id='szzzl-story-long-wrapper'><p><div><div><p class='articleText'>About a third of the bread that consumers buy gets tossed out or fed to ducks who don't know any better after it goes stale or gets moldy. You just cant win with bread- either you keep it moist and gross stuff grows on it, or you dry it out and it turns into a rock. A Texas company says it has a solution, in the form of a huge homogenized microwave cannon.</p><p class='articleText'>Microwaves, being radiation, work quite well at killing things like fungi. The reason that you cant use your microwave to kill fungi is that your microwave sucks, and due to the wavelength of the microwaves used in microwave ovens (just under five inches), you get hot spots and cold spots that show up at half of that wavelength. Microzap's microwave chamber, on the other hand, works differently, and much better. CEO Don Stull explains:</p><div>For the latest tech stories, follow DVICE on Twitter at @dvice or find us on Facebook</div></div></div></p><p><a href='https://dvice.com/archives/2012/11/giant-microwave.php' target='_blank'>Read more</a></p></div>"
 	);
+
 	//TODO: orientation change messes up element sizes
+
 	//could put this in self-executing function?
-	$(window).on('resize load', function(){//adjust elements for different screen sizes
+var startWidth = $(window).width();
+
+	//var currentLeft = null;
+	$(window).on('resize load orientationchange', function(){//adjust elements for different screen sizes and when orientation changes
 		//alert(window.devicePixelRatio);
 		$('body').show();
-		var difference = Math.abs($(window).width() - startSize);
-		var adjust = difference / startSize * $(window).width();
-		//console.log(adjust);
-		//console.log(difference);
+		//article overlaps 10% of adjacent article
+		var overlap = $(window).width() * 0.10;
+		//% difference between initial width and current width
+		var difference = (($(window).width()/startWidth * 100) - 100);
+		var szldWidth = ($(window).width() * 0.2)  + (difference/5);
 		var w_box = $(window).width(),
 			h_box = $('#stream').height(),
-			w_total = ((w_box - $article.width())/2) - 2, //400
-			h_total = (h_box - $article.height())/2,
-			css = {"position": 'absolute',"margin-left": w_total +"px"};
-		$article.css(css);
+			w_total = ((w_box - $('.article').width())/2) - 2, //400
+			h_total = (h_box - $('.article').height())/2,
+			css = {"position": "absolute", "margin-left": w_total +"px"};
+		$('.article').css(css);
+
 		$('#paper0').css('margin-left', w_total + 2 + 'px');
 		$('#paper1').css('margin-left', w_total + 4 + 'px');
 		$('#paper2').css('margin-left', w_total + 6 + 'px');
@@ -52,10 +58,15 @@ $(document).ready(function(){
 		$('#share').css('margin-left', parseInt($('#topArticle').css('margin-left'), 10) * -1 + 'px' );
 		$('#shareMenu').css("left", ($(window).width() - parseInt($('#shareMenu').css('width'), 10) + 'px'));
 		//TODO: adjust szld items on window resize
-		/*$queueItems.css('width', '10%');
-		$('.szld:last').prevAll().each(function(){
-			$(this).css('left', parseInt($(this).css('left'), 10) - 0.10 + 'px');
-		});*/
+		//$queueItems.css('width', '10%');
+			if($('.szld').length){
+				$('.szld').css({
+					//'left': parseInt($(this).css('left'), 10) - 0.10 + 'px',
+					'width': szldWidth
+					///'left': $(this).offset().left + (difference * $(this).offset().left)
+				});
+				console.log($('.szld').width());
+			}
 		artPos = $('#topArticle').css('margin-left');
 		artLeft = $('#topArticle').css('left');
 		width = $(window).width();
@@ -66,14 +77,6 @@ $(document).ready(function(){
 	$('body').bind('touchmove', function (ev) {
 		ev.preventDefault();
 	});
-
-	//console.log($('#content').height())
-	//console.log($('#stream').height());
-	//console.log($('.article').height());
-	//console.log('total: '+ $(document).height());
-	//console.log('colorbar: '+ $('.colorbar').height());
-	//console.log('queue: ' + $('#header-container').height());
-
 	//$('#topArticle').html(articles[5]);
 
 	adjustTop = function(offset){
@@ -138,12 +141,13 @@ $(document).ready(function(){
 					'box-shadow': '0 0 .8em black', 'border':'none'});
 				});
 				szlCount += 1;
+
 				//if not kindle..
 				if (navigator.userAgent.indexOf("Silk") == -1) {
-					//alert('kindle');
 					$szlQueue.css('width', $('#queue').width() + ($queueItems.width() * 0.90));
-				}
-				//$szlQueue.css('width', $('#queue').width() + ($queueItems.width() * 0.90))
+				} else alert('kindle');
+
+				//initialize draggable queue
 				$szlQueue.draggable(queueDrag);
 			}
 		}
@@ -257,17 +261,9 @@ $(document).ready(function(){
 		}
 	};
 
-	$szlQueue.on('mouseenter', 'div', function(event){
-		//orig = $(this).css('z-index');
-		//$(this).css('z-index', '100');//.css('transform','rotateY(0deg)').css('z-index', '100');
-	}).on('mouseleave', 'div', function(event){
-		//$(this).css('z-index', orig);//.css('transform','rotateY(-45deg)')
-	});
-
 	//share menu
 	var $shareMenu = $('#shareMenu');
 	$('#shareText').click(function(){
-		////console.log($('#shareMenu').css("height"));
 		if (parseInt($shareMenu.css('height'), 10) > 0){
 			$shareMenu.animate({height: 0},500);
 		}
@@ -276,147 +272,25 @@ $(document).ready(function(){
 			$shareMenu.animate({height: '938px'}, 500);
 		}
 	});
-
-	//var orig;
-	//var prevX = -1;
-
-	/*var x1, x2,
-        y1, y2,
-        t1, t2;  // Time
-
-    var minDistance = 40; // Minimum px distance object must be dragged to enable momentum.
-
-    var onMouseMove = function(e) {
-        var mouseEvents = $('#queue').data("mouseEvents");
-        if (e.timeStamp - mouseEvents[mouseEvents.length-1].timeStamp > 40) {
-            mouseEvents.push(e);
-            if (mouseEvents.length > 2) {
-                mouseEvents.shift();
-            }
-        }
-    }
-
-    var onMouseUp = function() {
-        $(document).unbind("mousemove mouseup");
-    }*/
-	var dragMomentum = new function () { 
-    var howMuch = 30;  // change this for greater or lesser momentum
-    var minDrift = 6; // minimum drift after a drag move
-    var easeType = 'easeOutBack';
-
-    //  This easing type requires the plugin:  
-    //  jquery.easing.1.3.js  http://gsgd.co.uk/sandbox/jquery/easing/
-
-    var dXa =[0];
-    var dYa =[0];
-    var dTa =[0];
-
-    this.start = function (elemId, Xa, Ya, Ta)  {
-          dXa[elemId] = Xa;
-        dYa[elemId] = Ya;
-        dTa[elemId] = Ta;
-
-      }; // END dragmomentum.start()
-
-    this.end = function (elemId, Xb, Yb, Tb)  {        
-        var Xa = dXa[elemId];
-        var Ya = dYa[elemId];
-        var Ta = dTa[elemId];
-        var Xc = 0;
-        var Yc = 0;
-
-        var dDist = Math.sqrt(Math.pow(Xa-Xb, 2) + Math.pow(Ya-Yb, 2));
-        var dTime = Tb - Ta;
-        var dSpeed = dDist / dTime;
-        dSpeed=Math.round(dSpeed*100)/100;
-
-        var distX =  Math.abs(Xa - Xb);
-        //var distY =  Math.abs(Ya - Yb);
-
-        var dVelX = (minDrift+(Math.round(distX*dSpeed*howMuch / (distX))));
-        //var dVelY = (minDrift+(Math.round(distY*dSpeed*howMuch / (distX+distY))));
-
-        var position = $('#'+elemId).position();
-        var locX = position.left;
-        //var locY = position.top;
-
-        if ( Xa > Xb ){  // we are moving left
-            Xc = locX - dVelX;
-        } else {  //  we are moving right
-            Xc = locX + dVelX;
-        }
-
-        /*if ( Ya > Yb ){  // we are moving up
-            Yc = (locY - dVelY);
-        } else {  // we are moving down
-            Yc = (locY + dVelY);
-        }*/
-
-        var newLocX = Xc + 'px';
-        //var newLocY = Yc + 'px';
-
-        $('#'+elemId).animate({ left:newLocX}, 700, easeType );
-
-    }; // END  dragmomentum.end()
-
-};  // END dragMomentum()
+	
 	var startTime;
 	var theTime = [];
 	var pos = [];
 	var startPoint;
 	var endPoint;
 	var dateLog = [];
-	var queueDrag = { //needs better name
+	var queueDrag = {
 		axis: "x",
 		scroll: false,
 
 		start: function(ui, e){
 			dragged = true;
-				/*$('#queue').data("mouseEvents", [e]);
-            	$(document)
-                .mousemove(onMouseMove)
-                .mouseup(onMouseUp);*/
-                startTime = new Date();
-               // dateLog = setInterval(function(){
-                //	console.log(new Date() + ', ' + e.pageX);
-                //	//dateLog.push[new Date()]
-                //}, 100)
+            startTime = new Date();
 		},
 
 		drag: function(e, ui){
 			$queueItems.each(function(){
-				//article with focus in center
-				//console.log(e.pageX);
 				var szldItem = $(this).offset().left / $(window).width() * 100;
-				/*if (szldItem < 40) {
-					console.log('< 38');
-					$(this).css({//adjust z-index for elements left of center & set top
-						"z-index": $(this).prev().css("z-index") - 1, "top": 50 - szldItem + '%'});//.css('width', 60 - szldItem + '%');
-				} else if (szldItem > 40) {
-					console.log('> 38: ' + $(this).offset().left / $(window).width() * 100);
-					$(this).css({'top': -30 + szldItem + '%'});
-				}
-
-				//set border shadow for central item
-				if (szldItem > 35 &&  szldItem < 45) {
-					console.log('38-48: ' + $(this).offset().left / $(window).width() * 100);
-					$(this).css({
-						'z-index': '200000',
-						'box-shadow':'0 0 1em #33FF33',
-						'border': '1px solid #33FF33'
-					});
-					$(this).nextAll().css({'border':'none', 'box-shadow':'0 0 .8em black'});
-					$(this).prevAll().css({'border':'none', 'box-shadow':'0 0 .8em black'});
-					console.log($(this).closest());
-				}
-
-				//set shadow for peripheral items
-				if (szldItem > 48 && szldItem < 55) {
-					console.log('48-55');
-					$(this).css({'z-index' : $(this).closest().css('z-index') - 1});
-					//zCount.right = zCount.right + 1;
-				}*/
-
 				//////article with focus on left
 				if (szldItem < 0) {
 					$(this).css({
@@ -426,7 +300,8 @@ $(document).ready(function(){
 				if (szldItem > 0) {
 					$(this).css({
 						'top': adjustTop($(this).offset().left),
-						'height': startHeight - ($(this).position().top)/2 + '%'//adjust height in relation to top position
+						'height': startHeight - ($(this).position().top)/2 + '%',//adjust height in relation to top position
+						'z-index' : $(this).next().css('z-index') - 1
 					});
 				}
 
@@ -461,15 +336,12 @@ $(document).ready(function(){
 					});
 				}
 			});
-			//dragMomentum.start(this.id, e.clientX, e.clientY, e.timeStamp);
 			current = new Date();
 			theTime.push(current);
 			pos.push(e.pageX);
-
 		},
 
 		stop: function(e, ui){
-			//clearInterval(dateLog);
 			var endTime = new Date(),
 				endPoint = e.pageX;
 				pos.push(endPoint);
@@ -489,18 +361,56 @@ $(document).ready(function(){
 				console.log(finalVelocity);
 
 				if (endPoint < pos[0]){
-					console.log('left');
-					//add negative left value
+					//increase negative left value
 					$(this).animate({left: $(this).offset().left + (-1 * endOfDragTime/100 * velocity)}, {duration: 300, easing: 'easeOutCirc',//need to calculate this 
 						step: function(){
 							//decrement velocity for deceleration
-							console.log(velocity);
-							velocity -= .05
+							//console.log(velocity);
+							velocity -= 0.01;
+							if ($(this).offset().left > 0 && $(this).offset().left < overlap){
+					var rotation = (-90 * (1-($(this).offset().left/overlap)));
+					if (rotation >= -45){
+						$(this).next().offset({left:0}).css({
+							//'left':'1px',
+							'transform-origin' : '0px 0px' ,
+							'perspective-origin': '0% 50%',
+							'transform' : 'perspective( 600px ) rotateY('+ 2 * rotation +'deg)'
+						});
+					}
+				} else if ($(this).offset().left >= overlap){
+					$(this).next().css({
+						'transform' : 'perspective( 600px ) rotateY(0deg)'
+					});
+				}
 						}
 					});
 				} else {
-					//add positive left
+					//increase positive left value
+					$(this).animate({left: $(this).offset().left + (endOfDragDistance/100 * velocity)}, {duration: 300, easing: 'easeOutCirc',//need to calculate this 
+						step: function(){
+							//decrement velocity for deceleration
+							//console.log(velocity);
+							velocity -= 0.01;
+							if ($(this).offset().left > 0 && $(this).offset().left < overlap){
+					var rotation = (-90 * (1-($(this).offset().left/overlap)));
+					if (rotation >= -45){
+						$(this).next().offset({left:0}).css({
+							//'left':'1px',
+							'transform-origin' : '0px 0px' ,
+							'perspective-origin': '0% 50%',
+							'transform' : 'perspective( 600px ) rotateY('+ 2 * rotation +'deg)'
+						});
+					}
+				} else if ($(this).offset().left >= overlap){
+					$(this).next().css({
+						'transform' : 'perspective( 600px ) rotateY(0deg)'
+					});
 				}
+						}
+					});
+				}
+
+				//fresh arrays for next drag
 				pos = [];
 				theTime = [];
 				//console.log('timeDiff: ' + timeDiff + ', distance:' + distance + ', velocity:' + velocity);
@@ -559,73 +469,11 @@ $(document).ready(function(){
 				$queueItems.css({'box-shadow':'0 0 1em black','border': 'none'});
 				$lastSzld.css({'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'});
 			}
-
-			/*$('#queue').stop();
-            $('#queue').css("text-indent", 100);
-
-            var lastE = $('#queue').data("mouseEvents").shift();
-
-            x1 = lastE.pageX;
-            y1 = lastE.pageY;
-            t1 = lastE.timeStamp;
-            x2 = e.pageX;
-            y2 = e.pageY;
-            t2 = e.timeStamp;
-
-            // Deltas
-            var dX = x2 - x1,
-                dY = y2 - y1,
-                dMs = Math.max(t2 - t1, 1);
-
-            // Speeds
-            var speedX = Math.max(Math.min(dX/dMs, 1), -1),
-                speedY = Math.max(Math.min(dY/dMs, 1), -1);
-
-            // Distance moved (Euclidean distance)
-            var distance = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
-
-            if (distance > minDistance) {
-                // Momentum
-                var lastStepTime = new Date();
-                $d.animate({ textIndent: 0 }, {
-                    duration: Math.max(Math.abs(speedX), Math.abs(speedY)) * 2000,
-                    step: function(currentStep){
-                        speedX *= (currentStep / 100);
-                        speedY *= (currentStep / 100);
-
-                        var now = new Date();
-                        var stepDuration = now.getTime() - lastStepTime.getTime();
-
-                        lastStepTime = now;
-
-                        var position = $d.position();
-
-                        var newLeft = (position.left + (speedX * stepDuration / 4)),
-                            newTop = (position.top + (speedY * stepDuration / 4));
-
-                        $('#queue').css({
-                            left: newLeft+"px",
-                            //top: newTop+"px"
-                        });
-                    }
-                });
-            }*/
-            //dragMomentum.end(this.id, e.clientX, e.clientY, e.timeStamp);
 		}
 	};
-	/*$('footer').scroll(function(){
-		console.log($('.szld:last').offset().left);
-		$('.szld').each(function() {
-
-			if ($(this).offset().left > 0) {
-			$(this).css({ 'top': adjustTop($(this).offset().left) });
-			//$(this).css({ 'height': $(this).height() - $(this).position().top + 'px'})
-			}
-		});
-		
-	});*/
 
 	$szlQueue.on('click', '.szld' , function(){//switch top article content with queued content
+		duplicate = true;
 		var clicked = $(this).attr('id');//clicked one
 		$('#' + clicked).css({'z-index': $(this).next().css('z-index') + 1, 'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'}).next().css({
 			'box-shadow':'0 0 8em black','border': 'none'
