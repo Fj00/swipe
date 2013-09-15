@@ -1,4 +1,5 @@
 document.write('<style type="text/css">body{display:none}</style>');//hide content while jquery sets some css
+
 $(document).ready(function(){
 	var index = 0,
 		articles = [],
@@ -18,8 +19,10 @@ $(document).ready(function(){
 		$szlQueue = $('#queue'),
 		$topArticle = $('#topArticle'),
 		$middleArticle = $('#middleArticle'),
-		startSize = $(window).width();
-		overlap = $(window).width() * 0.10;
+		startSize = $(window).width(),
+		overlap = $(window).width() * 0.10,
+		current,
+		thecontent = [];//holder for article content in case user clicks picture from the queue..retrieve it from this array
 
 	articles.push(
 		"<p class='articleText'><b>article1 article1 article1 </b>article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1</p>",
@@ -33,24 +36,20 @@ $(document).ready(function(){
 	//TODO: orientation change messes up element sizes
 
 	//could put this in self-executing function?
-var startWidth = $(window).width();
-
-	//var currentLeft = null;
 	$(window).on('resize load orientationchange', function(){//adjust elements for different screen sizes and when orientation changes
 		//alert(window.devicePixelRatio);
 		$('body').show();
 		//article overlaps 10% of adjacent article
-		var overlap = $(window).width() * 0.10;
-		//% difference between initial width and current width
-		var difference = (($(window).width()/startWidth * 100) - 100);
-		var szldWidth = ($(window).width() * 0.2)  + (difference/5);
-		var w_box = $(window).width(),
+		var overlap = $(window).width() * 0.10,
+			difference = (($(window).width()/startSize * 100) - 100),//% difference between initial width and current width
+			szldWidth = ($(window).width() * 0.2)  + (difference/5),
+			w_box = $(window).width(),
 			h_box = $('#stream').height(),
 			w_total = ((w_box - $('.article').width())/2) - 2, //400
 			h_total = (h_box - $('.article').height())/2,
 			css = {"position": "absolute", "margin-left": w_total +"px"};
-		$('.article').css(css);
 
+		$('.article').css(css);
 		$('#paper0').css('margin-left', w_total + 2 + 'px');
 		$('#paper1').css('margin-left', w_total + 4 + 'px');
 		$('#paper2').css('margin-left', w_total + 6 + 'px');
@@ -74,7 +73,7 @@ var startWidth = $(window).width();
 	});
 
 	//$('#topArticle').html(articles[5]);
-
+	//return nonlinear top value based on the element's left offset
 	adjustTop = function(offset){
 		return 100 * (1.0-Math.min(0.98,(0.75 + ( 0.25/ (Math.exp(0.003*offset))) )) ) + '%';
 	};
@@ -84,16 +83,16 @@ var startWidth = $(window).width();
 			isRunning = true;
 			var szld = $('#topArticle').contents().clone();
 			$topArticle = $('#topArticle');
-			var thecontent = [];//holder for article content in case user clicks picture from the queue..retrieve it from this array
 			thecontent.push(szld);
 			//var theIMG = $('#topArticle').find('img').clone();  // pull out just the img from article content
 			var artText = $topArticle.text();
-			$topArticle.animate({left: width},{queue: false,duration: 500, complete: function(){
-				$(this).remove();
-				$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
-				$('#bottomArticle').attr('id', 'middleArticle');
-				isRunning = false;
-				$('#stream').bind('click');
+			$topArticle.animate({left: width},{queue: false, duration: 500,
+				complete: function(){
+					$(this).remove();
+					$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
+					$('#bottomArticle').attr('id', 'middleArticle');
+					isRunning = false;
+					$('#stream').bind('click');
 				}
 			}).css({'box-shadow': '0 0 .5em red'});
 			createArticle();
@@ -108,19 +107,18 @@ var startWidth = $(window).width();
 						}});
 					});
 				}
-
+				//create new div, add it to queue, append contents from szld article
 				var newDiv = document.createElement('div');
-				$szlQueue.append($(newDiv).attr('id', 'newSzl' + szlCount).css({  //use szlcount number as position in array to pull text from
-					'position':'absolute', 'width': $(window).width() * 0.20, 'height': '90%',
-					'background':'white',
-					'border': '1px solid #FF4D4D',
-					'box-shadow':'0 0 1em #FF4D4D',
-					'z-index': szlCount + 1,
-					'top': '1px',
-					'left': '5px'
-				}).addClass('szld').css('overflow','hidden').append(szld));
+				$szlQueue.append($(newDiv).attr('id', 'newSzl' + szlCount).addClass('szld').css({  //use szlcount number as position in array to pull text from 
+					'width': $(window).width() * 0.20,
+					'z-index': szlCount + 1
+				}).append(szld));
+				szlCount += 1;
 				$queueItems = $('#queue div.szld');
 				$lastSzld = $queueItems.filter(':last');
+
+				//TODO: adding new item when last one is off screen messes up previous items
+				//reposition queue so the newest item added is visible
 				$szlQueue.animate({left: 0},{duration: 300,
 					step: function(){
 						$queueItems.each(function(){
@@ -132,18 +130,19 @@ var startWidth = $(window).width();
 						});
 					}
 				});
+
+				//set descending z-indexes for items after the newly added item
 				$lastSzld.prevAll().each(function(index){
 					$(this).css({'z-index' : $(this).next().css('z-index') - 1,
 					'box-shadow': '0 0 .8em black', 'border':'none'});
 				});
-				szlCount += 1;
 
 				//if not kindle..
 				if (navigator.userAgent.indexOf("Silk") == -1) {
 					$szlQueue.css('width', $('#queue').width() + ($queueItems.width() * 0.90));
 				} else alert('kindle');
 
-				//initialize draggable queue
+				//initialize draggable queue with updated containment property
 				$szlQueue.draggable(queueDrag);
 			}
 		}
@@ -156,8 +155,8 @@ var startWidth = $(window).width();
 					var rerateID = $('#queue .rerate').next('.szld').attr('id');
 					$('#queue div.rerate').remove();
 					$queueItems.each(function(){
-						var current = $(this).index();
-						if(current < $("#" + rerateID).index() || rerateID === undefined) {
+						var currentItem = $(this).index();
+						if(currentItem < $("#" + rerateID).index() || rerateID === undefined) {
 							//$(this).animate({left: parseInt($(this).css('left')) - ($(window).width() * .15) + 'px'},{duration: 500});
 						}
 					});
@@ -173,7 +172,7 @@ var startWidth = $(window).width();
 	};
 
 	createArticle = function(){
-		var newCont = $("<div id='bottomArticle'></div");//container for next article
+		var newCont = $("<div id='bottomArticle'></div");  //container for next article
 		var contents = $("<div class='articleContent'></div>");
 		$('#stream').append(newCont);
 		if ($('#middleArticle').hasClass('requeue')){
@@ -295,6 +294,7 @@ var startWidth = $(window).width();
 		start: function(ui, e){
 			dragged = true;
             startTime = new Date();
+            console.log(Date.now());
 		},
 
 		drag: function(e, ui){
@@ -330,32 +330,38 @@ var startWidth = $(window).width();
 		},
 
 		stop: function(e, ui){
-			var endTime = new Date(),
+			var endTime = Date.now(),
 				endPoint = e.pageX;
 				pos.push(endPoint);
-				theTime.push(new Date());
+				theTime.push(endTime);
 				timeDiff = ((endTime - startTime)/1000);
 				distance = Math.abs((endPoint - pos[0]));
 				velocity = distance/timeDiff;
 				//console.log(theTime.length + ', ' + pos.length);
 
 			//time and distance between final two points during drag
-				endOfDragDistance = Math.abs(pos[pos.length - 1] - pos[pos.length - 2]);
-				endOfDragTime = (theTime[theTime.length - 1] - theTime[theTime.length - 2]);
-				//console.log(theTime);
-				console.log(endOfDragDistance + 'px');
-				console.log(endOfDragTime + 'ms');
-				finalVelocity = endOfDragDistance/endOfDragTime;// in seconds
-				console.log(finalVelocity);
+				endOfDragDistance = Math.abs( pos[pos.length - 1] - pos[pos.length - 2] );
+				endOfDragTime = ( theTime[theTime.length - 1] - theTime[theTime.length - 2] );
+				finalVelocity = endOfDragDistance/endOfDragTime;
 
-				if (endPoint < pos[0]){
-					//increase negative left value
-					$(this).animate({left: $(this).offset().left + (-1 * endOfDragTime/100 * velocity)}, {duration: 300, easing: 'easeOutCirc',//duration should be length of time it takes the velocity to decay 
+				//console.log(endOfDragDistance + 'px');
+				//console.log(endOfDragTime + 'ms');
+				//console.log(finalVelocity);
+				
+				//animate drag continuation based on final velocity
+				$(this).animate({ left: (endPoint < pos[0]) ?
+					$(this).offset().left + (-1 * endOfDragDistance/100 * velocity) :
+					$(this).offset().left + (endOfDragDistance/100 * velocity) }, {
+						duration: 300, easing: 'easeOutCirc',//duration should be length of time it takes the velocity to decay 
 						step: function(){
 							//decrement velocity for deceleration
 							//console.log(velocity);
-							velocity -= 0.01;
-							if ($(this).offset().left > 0 && $(this).offset().left < overlap){
+							//console.log(finalVelocity);
+							velocity = Math.exp(-0.5 * finalVelocity);
+							finalVelocity += 0.05;
+							console.log(velocity);
+							//velocity -= 0.01;
+							/*if ($(this).offset().left > 0 && $(this).offset().left < overlap){
 							var rotation = (-90 * (1-($(this).offset().left/overlap)));
 								if (rotation >= -45){
 									$(this).next().offset({left:0}).css({
@@ -369,51 +375,29 @@ var startWidth = $(window).width();
 								$(this).next().css({
 									'transform' : 'perspective( 600px ) rotateY(0deg)'
 								});
-							}
+							}*/
+
 						}
-					});
-				} else {
-					//increase positive left value
-					$(this).animate({left: $(this).offset().left + (endOfDragDistance/100 * velocity)}, {duration: 300, easing: 'easeOutCirc',
-						step: function(){
-							//decrement velocity for deceleration
-							//console.log(velocity);
-							velocity -= 0.01;
-							if ($(this).offset().left > 0 && $(this).offset().left < overlap){
-							var rotation = (-90 * (1-($(this).offset().left/overlap)));
-								if (rotation >= -45){
-									$(this).next().offset({left:0}).css({
-										//'left':'1px',
-										'transform-origin' : '0px 0px' ,
-										'perspective-origin': '0% 50%',
-										'transform' : 'perspective( 600px ) rotateY('+ 2 * rotation +'deg)'
-									});
-								}
-							} else if ($(this).offset().left >= overlap){
-								$(this).next().css({
-									'transform' : 'perspective( 600px ) rotateY(0deg)'
-								});
-							}
-						}
-					});
-				}
+				});
+ 
 				//fresh arrays for next drag
 				pos = [];
 				theTime = [];
+
 			//http://stackoverflow.com/questions/3486760/how-to-avoid-jquery-ui-draggable-from-also-triggering-click-event/13973319#13973319
-			var leftBound = ( (e.pageX > $(window).width() * 0.38) ? leftBound = -5 : leftBound = 0 );
-				/*rightofZero = $('.szld').filter(function() {
+			var leftBound = ( (e.pageX > $(window).width() * 0.38) ? leftBound = -5 : leftBound = 0 ),
+				rightofZero = $('.szld').filter(function() {
 					return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.10));
 				}),
-				theID = $(rightofZero).attr('id');//needs a better name
+				theID = $(rightofZero).attr('id');//needs a better name*/
 			
 			//prevent click from firing if touchend is over one of the szld elements
-			*/$(e.toElement ).one('click', function(e){
+			$(e.toElement ).one('click', function(e){
 				e.stopImmediatePropagation();
-			});/*
+			});
 
 			//adjust elements left based on initial distance of 'rightofZero' at time of mouseup
-			$(rightofZero).next().prevAll().each(function(){
+			/*$(rightofZero).next().prevAll().each(function(){
 				$(this).animate({ left: $(this).position().left + (($(window).width() * 0.10) - $(rightofZero).offset().left)}, {duration: 500,
 					//reset rotate back to 0 as elements reset right
 					step:function(){
@@ -426,11 +410,14 @@ var startWidth = $(window).width();
 				});
 			});*/
 
+			//TODO: left containment gets further left after dragging back and forth
 			//move queue back to initial position when last szld element is > 0
 			if ($lastSzld.offset().left > 0){
 				$szlQueue.animate({left: leftBound}, {duration: (Math.abs($lastSzld.offset().left) > $(window).width() * 0.25 ? Math.abs($lastSzld.offset().left) : 300),
 					step: function(){
-						rightofZero = $('.szld').filter(function() {return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.18));});
+						rightofZero = $('.szld').filter(function() {
+							return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.10));
+						});
 						$(rightofZero).each(function(){
 							$(this).next().css({'transform-origin' : '0px 0px' ,
 							'transform' : 'perspective( 600px ) rotateY(0deg)'});
@@ -439,27 +426,31 @@ var startWidth = $(window).width();
 							$(this).css({
 								'top': adjustTop($(this).offset().left) ,
 								'height': startHeight - ($(this).position().top)/2 + '%',
+								//adjust left position of items if they've shifted further right during dragging
 								'left': $(this).offset().left - ($('.szld:last').offset().left - 5)
 							});
 						});
-						$(this).css({'z-index' : $(this).closest().css('z-index') - 1});
+					//reset z's if they're out of order after dragging fast
+					//TODO: prevent them from getting out of order in the first place
 					$lastSzld.prevAll().each(function(){
 						$(this).css({'z-index' : $(this).next().css('z-index') - 1});
 					});
-					//$(this).width($(this).width - ($(this).find('.szld:last').offset().left - 5));
-				}, complete: function(){
-					//queue bounces back after hitting left edge
-					if (e.pageX > $(window).width() * 0.38){
-						$(this).animate({left: 0}, 400);
+					//$(this).css({'z-index' : $(this).closest().css('z-index') - 1});
+					}, complete: function(){
+						//queue bounces back after hitting left edge
+						if (e.pageX > $(window).width() * 0.38){
+							$(this).animate({left: 0}, 400);
+						}
 					}
-				}});
+				});
 				$queueItems.css({'box-shadow':'0 0 1em black','border': 'none'});
 				$lastSzld.css({'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'});
 			}
 		}
 	};
 
-	$szlQueue.on('click', '.szld' , function(){//switch top article content with queued content
+	//switch top article content with queued content
+	$szlQueue.on('click', '.szld' , function(){
 		duplicate = true;
 		var clicked = $(this).attr('id');//clicked one
 		$('#' + clicked).css({'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'}).siblings().css({
@@ -499,8 +490,8 @@ var startWidth = $(window).width();
 		}
 	});
 
+	//szl/fzl by clicking edges
 	$('#stream').click(function(e){
-		e.stopPropagation();
 		if (!isRunning){
 			if (e.pageX < $(document).width() * 0.10){//within 10% of left edge
 				fzl();
@@ -534,7 +525,7 @@ var startWidth = $(window).width();
 	});*/
 
 	//prevent browser window from scrolling on iphone
-	$('body').bind('touchmove', function (ev) {
-		ev.preventDefault();
+	$('body').bind('touchmove', function (e) {
+		e.preventDefault();
 	});
 });
