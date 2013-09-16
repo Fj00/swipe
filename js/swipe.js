@@ -22,21 +22,32 @@ $(document).ready(function(){
 		startSize = $(window).width(),
 		overlap = $(window).width() * 0.10,
 		current,
-		thecontent = [];//holder for article content in case user clicks picture from the queue..retrieve it from this array
+		theContent = [],
+		pos = [],
+		theTime = [],
+		swipeStartTime,
+		startPos = {x:0, y:0},
+		distance = {x:0, y:0},
+		scaledDistance, swipeTime, swipeAngle = 0,
+		dragStartTime,
+		startPoint,
+		endPoint,
+		sidevalue = 0.15,
+		arrows = true;
 
 	articles.push(
 		"<p class='articleText'><b>article1 article1 article1 </b>article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1</p>",
 		"<p class='articleText'>article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 <i>article#2 article#2 article#2 article#2 article#2  article#2 </i>article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2</p>",
 		"<p class='articleText'>article3 article3 <h1>article3 article3 article3 </h1>article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 </p>",
-		"<p class='articleText'>article#4 article#4 article#4 article#4 article#4 article#4 article#4 </p>article#4 article#4 article#4 article#4 article#4 <p>article#4 article#4 article#4 article#4 article#4 article#4</p> article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 </p>",
+		"<p class='articleText'>article#4 article#4 article#4 article#4 article#4 article#4 article#4 </p><p>article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4</p> <p>article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 </p>",
 		"<p class='articleText'>article5 <p>article5 article5 article5 article5 article5<p> article5 article5 article5 article5 article5 article5 article5 article5<p>",
 		"<h1><a href=''target=''>Giant microwave blaster lets bread stay fresh-ish for over 60 days</a></h1><h2><a href='https://dvice.com/' target='_blank'>DVICE</a> November 30th, 2012 16:46 EST</h2><div id='szzzl-story-long-wrapper'><p><div><div><p class='articleText'>About a third of the bread that consumers buy gets tossed out or fed to ducks who don't know any better after it goes stale or gets moldy. You just cant win with bread- either you keep it moist and gross stuff grows on it, or you dry it out and it turns into a rock. A Texas company says it has a solution, in the form of a huge homogenized microwave cannon.</p><p class='articleText'>Microwaves, being radiation, work quite well at killing things like fungi. The reason that you cant use your microwave to kill fungi is that your microwave sucks, and due to the wavelength of the microwaves used in microwave ovens (just under five inches), you get hot spots and cold spots that show up at half of that wavelength. Microzap's microwave chamber, on the other hand, works differently, and much better. CEO Don Stull explains:</p><div>For the latest tech stories, follow DVICE on Twitter at @dvice or find us on Facebook</div></div></div></p><p><a href='https://dvice.com/archives/2012/11/giant-microwave.php' target='_blank'>Read more</a></p></div>"
 	);
 
 	//TODO: orientation change messes up element sizes
 
-	//could put this in self-executing function?
-	$(window).on('resize load orientationchange', function(){//adjust elements for different screen sizes and when orientation changes
+	//adjust elements for different screen sizes and when orientation changes
+	$(window).on('resize load orientationchange', function(){
 		//alert(window.devicePixelRatio);
 		$('body').show();
 		//article overlaps 10% of adjacent article
@@ -45,7 +56,7 @@ $(document).ready(function(){
 			szldWidth = ($(window).width() * 0.2)  + (difference/5),
 			w_box = $(window).width(),
 			h_box = $('#stream').height(),
-			w_total = ((w_box - $('.article').width())/2) - 2, //400
+			w_total = ((w_box - $('.article').width())/2) - 2,
 			h_total = (h_box - $('.article').height())/2,
 			css = {"position": "absolute", "margin-left": w_total +"px"};
 
@@ -57,7 +68,6 @@ $(document).ready(function(){
 		$('#share').css('margin-left', parseInt($('#topArticle').css('margin-left'), 10) * -1 + 'px' );
 		$('#shareMenu').css("left", ($(window).width() - parseInt($('#shareMenu').css('width'), 10) + 'px'));
 		//TODO: adjust szld items on window resize
-		//$queueItems.css('width', '10%');
 			if($('.szld').length){
 				$('.szld').css({
 					//'left': parseInt($(this).css('left'), 10) - 0.10 + 'px',
@@ -81,9 +91,11 @@ $(document).ready(function(){
 	szl = function(e){
 		if (!isRunning){
 			isRunning = true;
-			var szld = $('#topArticle').contents().clone();
+			var szld = $('#topArticle').html();
+			var newContainer = $('<div id="new"></div>').append(szld);
 			$topArticle = $('#topArticle');
-			thecontent.push(szld);
+			theContent.push(szld);
+			//console.log(theContent);
 			//var theIMG = $('#topArticle').find('img').clone();  // pull out just the img from article content
 			var artText = $topArticle.text();
 			$topArticle.animate({left: width},{queue: false, duration: 500,
@@ -102,19 +114,37 @@ $(document).ready(function(){
 				//if not in queue, add it
 				if (szlCount > 0){
 					$queueItems.each(function(){
-						$(this).animate({left: parseInt($(this).css('left'), 10) + overlap + 'px'},{duration: 500, complete:function(){
-							queueDrag.containment = [-1 * ($('.szld:first').offset().left + overlap), 0, $(window).width()/2, 0];//adjust left containment based on far right item in queue
-						}});
+						var cssLeft = parseInt($(this).css('left'), 10);
+						$(this).animate({left: cssLeft + overlap + 'px'},{duration: 500, 
+							complete:function(){
+								//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];//adjust left containment based on far right item in queue
+							}
+						});
 					});
 				}
 				//create new div, add it to queue, append contents from szld article
-				var newDiv = document.createElement('div');
+				newDiv = document.createElement('div');
+					$(newDiv).addClass('szld');
+					$('#queue').append($(newDiv)
+						.addClass('szld')
+						.attr('id', 'newSzl' + szlCount)
+						.css({'width': $(window).width() * 0.20, 'z-index': szlCount + 1}));
+				$(theContent).each(function(index){
+					//console.log(theContent[index]);
+					$('#newSzl' + szlCount).append(theContent[szlCount]);
+				});
+				$queueItems = $('#queue div.szld');
+				if ($queueItems.length > 11){
+					$queueItems.eq(0).remove();
+				}
+				console.log($queueItems.length);
+				/*var newDiv = document.createElement('div');
 				$szlQueue.append($(newDiv).attr('id', 'newSzl' + szlCount).addClass('szld').css({  //use szlcount number as position in array to pull text from 
 					'width': $(window).width() * 0.20,
 					'z-index': szlCount + 1
-				}).append(szld));
+				}).append(szld));*/
 				szlCount += 1;
-				$queueItems = $('#queue div.szld');
+				//$queueItems = $('#queue div.szld');
 				$lastSzld = $queueItems.filter(':last');
 
 				//TODO: adding new item when last one is off screen messes up previous items
@@ -195,26 +225,21 @@ $(document).ready(function(){
 	};
 	$article.draggable(newArticle);
 
-	var start_time,
-		startPos = {x:0, y:0},
-		distance = {x:0, y:0},
-		scaledDistance, swipeTime, swipeAngle = 0;
-		//swipeTime = 0,
-		//swipeAngle = 0;
-
+	
 	function start(e) {
-		start_time = new Date();
+		swipeStartTime = new Date();
 		startPos.x = e.pageX;
 		startPos.y = e.pageY;
 	}
 
 	function end(e) {
 		var now = new Date();
-		swipeTime = (now - start_time)/1000;
+		swipeTime = (now - swipeStartTime)/1000;
 		distance.x = e.pageX - startPos.x;
 		distance.y = e.pageY - startPos.y;
 		swipeAngle = Math.atan(distance.y / distance.x) * (180 / Math.PI);
 		scaledDistance = Math.sqrt((distance.x / width)^2 + (distance.y / height)^2);
+		if (!isRunning) checkForSwipe();
 	}
 
 	$('#content').mousedown(function(e){
@@ -223,7 +248,6 @@ $(document).ready(function(){
 		//console.log(e.pageX);
 	}).mouseup(function(e){
 		end(e);
-		if (!isRunning) checkForSwipe();
 	});
 
 	checkForSwipe = function(){
@@ -257,6 +281,8 @@ $(document).ready(function(){
 		}
 	};
 
+	//
+
 	//set queue item z-indexes based on their position
 	setZ = function(szldItem, $this){
 		if (szldItem < 0) {
@@ -275,29 +301,29 @@ $(document).ready(function(){
 		if (szldItem > -5 &&  szldItem < 5) {
 			$this.css({
 				'z-index': '200000',
-				'box-shadow':'0 0 1em #FF4D4D',
+				'box-shadow':'0 0 1em #FF4D4D',//take out red
 				'border': '1px solid #FF4D4D'
 			}).siblings().css({'border':'none', 'box-shadow':'0 0 .8em black'});
 		}
 	};
 	
-	var startTime,
-		theTime = [],
-		pos = [],
-		startPoint,
-		endPoint;
 	//object passed to draggable method
+	var lastSzldID;
 	var queueDrag = {
 		axis: "x",
 		scroll: false,
 
 		start: function(ui, e){
 			dragged = true;
-            startTime = new Date();
+            dragStartTime = new Date();
             console.log(Date.now());
+            var lastSzld = $('.szld:last');
+                lastSzldID = $('.szld:last').attr('id');
+            console.log(lastSzld);
 		},
 
 		drag: function(e, ui){
+			queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
 			$queueItems.each(function(){
 				var szldItem = $(this).offset().left / $(window).width() * 100;
 				//////article with focus on left
@@ -327,6 +353,41 @@ $(document).ready(function(){
 			current = new Date();
 			theTime.push(current);
 			pos.push(e.pageX);
+
+			//add a new item to the right side when ones rotates off of the left side
+			var lastOne = $('.szld').length - 1;//get the eq position of the last one on the left
+			//console.log(lastOne);
+			//console.log($('.szld:last').index());
+			//console.log($('.szld').eq(lastOne).attr('id'));
+
+			//if the offset of the last one on the left becomes < 0..
+			if ($('.szld').eq(lastOne).offset().left < 0 ){
+				//remove it
+				$('.szld').eq(lastOne).remove();
+				//console.log('true');
+				//console.log($('.szld').eq(0).attr('id'));
+				//console.log(theContent.length - $queueItems.length);
+
+				newDiv = document.createElement('div');//create new div
+				$('#queue').prepend($(newDiv)//add it to the first position (the right)
+					.addClass('szld')
+					.attr('id','newSzl' + (theContent.length - $queueItems.length))//give it a numbered ID that's one less than its left neighbor
+					.css({
+						'width': $(window).width() * 0.20,
+						'z-index': $(this).next().css('z-index') - 1,
+						'left': parseInt($('.szld').eq(0).css('left'), 10) + overlap + 'px'
+					}));
+
+				//append corresponding content from content array
+				$('#newSzl' + (theContent.length - $queueItems.length)).append(theContent[theContent.length - $queueItems.length])
+					//give it appropriate top & height value **doesn't do anything yet
+					.css({
+						'top': adjustTop($(this).offset().left),
+						'height': startHeight - ($(this).position().top)/2 + '%'
+					});
+				//adjust containment to prevent last one on the right from being dragged off left side
+				queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
+			}
 		},
 
 		stop: function(e, ui){
@@ -334,7 +395,7 @@ $(document).ready(function(){
 				endPoint = e.pageX;
 				pos.push(endPoint);
 				theTime.push(endTime);
-				timeDiff = ((endTime - startTime)/1000);
+				timeDiff = ((endTime - dragStartTime)/1000);
 				distance = Math.abs((endPoint - pos[0]));
 				velocity = distance/timeDiff;
 				//console.log(theTime.length + ', ' + pos.length);
@@ -359,7 +420,7 @@ $(document).ready(function(){
 							//console.log(finalVelocity);
 							velocity = Math.exp(-0.5 * finalVelocity);
 							finalVelocity += 0.05;
-							console.log(velocity);
+							//console.log(velocity);
 							//velocity -= 0.01;
 							/*if ($(this).offset().left > 0 && $(this).offset().left < overlap){
 							var rotation = (-90 * (1-($(this).offset().left/overlap)));
@@ -371,12 +432,18 @@ $(document).ready(function(){
 										'transform' : 'perspective( 600px ) rotateY('+ 2 * rotation +'deg)'
 									});
 								}
-							} else if ($(this).offset().left >= overlap){
-								$(this).next().css({
-									'transform' : 'perspective( 600px ) rotateY(0deg)'
-								});
-							}*/
 
+							}*/
+							$('.szld').each(function(){
+								var $this = $(this);
+								var szldItem = $(this).offset().left / $(window).width() * 100;
+								if ($(this).offset().left >= overlap){
+									$(this).next().css({
+										'transform' : 'perspective( 600px ) rotateY(0deg)'
+									});
+								}
+								setZ($this, szldItem);
+							});
 						}
 				});
  
@@ -413,7 +480,7 @@ $(document).ready(function(){
 			//TODO: left containment gets further left after dragging back and forth
 			//move queue back to initial position when last szld element is > 0
 			if ($lastSzld.offset().left > 0){
-				$szlQueue.animate({left: leftBound}, {duration: (Math.abs($lastSzld.offset().left) > $(window).width() * 0.25 ? Math.abs($lastSzld.offset().left) : 300),
+				$szlQueue.stop().animate({left: leftBound}, {duration: (Math.abs($lastSzld.offset().left) > $(window).width() * 0.25 ? Math.abs($lastSzld.offset().left) : 300),
 					step: function(){
 						rightofZero = $('.szld').filter(function() {
 							return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.10));
@@ -500,9 +567,7 @@ $(document).ready(function(){
 			}
 		}
 	});
-	/////
-	var sidevalue = 0.15,
-		arrows = true;
+
 	/*$('.arrows').mouseup(function(e){
 		if (e.pageX < $(document).width() * sidevalue){//within 10% of left edge
 			fzl();
