@@ -551,12 +551,15 @@ $(document).ready(function(){
 	//share menu
 	var $shareMenu = $('#shareMenu');
 	$('#shareText').click(function(){
-		if (parseInt($shareMenu.css('height'), 10) > 0){
-			$shareMenu.animate({height: 0},500);
+		//slides up and down with css transition
+		if ($shareMenu.hasClass('clicked')){
+			$shareMenu.removeClass('clicked').addClass('hideIt');
+			//$shareMenu.animate({height: 0},500);
 		}
 		else {
-			$shareMenu.css("left", ($(window).width() - parseInt($shareMenu.css('width'), 10) + 'px'));
-			$shareMenu.animate({height: '938px'}, 500);
+			//$shareMenu.css("left", ($(window).width() - parseInt($shareMenu.css('width'), 10) + 'px'));
+			//$shareMenu.animate({height: '938px'}, 500);
+			$shareMenu.removeClass('hideIt').addClass('clicked');
 		}
 	});
 
