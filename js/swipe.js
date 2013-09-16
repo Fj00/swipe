@@ -309,6 +309,7 @@ $(document).ready(function(){
 	
 	//object passed to draggable method
 	var lastSzldID;
+	var arrayPos = 1;
 	var queueDrag = {
 		axis: "x",
 		scroll: false,
@@ -323,7 +324,7 @@ $(document).ready(function(){
 		},
 
 		drag: function(e, ui){
-			queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
+			//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
 			$queueItems.each(function(){
 				var szldItem = $(this).offset().left / $(window).width() * 100;
 				//////article with focus on left
@@ -361,7 +362,7 @@ $(document).ready(function(){
 			//console.log($('.szld').eq(lastOne).attr('id'));
 
 			//if the offset of the last one on the left becomes < 0..
-			if ($('.szld').eq(lastOne).offset().left < 0 ){
+			if ($queueItems.length >= 12 && $('.szld').eq(lastOne).offset().left < 0 && (theContent.length - $queueItems.length) >= arrayPos){
 				//remove it
 				$('.szld').eq(lastOne).remove();
 				//console.log('true');
@@ -377,16 +378,18 @@ $(document).ready(function(){
 						'z-index': $(this).next().css('z-index') - 1,
 						'left': parseInt($('.szld').eq(0).css('left'), 10) + overlap + 'px'
 					}));
-
+				console.log($('.szld:first').eq());
+				console.log($('.szld:first').index());
 				//append corresponding content from content array
-				$('#newSzl' + (theContent.length - $queueItems.length)).append(theContent[theContent.length - $queueItems.length])
+				$('#newSzl' + (theContent.length - $queueItems.length)).append(theContent[(theContent.length - $queueItems.length) - arrayPos])
 					//give it appropriate top & height value **doesn't do anything yet
 					.css({
 						'top': adjustTop($(this).offset().left),
 						'height': startHeight - ($(this).position().top)/2 + '%'
 					});
 				//adjust containment to prevent last one on the right from being dragged off left side
-				queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
+				//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
+				arrayPos += 1;
 			}
 		},
 
