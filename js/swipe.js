@@ -1,30 +1,25 @@
 document.write('<style type="text/css">body{display:none}</style>');//hide content while jquery sets some css
-
 $(document).ready(function(){
-	var index = 0,
-		articles = [],
-		width = $(window).width(),
-		height = $(window).height(),
-		left = -width + 'px',
-		right = width + 'px',
-		szld,
-		szlCount = 0,
-		artPos,
-		artLeft,
-		duplicate,
-		isRunning = false,
-		dragged = false,
-		startHeight = 85,
+
+	var szldContent,//html content of szld article
 		$article = $('#stream div.article'),
 		$szlQueue = $('#queue'),
 		$topArticle = $('#topArticle'),
 		$middleArticle = $('#middleArticle'),
-		startSize = $(window).width(),
-		overlap = $(window).width() * 0.10,
-		current,
-		theContent = [],
-		pos = [],
-		theTime = [],
+		//arrays
+		a_articles = [],
+		a_theContent = [],
+		a_pos = [],
+		a_theTime = [],
+		//boolean
+		b_isRunning = false,//whether or not article animation is running
+		b_dragged = false,
+		b_duplicate,//flag for whether or not the szld article is already in the queue
+		b_arrows = true,
+		//integer
+		i_articleIndex = 0,
+		i_szlCount = 0,//track how many have been szl'd
+		i_startHeight = 85,
 		swipeStartTime,
 		startPos = {x:0, y:0},
 		distance = {x:0, y:0},
@@ -32,10 +27,18 @@ $(document).ready(function(){
 		dragStartTime,
 		startPoint,
 		endPoint,
-		sidevalue = 0.15,
-		arrows = true;
+		artPos,
+		artLeft,
+		width = $(window).width(),
+		height = $(window).height(),
+		left = -width + 'px',
+		right = width + 'px',
+		startSize = $(window).width(),
+		overlap = $(window).width() * 0.10,
+		currentDate,//time when queue drag is released
+		sidevalue = 0.15;
 
-	articles.push(
+	a_articles.push(
 		"<p class='articleText'><b>article1 article1 article1 </b>article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1</p>",
 		"<p class='articleText'>article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 <i>article#2 article#2 article#2 article#2 article#2  article#2 </i>article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2 article#2</p>",
 		"<p class='articleText'>article3 article3 <h1>article3 article3 article3 </h1>article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 </p>",
@@ -61,9 +64,18 @@ $(document).ready(function(){
 			css = {"position": "absolute", "margin-left": w_total +"px"};
 
 		$('.article').css(css);
-		$('#paper0').css('margin-left', w_total + 2 + 'px');
-		$('#paper1').css('margin-left', w_total + 4 + 'px');
-		$('#paper2').css('margin-left', w_total + 6 + 'px');
+		$('#paper0').css({
+			'margin-left': w_total + 2 + 'px',
+			'top': ($('.article').height()) + 'px'
+		});
+		$('#paper1').css({
+			'margin-left': w_total + 4 + 'px',
+			'top': ($('.article').height() + 2) + 'px'
+		});
+		$('#paper2').css({
+			'margin-left': w_total + 6 + 'px',
+			'top': ($('.article').height() + 4) + 'px'
+		});
 		$('#username').css('margin-left', parseInt($('.article').css('margin-left'), 10) + 'px');
 		$('#share').css('margin-left', parseInt($('#topArticle').css('margin-left'), 10) * -1 + 'px' );
 		$('#shareMenu').css("left", ($(window).width() - parseInt($('#shareMenu').css('width'), 10) + 'px'));
@@ -80,21 +92,28 @@ $(document).ready(function(){
 		artLeft = $('#topArticle').css('left');
 		width = $(window).width();
 		height = $(window).height();
+		console.log($('#topArticle').css('margin-top'));
+		console.log($('#topArticle').css('margin-left'));
+		$('#paper3').css('margin-left', w_box - parseInt($('.article').css('margin-left'), 10) - 5 + 'px');
+		$('#paper4').css('margin-left', w_box - parseInt($('.article').css('margin-left'), 10) - 3 + 'px');
+		$('#paper5').css('margin-left', w_box - parseInt($('.article').css('margin-left'), 10) - 1 + 'px');
+		console.log($('#paper3').css('margin-right'));
+
 	});
 
-	//$('#topArticle').html(articles[5]);
+	//$('#topArticle').html(a_articles[5]);
 	//return nonlinear top value based on the element's left offset
 	adjustTop = function(offset){
 		return 100 * (1.0-Math.min(0.98,(0.75 + ( 0.25/ (Math.exp(0.003*offset))) )) ) + '%';
 	};
 
 	szl = function(e){
-		if (!isRunning){
-			isRunning = true;
-			var szld = $('#topArticle').html();
-			var newContainer = $('<div id="new"></div>').append(szld);
+		if (!b_isRunning){
+			b_isRunning = true;
+			var szldContent = $('#topArticle').html();
+			var newContainer = $('<div id="new"></div>').append(szldContent);
 			$topArticle = $('#topArticle');
-			theContent.push(szld);
+			a_theContent.push(szldContent);
 			//console.log(theContent);
 			//var theIMG = $('#topArticle').find('img').clone();  // pull out just the img from article content
 			var artText = $topArticle.text();
@@ -103,19 +122,19 @@ $(document).ready(function(){
 					$(this).remove();
 					$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
 					$('#bottomArticle').attr('id', 'middleArticle');
-					isRunning = false;
+					b_isRunning = false;
 					$('#stream').bind('click');
 				}
 			}).css({'box-shadow': '0 0 .5em red'});
 			createArticle();
-			if (duplicate){//if article already in queue, don't add it
-				duplicate = false;//next article will be different, so this allows the else block to run
+			if (b_duplicate){//if article already in queue, don't add it
+				b_duplicate = false;//next article will be different, so this allows the else block to run
 			} else {
 				//if not in queue, add it
-				if (szlCount > 0){
+				if (i_szlCount > 0){
 					$queueItems.each(function(){
 						var cssLeft = parseInt($(this).css('left'), 10);
-						$(this).animate({left: cssLeft + overlap + 'px'},{duration: 500, 
+						$(this).animate({left: cssLeft + overlap + 'px'},{duration: 500,
 							complete:function(){
 								//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];//adjust left containment based on far right item in queue
 							}
@@ -127,11 +146,11 @@ $(document).ready(function(){
 					$(newDiv).addClass('szld');
 					$('#queue').append($(newDiv)
 						.addClass('szld')
-						.attr('id', 'newSzl' + szlCount)
-						.css({'width': $(window).width() * 0.20, 'z-index': szlCount + 1}));
-				$(theContent).each(function(index){
+						.attr('id', 'newSzl' + i_szlCount)
+						.css({'width': $(window).width() * 0.20, 'z-index': i_szlCount + 1}));
+				$(a_theContent).each(function(index){
 					//console.log(theContent[index]);
-					$('#newSzl' + szlCount).append(theContent[szlCount]);
+					$('#newSzl' + i_szlCount).append(a_theContent[i_szlCount]);
 				});
 				$queueItems = $('#queue div.szld');
 				if ($queueItems.length > 11){
@@ -139,11 +158,11 @@ $(document).ready(function(){
 				}
 				console.log($queueItems.length);
 				/*var newDiv = document.createElement('div');
-				$szlQueue.append($(newDiv).attr('id', 'newSzl' + szlCount).addClass('szld').css({  //use szlcount number as position in array to pull text from 
+				$szlQueue.append($(newDiv).attr('id', 'newSzl' + i_szlCount).addClass('szld').css({  //use i_szlCount number as position in array to pull text from 
 					'width': $(window).width() * 0.20,
-					'z-index': szlCount + 1
+					'z-index': i_szlCount + 1
 				}).append(szld));*/
-				szlCount += 1;
+				i_szlCount += 1;
 				//$queueItems = $('#queue div.szld');
 				$lastSzld = $queueItems.filter(':last');
 
@@ -155,7 +174,7 @@ $(document).ready(function(){
 							//console.log($(this).css('left') + ' ,' + $(this).offset().left);
 							$(this).css({
 								'top': adjustTop($(this).offset().left),
-								'height': startHeight - ($(this).position().top)/2 + '%'
+								'height': i_startHeight - ($(this).position().top)/2 + '%'
 							});
 						});
 					}
@@ -170,7 +189,7 @@ $(document).ready(function(){
 				//if not kindle..
 				if (navigator.userAgent.indexOf("Silk") == -1) {
 					$szlQueue.css('width', $('#queue').width() + ($queueItems.width() * 0.90));
-				} else alert('kindle');
+				} else //alert('kindle');
 
 				//initialize draggable queue with updated containment property
 				$szlQueue.draggable(queueDrag);
@@ -178,8 +197,8 @@ $(document).ready(function(){
 		}
 	};
 	fzl = function(e){
-		if (!isRunning){
-			isRunning = true;
+		if (!b_isRunning){
+			b_isRunning = true;
 			$('#topArticle').animate({left: '-'+width+"px"}, {queue: false, duration: 500, easing: 'swing', complete: function(){
 				if($(this).hasClass('rerate')) {
 					var rerateID = $('#queue .rerate').next('.szld').attr('id');
@@ -194,7 +213,7 @@ $(document).ready(function(){
 				$(this).remove();
 				$('#middleArticle').attr('id', 'topArticle').css('margin-left', artPos).draggable(newArticle);
 				$('#bottomArticle').attr('id', 'middleArticle').css('margin-left', artPos);
-				isRunning = false;
+				b_isRunning = false;
 				}
 			}).css({'box-shadow': '0 0 .5em blue'});
 			createArticle();
@@ -206,17 +225,17 @@ $(document).ready(function(){
 		var contents = $("<div class='articleContent'></div>");
 		$('#stream').append(newCont);
 		if ($('#middleArticle').hasClass('requeue')){
-			if(index === 0){
-				$('#bottomArticle').addClass('article').html(articles[index + 5]).css('margin-left', artPos);
+			if(i_articleIndex === 0){
+				$('#bottomArticle').addClass('article').html(a_articles[i_articleIndex + 5]).css('margin-left', artPos);
 			} else {
-				$('#bottomArticle').addClass('article').html(articles[index-1]).css('margin-left', artPos);
+				$('#bottomArticle').addClass('article').html(a_articles[i_articleIndex-1]).css('margin-left', artPos);
 			}
 		}
 		else {
-			$('#bottomArticle').addClass('article').html(articles[index]).css('margin-left', artPos);
-			index += 1;
+			$('#bottomArticle').addClass('article').html(a_articles[i_articleIndex]).css('margin-left', artPos);
+			i_articleIndex += 1;
 		}
-		if (index > 5){ index = 0;}
+		if (i_articleIndex > 5){ i_articleIndex = 0;}
 	};
 
 	//enable article dragging
@@ -239,7 +258,7 @@ $(document).ready(function(){
 		distance.y = e.pageY - startPos.y;
 		swipeAngle = Math.atan(distance.y / distance.x) * (180 / Math.PI);
 		scaledDistance = Math.sqrt((distance.x / width)^2 + (distance.y / height)^2);
-		if (!isRunning) checkForSwipe();
+		if (!b_isRunning) checkForSwipe();
 	}
 
 	$('#content').mousedown(function(e){
@@ -293,7 +312,7 @@ $(document).ready(function(){
 		if (szldItem > 0) {
 			$this.css({
 				'top': adjustTop($this.offset().left),
-				'height': startHeight - ($this.position().top)/2 + '%',//adjust height in relation to top position
+				'height': i_startHeight - ($this.position().top)/2 + '%',//adjust height in relation to top position
 			});
 		}
 
@@ -315,7 +334,7 @@ $(document).ready(function(){
 		scroll: false,
 
 		start: function(ui, e){
-			dragged = true;
+			b_dragged = true;
             dragStartTime = new Date();
             console.log(Date.now());
             var lastSzld = $('.szld:last');
@@ -351,9 +370,9 @@ $(document).ready(function(){
 					});
 				}
 			});
-			current = new Date();
-			theTime.push(current);
-			pos.push(e.pageX);
+			currentDate = new Date();
+			a_theTime.push(currentDate);
+			a_pos.push(e.pageX);
 
 			//add a new item to the right side when ones rotates off of the left side
 			var lastOne = $('.szld').length - 1;//get the eq position of the last one on the left
@@ -362,7 +381,7 @@ $(document).ready(function(){
 			//console.log($('.szld').eq(lastOne).attr('id'));
 
 			//if the offset of the last one on the left becomes < 0..
-			if ($queueItems.length >= 12 && $('.szld').eq(lastOne).offset().left < 0 && (theContent.length - $queueItems.length) >= arrayPos){
+			if ($queueItems.length >= 12 && $('.szld').eq(lastOne).offset().left < 0 && (a_theContent.length - $queueItems.length) >= arrayPos){
 				//remove it
 				$('.szld').eq(lastOne).remove();
 				//console.log('true');
@@ -372,7 +391,7 @@ $(document).ready(function(){
 				newDiv = document.createElement('div');//create new div
 				$('#queue').prepend($(newDiv)//add it to the first position (the right)
 					.addClass('szld')
-					.attr('id','newSzl' + (theContent.length - $queueItems.length))//give it a numbered ID that's one less than its left neighbor
+					.attr('id','newSzl' + (a_theContent.length - $queueItems.length))//give it a numbered ID that's one less than its left neighbor
 					.css({
 						'width': $(window).width() * 0.20,
 						'z-index': $(this).next().css('z-index') - 1,
@@ -381,13 +400,13 @@ $(document).ready(function(){
 				console.log($('.szld:first').eq());
 				console.log($('.szld:first').index());
 				//append corresponding content from content array
-				$('#newSzl' + (theContent.length - $queueItems.length)).append(theContent[(theContent.length - $queueItems.length) - arrayPos])
+				$('#newSzl' + (a_theContent.length - $queueItems.length)).append(a_theContent[(a_theContent.length - $queueItems.length) - arrayPos])
 					//give it appropriate top & height value **doesn't do anything yet
 					.css({
 						'top': adjustTop($(this).offset().left),
-						'height': startHeight - ($(this).position().top)/2 + '%'
+						'height': i_startHeight - ($(this).position().top)/2 + '%'
 					});
-				//adjust containment to prevent last one on the right from being dragged off left side
+				//adjust containment to prevent last one on the right from being b_dragged off left side
 				//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
 				arrayPos += 1;
 			}
@@ -396,16 +415,16 @@ $(document).ready(function(){
 		stop: function(e, ui){
 			var endTime = Date.now(),
 				endPoint = e.pageX;
-				pos.push(endPoint);
-				theTime.push(endTime);
+				a_pos.push(endPoint);
+				a_theTime.push(endTime);
 				timeDiff = ((endTime - dragStartTime)/1000);
-				distance = Math.abs((endPoint - pos[0]));
+				distance = Math.abs((endPoint - a_pos[0]));
 				velocity = distance/timeDiff;
-				//console.log(theTime.length + ', ' + pos.length);
+				//console.log(a_theTime.length + ', ' + a_pos.length);
 
 			//time and distance between final two points during drag
-				endOfDragDistance = Math.abs( pos[pos.length - 1] - pos[pos.length - 2] );
-				endOfDragTime = ( theTime[theTime.length - 1] - theTime[theTime.length - 2] );
+				endOfDragDistance = Math.abs( a_pos[a_pos.length - 1] - a_pos[a_pos.length - 2] );
+				endOfDragTime = ( a_theTime[a_theTime.length - 1] - a_theTime[a_theTime.length - 2] );
 				finalVelocity = endOfDragDistance/endOfDragTime;
 
 				//console.log(endOfDragDistance + 'px');
@@ -413,7 +432,7 @@ $(document).ready(function(){
 				//console.log(finalVelocity);
 				
 				//animate drag continuation based on final velocity
-				$(this).animate({ left: (endPoint < pos[0]) ?
+				$(this).animate({ left: (endPoint < a_pos[0]) ?
 					$(this).offset().left + (-1 * endOfDragDistance/100 * velocity) :
 					$(this).offset().left + (endOfDragDistance/100 * velocity) }, {
 						duration: 300, easing: 'easeOutCirc',//duration should be length of time it takes the velocity to decay 
@@ -451,8 +470,8 @@ $(document).ready(function(){
 				});
  
 				//fresh arrays for next drag
-				pos = [];
-				theTime = [];
+				a_pos = [];
+				a_theTime = [];
 
 			//http://stackoverflow.com/questions/3486760/how-to-avoid-jquery-ui-draggable-from-also-triggering-click-event/13973319#13973319
 			var leftBound = ( (e.pageX > $(window).width() * 0.38) ? leftBound = -5 : leftBound = 0 ),
@@ -495,7 +514,7 @@ $(document).ready(function(){
 						$queueItems.each(function(){
 							$(this).css({
 								'top': adjustTop($(this).offset().left) ,
-								'height': startHeight - ($(this).position().top)/2 + '%',
+								'height': i_startHeight - ($(this).position().top)/2 + '%',
 								//adjust left position of items if they've shifted further right during dragging
 								'left': $(this).offset().left - ($('.szld:last').offset().left - 5)
 							});
@@ -521,7 +540,7 @@ $(document).ready(function(){
 
 	//switch top article content with queued content
 	$szlQueue.on('click', '.szld' , function(){
-		duplicate = true;
+		b_duplicate = true;
 		var clicked = $(this).attr('id');//clicked one
 		$('#' + clicked).css({'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'}).siblings().css({
 			'box-shadow':'0 0 .8em black','border': 'none'
@@ -531,7 +550,7 @@ $(document).ready(function(){
 				$queueItems.each(function(){
 					$(this).css({
 						'top': adjustTop($(this).offset().left) ,
-						'height': startHeight - ($(this).position().top)/2 + '%'
+						'height': i_startHeight - ($(this).position().top)/2 + '%'
 					});
 					var szldItem = $(this).offset().left / $(window).width() * 100;
 					var $this = $(this);
@@ -565,7 +584,7 @@ $(document).ready(function(){
 
 	//szl/fzl by clicking edges
 	$('#stream').click(function(e){
-		if (!isRunning){
+		if (!b_isRunning){
 			if (e.pageX < $(document).width() * 0.10){//within 10% of left edge
 				fzl();
 			} else if (e.pageX > $(document).width() - ($(document).width() * 0.10)){//right edge
@@ -583,11 +602,11 @@ $(document).ready(function(){
 	});
 	$('#content, .arrows').on('mousedown', function(e){
 		if (e.pageX > $(document).width() * sidevalue & e.pageX < $(document).width() - ($(document).width() * sidevalue)){
-			if (arrows) {
+			if (b_arrows) {
 				$('.arrows').fadeIn();
-				arrows = false;
+				b_arrows = false;
 				setTimeout(function(){
-					arrows = true;
+					b_arrows = true;
 				}, 800);
 			}
 		}
