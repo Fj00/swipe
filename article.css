@@ -3,10 +3,6 @@ font-family: myriad;
 src: url('MYRIADPRO-REGULAR.otf');
 }
 
-.ui-page {
-	height: 100%;
-	overflow:hidden;
-}
 
 html {
 	padding: 0;
@@ -78,10 +74,10 @@ footer {
 
 .colorbar {
 	position: relative;
-	height: 3%;
+	height: 5%;
 	width: 100%;
+	min-height: 1.5em;
 	background: #FFFFFF;
-	min-height: 20px;
 	background-image: linear-gradient(180deg, #FFFFFF 0%, #B3BCBC 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, white), color-stop(100%, #B3BCBC)); /* Safari 4+, Chrome 2+ */  
 	background: -webkit-linear-gradient(white, #B3BCBC);
@@ -93,7 +89,7 @@ footer {
 	position: absolute;
 	text-align: left;
 	margin-top: 0;
-	padding-top: .25%;
+	padding: .25%;
 	font-size: 1em;
 	color: black;
 }
@@ -133,14 +129,14 @@ footer {
 }
 
 .addthis_toolbox .custom_images a {
-    width: 64px;
-    height: 64px;
+    width: 32px;
+    height: 32px;
     padding: 0;
 }
 .addthis_toolbox .custom_images a img {
     opacity: 1.0;
-    width: 64px;
-    height: 64px;
+    width: 32px;
+    height: 32px;
 }
 .addthis_toolbox .custom_images a:hover img {
     opacity: 0.75;
@@ -198,6 +194,7 @@ span {
 	height: 2px;
 	z-index: -2;
 	border-right: none;
+	box-shadow: none;
 }
 #paper1{
 	position: absolute;
@@ -205,6 +202,7 @@ span {
 	height: 2px;
 	z-index: -3;
 	border-right: none;
+	box-shadow: none;
 }
 #paper2{
 	position: absolute;
@@ -218,7 +216,9 @@ span {
 	position: absolute;
 	top: 2px;
 	width: 3px;
+	z-index: -2;
 	border-left: none;
+	box-shadow: none;
 }
 #paper4{
 	position: absolute;
@@ -226,6 +226,7 @@ span {
 	width: 3px;
 	z-index: -3;
 	border-left: none;
+	box-shadow: none;
 }
 #paper5{
 	position: absolute;
@@ -271,20 +272,6 @@ span {
 	z-index: 2;
 }
 
-.ui-loader {
-	display: none;
-}
-
-#holder{
-	position: absolute;
-	width: 10px;
-	height: 10px;
-	overflow: hidden;
-	left: 0;
-	top: 0;
-	border: 1px solid black;
-	display: none;
-}
 /*for devices with 2:1 pixel ration*/
 @media (min-resolution: 1.5dppx), (min-resolution: 144dpi), (-webkit-min-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2) {
 	.article{
@@ -342,18 +329,25 @@ span {
 		color: black;
 		z-index: 5;
 	}
-		#shareMenu{
+	#shareMenu{
 		position: relative;
-		top: 3%;/*adjust menu up & down*/
+		top: 5%;/*adjust menu up & down*/
 		width: 128px;
 		height: 0;
 		overflow:hidden;
 	}
 
+	#shareMenu.hideIt {
+		height: 0;
+	}
+	#shareMenu.clicked {
+		height: 750px;
+	}
+
 	span {
 		font-size: 3em;
 	}
-	.articleText {
-		font-size: 1em;
+	#stream{
+		font-size: 16px;
 	}
 }
