@@ -136,6 +136,7 @@ $(document).ready(function(){
 			} else {
 				artImg.push(theIMG.attr('src'));
 				a_theContent.push(szldContent);
+				console.log(a_theContent);
 				//if not in queue, add it
 				if (i_szlCount > 0){
 					$queueItems.each(function(){
@@ -568,7 +569,7 @@ $(document).ready(function(){
 	//switch top article content with queued content
 	$szlQueue.on('click', '.szld' , function(){
 		b_duplicate = true;
-		var clicked = $(this).attr('id');//clicked one
+		var clicked = $(this).attr('id'); // ID of clicked item
 		$('#' + clicked).css({'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'}).siblings().css({
 			'box-shadow':'0 0 .8em black','border': 'none'
 		});
@@ -589,10 +590,9 @@ $(document).ready(function(){
 		//$(this).next().css('z-index', $(this).css('z-index') - 1);
 		$('#queue div').removeClass('rerate');
 		$(this).addClass('rerate');
-		var contCopy = $(this).index();
-		console.log(contCopy);
+		clicked = clicked.replace(/\D/g,'');	// strip text from the ID in order to get the correct position in theContent array
 		$('#middleArticle').addClass('requeue').empty().append($('#topArticle').contents());
-		$('#topArticle').addClass('rerate').empty().append(a_theContent[contCopy]);
+		$('#topArticle').addClass('rerate').empty().append(a_theContent[clicked]);
 	});
 
 	//share menu
