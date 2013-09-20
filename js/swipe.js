@@ -113,15 +113,13 @@ $(document).ready(function(){
 	var adjustTop = function(offset){
 		return 100 * (1.0-Math.min(0.98,(0.75 + ( 0.25/ (Math.exp(0.003*offset))) )) ) + '%';
 	};
-
+	var artImg = [];
 	var szl = function(e){
 		if (!b_isRunning){
 			b_isRunning = true;
-			var szldContent = $('#topArticle').html();
 			$topArticle = $('#topArticle');
-			a_theContent.push(szldContent);
-			//console.log(theContent);
-			var theIMG = $('#topArticle').find('img').clone();  // pull out just the img from article content
+			var szldContent = $('#topArticle').html(); // content from szld article
+			var theIMG = $('#topArticle img');  // pull out just the img from article content
 			var artText = $topArticle.text();
 			$topArticle.animate({left: width},{queue: false, duration: 500,
 				complete: function(){
@@ -136,6 +134,8 @@ $(document).ready(function(){
 			if (b_duplicate){	// if article already in queue, don't add it
 				b_duplicate = false;	// next article will be different, so this allows the else block to run
 			} else {
+				artImg.push(theIMG.attr('src'));
+				a_theContent.push(szldContent);
 				//if not in queue, add it
 				if (i_szlCount > 0){
 					$queueItems.each(function(){
@@ -541,7 +541,7 @@ $(document).ready(function(){
 							$(this).css({
 								'top': adjustTop($(this).offset().left) ,
 								'height': i_STARTHEIGHT - ($(this).position().top)/2 + '%',
-								
+
 								//adjust left position of items if they've shifted further right during dragging
 								'left': $(this).offset().left - ($('.szld:last').offset().left - 5)
 							});
@@ -589,9 +589,10 @@ $(document).ready(function(){
 		//$(this).next().css('z-index', $(this).css('z-index') - 1);
 		$('#queue div').removeClass('rerate');
 		$(this).addClass('rerate');
-		var contCopy = $(this).contents().clone();
+		var contCopy = $(this).index();
+		console.log(contCopy);
 		$('#middleArticle').addClass('requeue').empty().append($('#topArticle').contents());
-		$('#topArticle').addClass('rerate').empty().append(contCopy);
+		$('#topArticle').addClass('rerate').empty().append(a_theContent[contCopy]);
 	});
 
 	//share menu
