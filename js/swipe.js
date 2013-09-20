@@ -1,25 +1,28 @@
 document.write('<style type="text/css">body{display:none}</style>');//hide content while jquery sets some css
 $(document).ready(function(){
 
-	var szldContent,//html content of szld article
+	var szldContent,	// html content of szld article
 		$article = $('#stream div.article'),
 		$szlQueue = $('#queue'),
 		$topArticle = $('#topArticle'),
 		$middleArticle = $('#middleArticle'),
+
 		//arrays
 		a_articles = [],
 		a_theContent = [],
 		a_pos = [],
 		a_theTime = [],
+
 		//boolean
-		b_isRunning = false,//whether or not article animation is running
+		b_isRunning = false,	// whether or not article animation is running
 		b_dragged = false,
-		b_duplicate,//flag for whether or not the szld article is already in the queue
+		b_duplicate,	// flag for whether or not the szld article is already in the queue
 		b_arrows = true,
+
 		//integer
 		i_articleIndex = 0,
-		i_szlCount = 0,//track how many have been szl'd
-		i_startHeight = 85,
+		i_szlCount = 0,	// track how many have been szl'd
+		i_STARTHEIGHT = 85,
 		swipeStartTime,
 		startPos = {x:0, y:0},
 		distance = {x:0, y:0},
@@ -33,10 +36,10 @@ $(document).ready(function(){
 		height = $(window).height(),
 		left = -width + 'px',
 		right = width + 'px',
-		startSize = $(window).width(),
-		overlap = $(window).width() * 0.10,
-		currentDate,//time when queue drag is released
-		sidevalue = 0.15;
+		STARTSIZE = $(window).width(),
+		overlap = $(window).width() * 0.10, // percentage each article overlaps into its neighbor
+		currentDate,	// time when queue drag is released
+		sidevalue = 0.15;	// used to define the clickable area on right and left edges
 
 	a_articles.push(
 		"<img src='img/df.jpg' /><p class='articleText'><b>article1 article1 article1 </b>article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1</p>",
@@ -53,9 +56,10 @@ $(document).ready(function(){
 	$(window).on('resize load orientationchange', function(){
 		//alert(window.devicePixelRatio);
 		$('body').show();
+
 		//article overlaps 10% of adjacent article
 		var overlap = $(window).width() * 0.10,
-			difference = (($(window).width()/startSize * 100) - 100),//% difference between initial width and current width
+			difference = (($(window).width()/STARTSIZE * 100) - 100),// % difference between initial width and current width
 			szldWidth = ($(window).width() * 0.2)  + (difference/5),
 			w_box = $(window).width(),
 			h_box = $(window).height(),
@@ -67,21 +71,23 @@ $(document).ready(function(){
 		$('#username').css('margin-left', parseInt($('.article').css('margin-left'), 10) + 'px');
 		$('#share').css('margin-left', parseInt($('#topArticle').css('margin-left'), 10) * -1 + 'px' );
 		$('#shareMenu').css("left", ($(window).width() - parseInt($('#shareMenu').css('width'), 10) + 'px'));
+
 		//TODO: adjust szld items on window resize
-			if($('.szld').length){
-				$('.szld').css({
-					//'left': parseInt($(this).css('left'), 10) - 0.10 + 'px',
-					'width': szldWidth
-					///'left': $(this).offset().left + (difference * $(this).offset().left)
-				});
-				console.log($('.szld').width());
-			}
+		if($('.szld').length){
+			$('.szld').css({
+				//'left': parseInt($(this).css('left'), 10) - 0.10 + 'px',
+				'width': szldWidth
+				///'left': $(this).offset().left + (difference * $(this).offset().left)
+			});
+			console.log($('.szld').width());
+		}
+
 		artPos = $('#topArticle').css('margin-left');
 		artLeft = $('#topArticle').css('left');
 		width = $(window).width();
 		height = $(window).height();
-		console.log($('#topArticle').css('margin-top'));
-		console.log($('#topArticle').css('margin-left'));
+		//console.log($('#topArticle').css('margin-top'));
+		//console.log($('#topArticle').css('margin-left'));
 		$('#paper0').css({
 			'margin-left': w_total + 2 + 'px',
 			'top': ($('#topArticle').height()) + 'px'
@@ -97,17 +103,18 @@ $(document).ready(function(){
 		$('#paper3').css('margin-left', w_box - parseInt($('.article').css('margin-left'), 10) - 4 + 'px');
 		$('#paper4').css('margin-left', w_box - parseInt($('.article').css('margin-left'), 10) - 2 + 'px');
 		$('#paper5').css('margin-left', w_box - parseInt($('.article').css('margin-left'), 10) + 'px');
-		console.log($('#paper3').css('margin-right'));
+		//console.log($('#paper3').css('margin-right'));
 
 	});
 
 	$('#topArticle').html(a_articles[5]);
-	//return nonlinear top value based on the element's left offset
-	adjustTop = function(offset){
+
+	// return nonlinear top value based on the element's left offset
+	var adjustTop = function(offset){
 		return 100 * (1.0-Math.min(0.98,(0.75 + ( 0.25/ (Math.exp(0.003*offset))) )) ) + '%';
 	};
 
-	szl = function(e){
+	var szl = function(e){
 		if (!b_isRunning){
 			b_isRunning = true;
 			var szldContent = $('#topArticle').html();
@@ -126,31 +133,37 @@ $(document).ready(function(){
 				}
 			}).css({'box-shadow': '0 0 .5em red'});
 			createArticle();
-			if (b_duplicate){//if article already in queue, don't add it
-				b_duplicate = false;//next article will be different, so this allows the else block to run
+			if (b_duplicate){	// if article already in queue, don't add it
+				b_duplicate = false;	// next article will be different, so this allows the else block to run
 			} else {
 				//if not in queue, add it
 				if (i_szlCount > 0){
 					$queueItems.each(function(){
 						var cssLeft = parseInt($(this).css('left'), 10);
 						$(this).animate({left: cssLeft + overlap + 'px'},{duration: 500, queue: false,
-							complete:function(){
-								//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];//adjust left containment based on far right item in queue
+							complete: function(){
+
+								/*adjust left containment based on far right item in queue
+									queueDrag.containment = [
+									-1 * ($('.szld').eq(0).offset().left + overlap), 0, 
+									$(window).width()/2, 0];
+								*/
 							}
 						});
 					});
 				}
-				//create new div, add it to queue, append contents from szld article
+
+				// create new div, add it to queue, append contents from szld article
 					newDiv = document.createElement('div');
 					newDiv.id = "newSzl" + i_szlCount;
 					$(newDiv).addClass('szld');
 					$('#queue').append($(newDiv)
 						.addClass('szld')
 						.css({'width': $(window).width() * 0.20, 'z-index': i_szlCount + 1}));
-				$(a_theContent).each(function(index){
+				//$(a_theContent).each(function(index){
 					//console.log(theContent[index]);
 					$('#newSzl' + i_szlCount).append(theIMG);
-				});
+				//});
 				$queueItems = $('#queue div.szld');
 				if ($queueItems.length > 11){
 					$queueItems.eq(0).remove();
@@ -165,14 +178,14 @@ $(document).ready(function(){
 				$lastSzld = $queueItems.filter(':last');
 
 				//TODO: adding new item when last one is off screen messes up previous items
-				//reposition queue so the newest item added is visible
+				//reposition queue so the newest item added becomes visible
 				$szlQueue.animate({left: 0},{duration: 300, queue: false,
-					step: function(){
+					step: function(){ // adjust the top & height values of the items along the way
 						$queueItems.each(function(){
 							//console.log($(this).css('left') + ' ,' + $(this).offset().left);
 							$(this).css({
 								'top': adjustTop($(this).offset().left),
-								'height': i_startHeight - ($(this).position().top)/2 + '%'
+								'height': i_STARTHEIGHT - ($(this).position().top)/2 + '%'
 							});
 						});
 					}
@@ -196,7 +209,7 @@ $(document).ready(function(){
 			}
 		}
 	};
-	fzl = function(e){
+	var fzl = function(e){
 		if (!b_isRunning){
 			b_isRunning = true;
 			$('#topArticle').animate({left: '-'+width+"px"}, {queue: false, duration: 500, easing: 'swing', complete: function(){
@@ -220,7 +233,7 @@ $(document).ready(function(){
 		}
 	};
 
-	createArticle = function(){
+	var createArticle = function(){
 		var newCont = document.createElement('div');
 			newCont.id = "bottomArticle";  //container for next article
 
@@ -248,13 +261,13 @@ $(document).ready(function(){
 	$article.draggable(newArticle);
 
 	
-	function start(e) {
+	var start = function(e) {
 		swipeStartTime = new Date();
 		startPos.x = e.pageX;
 		startPos.y = e.pageY;
 	}
 
-	function end(e) {
+	var end = function(e) {
 		var now = new Date();
 		swipeTime = (now - swipeStartTime)/1000;
 		distance.x = e.pageX - startPos.x;
@@ -272,7 +285,7 @@ $(document).ready(function(){
 		if (!b_isRunning) checkForSwipe();
 	});
 
-	checkForSwipe = function(){
+	var checkForSwipe = function(){
 		$topArticle = $('#topArticle');
 		if (Math.abs(swipeAngle) <= 45){
 			if (scaledDistance / swipeTime > 3){
@@ -315,7 +328,7 @@ $(document).ready(function(){
 		if (szldItem > 0) {
 			$this.css({
 				'top': adjustTop($this.offset().left),
-				'height': i_startHeight - ($this.position().top)/2 + '%',//adjust height in relation to top position
+				'height': i_STARTHEIGHT - ($this.position().top)/2 + '%',//adjust height in relation to top position
 			});
 		}
 
@@ -407,7 +420,7 @@ $(document).ready(function(){
 					//give it appropriate top & height value **doesn't do anything yet
 					.css({
 						'top': '50px',//adjustTop($(this).offset().left),
-						'height': '50%'//i_startHeight - ($(this).position().top)/2 + '%'
+						'height': '50%'//i_STARTHEIGHT - ($(this).position().top)/2 + '%'
 					});
 
 				//console.log($('#newSzl' + (a_theContent.length - $queueItems.length)).offset().left);
@@ -508,8 +521,14 @@ $(document).ready(function(){
 
 			//TODO: left containment gets further left after dragging back and forth
 			//move queue back to initial position when last szld element is > 0
+			console.log($('#queue .szld').eq($('.szld').length - 1).attr('id'));
+			$lastSzld = $('#queue .szld').eq($('.szld').length - 1);
 			if ($lastSzld.offset().left > 0){
-				$szlQueue.stop().animate({left: leftBound}, {duration: (Math.abs($lastSzld.offset().left) > $(window).width() * 0.25 ? Math.abs($lastSzld.offset().left) : 300),
+				$szlQueue.stop().animate({left: leftBound},
+
+					// if position of newest item is more the 25% from the starting point, set duration equal to its left offset. if not, make it 300ms
+					{duration: (Math.abs($lastSzld.offset().left) > $(window).width() * 0.25 ? 
+								Math.abs($lastSzld.offset().left) : 300),
 					step: function(){
 						rightofZero = $('.szld').filter(function() {
 							return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.10));
@@ -518,10 +537,11 @@ $(document).ready(function(){
 							$(this).next().css({'transform-origin' : '0px 0px' ,
 							'transform' : 'perspective( 600px ) rotateY(0deg)'});
 						});
-						$queueItems.each(function(){
+						$('.szld').each(function(){
 							$(this).css({
 								'top': adjustTop($(this).offset().left) ,
-								'height': i_startHeight - ($(this).position().top)/2 + '%',
+								'height': i_STARTHEIGHT - ($(this).position().top)/2 + '%',
+								
 								//adjust left position of items if they've shifted further right during dragging
 								'left': $(this).offset().left - ($('.szld:last').offset().left - 5)
 							});
@@ -554,10 +574,10 @@ $(document).ready(function(){
 		});
 		$szlQueue.animate({left: $szlQueue.offset().left - $('#' + clicked).offset().left + 10}, {duration: 500,
 			step: function(){
-				$queueItems.each(function(){
+				$('.szld').each(function(){
 					$(this).css({
 						'top': adjustTop($(this).offset().left) ,
-						'height': i_startHeight - ($(this).position().top)/2 + '%'
+						'height': i_STARTHEIGHT - ($(this).position().top)/2 + '%'
 					});
 					var szldItem = $(this).offset().left / $(window).width() * 100;
 					var $this = $(this);
