@@ -1,3 +1,5 @@
+/*all code pertaining to interaction with buzz_mobile.html */
+
 document.write('<style type="text/css">body{display:none}</style>');//hide content while jquery sets some css
 $(document).ready(function(){
 
@@ -37,7 +39,7 @@ $(document).ready(function(){
 		left = -width + 'px',
 		right = width + 'px',
 		STARTSIZE = $(window).width(),
-		overlap = $(window).width() * 0.10, // percentage each article overlaps into its neighbor
+		overlap = $(window).width() * 0.20, // percentage each article overlaps into its neighbor
 		currentDate,	// time when queue drag is released
 		sidevalue = 0.15;	// used to define the clickable area on right and left edges
 
@@ -119,7 +121,7 @@ $(document).ready(function(){
 			b_isRunning = true;
 			$topArticle = $('#topArticle');
 			var szldContent = $('#topArticle').html(); // content from szld article
-			var theIMG = $('#topArticle img');  // pull out just the img from article content
+			var theIMG = $('#topArticle img').clone();  // pull out just the img from article content
 			var artText = $topArticle.text();
 			$topArticle.animate({left: width},{queue: false, duration: 500,
 				complete: function(){
@@ -136,7 +138,6 @@ $(document).ready(function(){
 			} else {
 				artImg.push(theIMG.attr('src'));
 				a_theContent.push(szldContent);
-				console.log(a_theContent);
 				//if not in queue, add it
 				if (i_szlCount > 0){
 					$queueItems.each(function(){
@@ -160,10 +161,11 @@ $(document).ready(function(){
 					$(newDiv).addClass('szld');
 					$('#queue').append($(newDiv)
 						.addClass('szld')
-						.css({'width': $(window).width() * 0.20, 'z-index': i_szlCount + 1}));
+						.css({'display':'none', 'width': $(window).width() * 0.20, 'z-index': i_szlCount + 1}));
+
 				//$(a_theContent).each(function(index){
 					//console.log(theContent[index]);
-					$('#newSzl' + i_szlCount).append(theIMG);
+					$('#newSzl' + i_szlCount).append(theIMG).fadeIn(500);
 				//});
 				$queueItems = $('#queue div.szld');
 				if ($queueItems.length > 11){
@@ -522,7 +524,6 @@ $(document).ready(function(){
 
 			//TODO: left containment gets further left after dragging back and forth
 			//move queue back to initial position when last szld element is > 0
-			console.log($('#queue .szld').eq($('.szld').length - 1).attr('id'));
 			$lastSzld = $('#queue .szld').eq($('.szld').length - 1);
 			if ($lastSzld.offset().left > 0){
 				$szlQueue.stop().animate({left: leftBound},
@@ -649,4 +650,22 @@ $(document).ready(function(){
 			e.preventDefault();
 		}
 	});
+
+	// extract links and push to an array
+	// http://stackoverflow.com/questions/9934944/embedding-youtube-video-refused-to-display-document-because-display-forbidden-b
+	links = [];
+	css_artWidth = $('.article').width();
+	$.getJSON('http://gdata.youtube.com/feeds/api/videos?author=LifeHacker&v=2&alt=json', function(data){
+		$(data.feed.entry).each(function(){
+			var theString = this.link[0].href;
+			var videoLink = theString.substr(theString.indexOf('=') + 1, 11); // extract video ID from url
+			videoLink = 'http://www.youtube.com/embed/'+ videoLink; // create an acceptable url
+			links.push('<iframe width="' + css_artWidth + '" height="315" src="' + videoLink + '" frameborder="0" allowfullscreen></iframe>');
+		});
+
+		//console.log(links);
+		$('#topArticle').html(links[0]);
+		$('#middleArticle').html(links[1]);
+	});
+
 });
