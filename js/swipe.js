@@ -39,7 +39,7 @@ $(document).ready(function(){
 		left = -width + 'px',
 		right = width + 'px',
 		STARTSIZE = $(window).width(),
-		overlap = $(window).width() * 0.20, // percentage each article overlaps into its neighbor
+		overlap = $(window).height() * 0.10, // percentage each article overlaps into its neighbor
 		currentDate,	// time when queue drag is released
 		sidevalue = 0.15;	// used to define the clickable area on right and left edges
 
@@ -73,13 +73,14 @@ $(document).ready(function(){
 		$('#username').css('margin-left', parseInt($('.article').css('margin-left'), 10) + 'px');
 		$('#share').css('margin-left', parseInt($('#topArticle').css('margin-left'), 10) * -1 + 'px' );
 		$('#shareMenu').css("left", ($(window).width() - parseInt($('#shareMenu').css('width'), 10) + 'px'));
+		$('footer').css({'top': '81%', 'height':'19%'});
 
 		//TODO: adjust szld items on window resize
 		if($('.szld').length){
 			$('.szld').css({
-				//'left': parseInt($(this).css('left'), 10) - 0.10 + 'px',
+				// 'left': parseInt($(this).css('left'), 10) - 0.10 + 'px',
 				'width': szldWidth
-				///'left': $(this).offset().left + (difference * $(this).offset().left)
+				/// 'left': $(this).offset().left + (difference * $(this).offset().left)
 			});
 			console.log($('.szld').width());
 		}
@@ -88,28 +89,8 @@ $(document).ready(function(){
 		artLeft = $('#topArticle').css('left');
 		width = $(window).width();
 		height = $(window).height();
-		//console.log($('#topArticle').css('margin-top'));
-		//console.log($('#topArticle').css('margin-left'));
-		$('#paper0').css({
-			'margin-left': w_total + 2 + 'px',
-			'top': ($('#topArticle').height()) + 'px'
-		});
-		$('#paper1').css({
-			'margin-left': w_total + 4 + 'px',
-			'top': ($('#topArticle').height() + 2) + 'px'
-		});
-		$('#paper2').css({
-			'margin-left': w_total + 6 + 'px',
-			'top': ($('#topArticle').height() + 4) + 'px'
-		});
-		$('#paper3').css('margin-left', w_box - parseInt($('.article').css('margin-left'), 10) - 4 + 'px');
-		$('#paper4').css('margin-left', w_box - parseInt($('.article').css('margin-left'), 10) - 2 + 'px');
-		$('#paper5').css('margin-left', w_box - parseInt($('.article').css('margin-left'), 10) + 'px');
-		//console.log($('#paper3').css('margin-right'));
 
 	});
-
-	$('#topArticle').html(a_articles[5]);
 
 	// return nonlinear top value based on the element's left offset
 	var adjustTop = function(offset){
@@ -161,7 +142,7 @@ $(document).ready(function(){
 					$(newDiv).addClass('szld');
 					$('#queue').append($(newDiv)
 						.addClass('szld')
-						.css({'display':'none', 'width': $(window).width() * 0.20, 'z-index': i_szlCount + 1}));
+						.css({'display':'none', 'width': $('#queue').height() * 0.72, 'z-index': i_szlCount + 1}));
 
 				//$(a_theContent).each(function(index){
 					//console.log(theContent[index]);
@@ -260,8 +241,14 @@ $(document).ready(function(){
 	//enable article dragging
 	var newArticle = {
 		axis: 'x',
+		start: function(){
+			$(this).css('box-shadow','5px 5px 10px #888888');
+		},
+		stop: function(){
+			$(this).css('box-shadow', 'none');
+		}
 	};
-	$article.draggable(newArticle);
+	//$article.draggable(newArticle);
 
 	
 	var start = function(e) {
@@ -348,6 +335,13 @@ $(document).ready(function(){
 	//object passed to draggable method
 	var lastSzldID;
 	var arrayPos = 1;
+	var startY,
+    	startX;
+
+    $('footer').mousedown(function(e){
+    	startY = e.pageY;
+    	startX = e.pageX;
+	});
 	var queueDrag = {
 		axis: "x",
 		scroll: false,
@@ -357,17 +351,26 @@ $(document).ready(function(){
             dragStartTime = new Date();
             var lastSzld = $('.szld:last');
                 lastSzldID = $('.szld:last').attr('id');
-            //console.log(lastSzld);
-            //console.log(lastSzldID);
 		},
+
 		//if initial pageY is < current pageY and starting pageX is within x amount from current pageX..don't drag
 
 		drag: function(e, ui){
 
+
+			var ft = $('footer').position().top;
+			var fh = $('footer').height();
+			if ( Math.abs(startY - e.pageY) > 10 && Math.abs(startY - e.pageY) > Math.abs(startX - e.pageX) ){
+				$('footer').css('height', fh + (ft - ui.offset.top ) + 'px');
+				$('footer').css('top', ui.offset.top);
+			}
+
+
 			//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
 			$('.szld').each(function(){
 				var szldItem = $(this).offset().left / $(window).width() * 100;
-				//////article with focus on left
+				
+				// article with focus on left
 				var $this = $(this);
 				setZ(szldItem, $this);
 
@@ -395,17 +398,17 @@ $(document).ready(function(){
 			a_theTime.push(currentDate);
 			a_pos.push(e.pageX);
 
-			//add a new item to the right side when ones rotates off of the left side
-			var lastOne = $('.szld').length - 1;//get the eq position of the last one on the left
+			// add a new item to the right side when ones rotates off of the left side
+			var lastOne = $('.szld').length - 1;// get the eq position of the last one on the left
 
-			//if the offset of the last one on the left becomes < 0..
+			// if the offset of the last one on the left becomes < 0..
 			if ($queueItems.length >= 12 && $('.szld').eq(lastOne).offset().left < 0 && (a_theContent.length - $queueItems.length) >= arrayPos){
 				//remove it
 				$('.szld').eq(lastOne).remove();
 
-				newDiv = document.createElement('div');//create new div
-				newDiv.id = "newSzl" + (a_theContent.length - $queueItems.length);//give it a numbered ID that's one less than its left neighbor
-				$('#queue').prepend($(newDiv)//add it to the first position (the right)
+				newDiv = document.createElement('div');// create new div
+				newDiv.id = "newSzl" + (a_theContent.length - $queueItems.length);// give it a numbered ID that's one less than its left neighbor
+				$('#queue').prepend($(newDiv)// add it to the first position (the right)
 					.addClass('szld')
 					.css({
 						'width': $(window).width() * 0.20,
@@ -415,8 +418,6 @@ $(document).ready(function(){
 						'height': '50%'
 					}));
 
-				//console.log($('.szld:first').eq());
-				//console.log($('.szld:first').index());
 				//append corresponding content from content array
 
 				$('#newSzl' + (a_theContent.length - $queueItems.length)).append(a_theContent[(a_theContent.length - $('.szld').length) - arrayPos])
@@ -622,7 +623,7 @@ $(document).ready(function(){
 		}
 	});
 
-	/*$('.arrows').mouseup(function(e){
+	$('.arrows').mouseup(function(e){
 		if (e.pageX < $(document).width() * sidevalue){//within 10% of left edge
 			fzl();
 		} else if (e.pageX > $(document).width() - ($(document).width() * sidevalue)){//right edge
@@ -641,38 +642,35 @@ $(document).ready(function(){
 		}
 	}).on('mouseup', function(){
 		$('.arrows').fadeOut();
-	});*/
+	});
 
 	//prevent browser window from scrolling on iphone
-	$('body').bind('touchmove', function (e) {
+	/*$('body').bind('touchmove', function (e) {
 		//e.preventDefault();
 		if ($(e.target).attr('id') == 'stream'){
 			e.preventDefault();
 		}
-	});
+	});*/
 
-	// extract links and push to an array
+	//extract links and push to an array
 	// http://stackoverflow.com/questions/9934944/embedding-youtube-video-refused-to-display-document-because-display-forbidden-b
 	/*links = [];
-	css_artWidth = $('.article').width();
+	thumbs = [];
 	$.getJSON('http://gdata.youtube.com/feeds/api/videos?author=LifeHacker&v=2&alt=json', function(data){
 		$(data.feed.entry).each(function(){
-			var theString = this.link[0].href;
-			var videoLink = theString.substr(theString.indexOf('=') + 1, 11); // extract video ID from url
-			videoLink = 'http://www.youtube.com/embed/'+ videoLink; // create an acceptable url
-			links.push('<iframe width="' + css_artWidth + '" height="315" src="' + videoLink + '" frameborder="0" allowfullscreen></iframe>');
+			theString = this.link[0].href;
+			//console.log(theString);
+			var videoID = theString.substr(theString.indexOf('=') + 1, 11);
+			//var videoID = videoLink.substr(videoLink.indexOf('=') + 1, );
+			videoLink = 'http://www.youtube.com/embed/'+ videoID;
+			//console.log(videoLink);
+			thumb = "<img src='http://img.youtube.com/vi/"+ videoID +"/0.jpg' />";
+			links.push('<iframe width="420" height="315" src="' + videoLink + '" frameborder="0" allowfullscreen></iframe>');
+			thumbs.push(thumb);
 		});
 
 		//console.log(links);
-		$('#topArticle').html(links[0]);
-		$('#middleArticle').html(links[1]);
+		$('#topArticle').html(thumbs[0]);
+		$('#middleArticle').html(thumbs[1]);
 	});*/
-
-	$('footer').resizable({
-		handles:'n',
-		resize: function(){
-			$(this).css('z-index', '100');
-		},
-	});
-
 });
