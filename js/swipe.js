@@ -653,7 +653,7 @@ $(document).ready(function(){
 
 	// extract links and push to an array
 	// http://stackoverflow.com/questions/9934944/embedding-youtube-video-refused-to-display-document-because-display-forbidden-b
-	links = [];
+	/*links = [];
 	css_artWidth = $('.article').width();
 	$.getJSON('http://gdata.youtube.com/feeds/api/videos?author=LifeHacker&v=2&alt=json', function(data){
 		$(data.feed.entry).each(function(){
@@ -666,6 +666,13 @@ $(document).ready(function(){
 		//console.log(links);
 		$('#topArticle').html(links[0]);
 		$('#middleArticle').html(links[1]);
+	});*/
+
+	$('footer').resizable({
+		handles:'n',
+		resize: function(){
+			$(this).css('z-index', '100');
+		},
 	});
 
 });
