@@ -97,7 +97,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
 //---------------------------------------------------------------------//
 
-  function Start(){
+  /*function Start(){
     setTimeout(Init(), 100);
   }
 
@@ -216,7 +216,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     
     tzzzls = getElementTextNS( "", "tzzzl", user[0], 0 );
     dzzzls = getElementTextNS( "", "dzzzl", user[0], 0 );
-  }*/
+  }
 
 
 
@@ -318,6 +318,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
         //continue;
         story_img = '';
       }
+
       var story_vote = 0;
       var story_vote_previous = items[ii].getElementsByTagName( "rating" );
       if ( story_vote_previous[0].getAttribute( 'nil' ) != 'true' ) {
@@ -326,7 +327,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
       if ( story_vote == 0 ) {
         storyData.push( [ story_title, story_summary, story_full, story_id, story_title_long, story_long, story_img, story_vote, -1, last_story_loaded_index, story_link, story_date, story_source_id, story_always, story_sometimes, story_never, story_name, story_home, story_prediction, story_forwarding_user, story_forwarding_user_id, story_forwarding_source, storyComments ] );
-        storyHash[ story_id ] = {
+        storyHash[ story_id ] = { //
           "comments": storyComments,
           "forwarding_source": story_forwarding_source,
           "forwarding_user_id": story_forwarding_user_id,
@@ -370,7 +371,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     r = Math.floor( Math.random()*256 );
     g = Math.floor( Math.random()*256 );
     b = Math.floor( Math.random()*256 );
-  }*/
+  }
 
 
   function DisplayStory( currStory, forward ){
@@ -757,7 +758,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     document.getElementById( "progress" ).style.visibility = "visible";
     setTimeout( function() { progressImage.src = progressImage.src },100 );
     return true;
-  }*/
+  }
 
   function gup ( name ) {
     name = name.replace( /[\[]/,"\\\[" ).replace( /[\]]/,"\\\]" );
@@ -860,41 +861,62 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     if ( req.transport ) {
       req.transport.abort();
     }
-  }
+  }*/
 
-   //attempt at rewriting xml request with jQuery
+    // attempt at rewriting xml request with jQuery
     var article = $('#szl-content'),
-      data,
-      block = '',
-      storiesLoaded = 0, 
-      tagName, // tag in unrated.xml
-      tagContent; // content within XML tag
+        szlCount = 0,
+        html_block = '',
+        i_articleCache = 0,
+        a_articleContent = [],
+        tagName, // tag in unrated.xml
+        tagContent; // content within XML tag
 
-    var extractContent = function(tagName, parent){ // extract tag name & associated content 
+    var extractContent = function(tagName, parent){ // extract tag name & its associated content 
       console.log(tagName + ': ' + parent.find(tagName).text());
-      block += '<div>' + parent.find(tagName).text() + '</div>'
-    } 
+      tagContent = parent.find(tagName).text() ;
+      //a_articleContent.push[tagContent]
+
+      html_block += parent.find(tagName).text() + '</br>'; // add content from each tag into a main block
+    };
 
     var theURL = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.09.22/js/unrated.xml';
     $.get(theURL)
       .done(function(data){
-        console.log(data);
+        console.log(data); // the returned XML object
 
-        $(data).find('item:first').each(function(){
-          itemIndex = $(this).index();
-          var self = $(this);
+        $(data).find('item').each(function(){ // loop through each xml item (4 total)
+          itemIndex = $(this).index(); // get the index of current 'item'
+          var self = $(this); // store current value of 'this' for passing to 'extractContent'
           console.log('item number: ' + itemIndex);
-          $(this).children().each(function(){
-            tagName = $(this).prop('tagName')
+          $(this).children().each(function(){ // loop through each child of xml item
+            tagName = $(this).prop('tagName'); // get its tag name
             extractContent( tagName, self );
           });
-          //console.log(story_id);
           console.log('');
-          $('#szl-content').html(block);
+          a_articleContent.push(html_block); // push each html_block
+          html_block = ''; // reset the value to make way for next block
+          i_articleCache += 1;
+          if (i_articleCache == 4){ // insert block of html once cache reaches 4
+            $('#szl-content').html(a_articleContent[szlCount]); // set html by referencing position in content array
+          }
         });
+        console.log(a_articleContent.length);
       })
       .fail(function(){
         alert(' request failed');
+      });
+
+      $(document).ready(function(){
+        szlCount = 0;
+        $('#szl-button').click(function(){
+          szlCount += 1;
+          if (szlCount == 4) { // if count is equal to array length
+            szlCount = 0; // 
+          }
+          $('#szl-content').empty().html(a_articleContent[szlCount]);
+          return false;
+        });
       });
 
           /*  var story_id = getElementTextNS( "", "id", items[ii], 0 );
