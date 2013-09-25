@@ -625,10 +625,10 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
       urzzl += 'comment_yay.xml';
     }
     SendGetAndIgnore( urzzl );
-  }
+  }*/
 
   function RateSource( id, rating, cyclic ) {
-    var urzzl = sourceURI + id + '/rating/';
+    /*var urzzl = sourceURI + id + '/rating/';
     if ( rating == 1 ) {
       urzzl += 'always.xml';
       $(document).ready(function(){
@@ -726,7 +726,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
         }
       });
     }
-    SendGetAndIgnore( urzzl );
+    SendGetAndIgnore( urzzl );*/
   }
 
 
@@ -863,6 +863,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     }
   }*/
 
+
     // attempt at rewriting xml request with jQuery
     var article = $('#szl-content'),
         szlCount = 0,
@@ -870,11 +871,11 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
         i_articleCache = 0,
         a_articleContent = [],
         tagName, // tag in unrated.xml
-        tagContent; // content within XML tag
+        elemContent; // content within XML tag
 
     var extractContent = function(tagName, parent){ // extract tag name & its associated content 
       console.log(tagName + ': ' + parent.find(tagName).text());
-      tagContent = parent.find(tagName).text() ;
+      elemContent = parent.find(tagName).text();
       //a_articleContent.push[tagContent]
 
       html_block += parent.find(tagName).text() + '</br>'; // add content from each tag into a main block
@@ -885,11 +886,11 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
       .done(function(data){
         console.log(data); // the returned XML object
 
-        $(data).find('item').each(function(){ // loop through each xml item (4 total)
+        $(data).find('item').each(function(){ // loop through each 'item' tag (4 total)
           itemIndex = $(this).index(); // get the index of current 'item'
           var self = $(this); // store current value of 'this' for passing to 'extractContent'
           console.log('item number: ' + itemIndex);
-          $(this).children().each(function(){ // loop through each child of xml item
+          /*$(this).children().each(function(){ // loop through each child of xml item
             tagName = $(this).prop('tagName'); // get its tag name
             extractContent( tagName, self );
           });
@@ -898,8 +899,35 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
           html_block = ''; // reset the value to make way for next block
           i_articleCache += 1;
           if (i_articleCache == 4){ // insert block of html once cache reaches 4
-            $('#szl-content').html(a_articleContent[szlCount]); // set html by referencing position in content array
+            //$('#szl-content').html(a_articleContent[szlCount]); // set html 
+          }*/
+
+          // create an html block for article using text from the XML elements 
+          html_block += '<h1><a href=' + $(this).find('link').text() + '" target="_blank">' + $(this).find('title').text() + '</a></h1>' +
+                        '<div id="titlebar"></div>' +
+                        '<h2><a id="source-a" href="' + $(this).find('link').text() + '" target="_blank">' + $(this).find('name').text() + '</a> ' + $(this).find('date').text() + ' EST</h2>' +
+                        '<ul id="navsub-1">' +
+                        '    <li id="always-li" style="border-top: 1px #888888 solid;" onClick="RateSource(' + $(this).find('id').text()  + ',1,0);"><input type="checkbox" id="always"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Subscribe to ' + $(this).find('name').text() + '</span></li>' +
+                        '    <li id="sometimes-li" onClick="RateSource(' + $(this).find('id').text() + ',0,0);"><input type="checkbox" id="sometimes"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Unsubscribe from ' + $(this).find('name').text() + '</span></li>' +
+                        '    <li id="never-li" onClick="RateSource(' + $(this).find('id').text()  + ',-1,0);"><input type="checkbox" id="never"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Block ' + $(this).find('name').text() + '</span></li>' +
+                        '</ul>' +
+                        '<h2>This article was forwarded by user <a href="http://www.szzzl.com/users/' + $(this).find('forwarding-user-id').text() + '" target="_blank">' + $(this).find('forwarding-user').text() + '</a></h2>' +
+                        '<h3>' + $(this).find('prediction').text() + '% chance of szl</h3>';
+
+                        if ($(this).find('image').attr('nil') === false){ // if there is an image, add it. otherwise don't create an element for it
+                          html_block += '<div id="story-image"><img src="' + $(this).find('image').text() + '" /></div>';
+                        }
+
+          html_block += '  <div' + $(this).find('description').text() + '</div>' +
+                        '<a href="' + $(this).find('link').text() + '" target="_blank" >Read more</a>';
+
+          a_articleContent.push(html_block); // push each html_block
+          i_articleCache += 1;
+          html_block = ''; // reset the value to make way for next block
+          if (i_articleCache == 4){ // insert block of html once cache reaches 4
+            $('#szl-content').html(a_articleContent[szlCount]); // set html 
           }
+
         });
         console.log(a_articleContent.length);
       })
@@ -907,14 +935,37 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
         alert(' request failed');
       });
 
+          $(document).ready(function(){
+      if ( isiPhone ) {
+        $('#source-a').click(function(){
+          $('#navsub-1').toggle();
+          $('#navsub-1 li').click(function(){
+            setTimeout( function(){
+              $('#navsub-1').hide();
+            }, 500 );
+          });
+        });
+      } else {
+        $('#szl-content').on('mouseenter', '#source-a', function(){
+          console.log('true');
+          $('#navsub-1').show();
+          $('#navsub-1').hover(function(){
+            $(this).show();
+          },function(){
+            $(this).hide();
+          });
+        });
+      }
+    });
+
       $(document).ready(function(){
         szlCount = 0;
         $('#szl-button').click(function(){
           szlCount += 1;
           if (szlCount == 4) { // if count is equal to array length
-            szlCount = 0; // 
+            szlCount = 0; // reset count
           }
-          $('#szl-content').empty().html(a_articleContent[szlCount]);
+          $('#szl-content').empty().html(a_articleContent[szlCount]); // empty current content and replace with next block
           return false;
         });
       });
