@@ -216,7 +216,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     
     tzzzls = getElementTextNS( "", "tzzzl", user[0], 0 );
     dzzzls = getElementTextNS( "", "dzzzl", user[0], 0 );
-  }
+  }*/
 
 
 
@@ -371,7 +371,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     r = Math.floor( Math.random()*256 );
     g = Math.floor( Math.random()*256 );
     b = Math.floor( Math.random()*256 );
-  }
+  }*/
 
 
   function DisplayStory( currStory, forward ){
@@ -538,7 +538,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     addthis.update( 'share', 'url', staticUrl )
     addthis.update( 'share', 'title', currStory[sTitleLong] )    
   }
-
+/*
 
   function OpenStory() {
     //UpdateUserInfo();
@@ -867,9 +867,11 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     // attempt at rewriting xml request with jQuery
     var article = $('#szl-content'),
         szlCount = 0,
-        html_block = '',
+        articleHtml_block = '',
+        commentsHtml_block = '',
         i_articleCache = 0,
         a_articleContent = [],
+        a_commentContent = [],
         tagName, // tag in unrated.xml
         elemContent; // content within XML tag
 
@@ -903,7 +905,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
           }*/
 
           // create an html block for article using text from the XML elements 
-          html_block += '<h1><a href=' + $(this).find('link').text() + '" target="_blank">' + $(this).find('title').text() + '</a></h1>' +
+          articleHtml_block += '<h1><a href=' + $(this).find('link').text() + '" target="_blank">' + $(this).find('title').text() + '</a></h1>' +
                         '<div id="titlebar"></div>' +
                         '<h2><a id="source-a" href="' + $(this).find('link').text() + '" target="_blank">' + $(this).find('name').text() + '</a> ' + $(this).find('date').text() + ' EST</h2>' +
                         '<ul id="navsub-1">' +
@@ -915,48 +917,58 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
                         '<h3>' + $(this).find('prediction').text() + '% chance of szl</h3>';
 
                         if ($(this).find('image').attr('nil') === false){ // if there is an image, add it. otherwise don't create an element for it
-                          html_block += '<div id="story-image"><img src="' + $(this).find('image').text() + '" /></div>';
+                          articleHtml_block += '<div id="story-image"><img src="' + $(this).find('image').text() + '" /></div>';
                         }
 
-          html_block += '  <div' + $(this).find('description').text() + '</div>' +
+          articleHtml_block += '<div' + $(this).find('description').text() + '</div>' +
                         '<a href="' + $(this).find('link').text() + '" target="_blank" >Read more</a>';
+          a_articleContent.push(articleHtml_block); // push article html
+          articleHtml_block = ''; // reset the value to make way for next block
 
-          a_articleContent.push(html_block); // push each html_block
-          i_articleCache += 1;
-          html_block = ''; // reset the value to make way for next block
-          if (i_articleCache == 4){ // insert block of html once cache reaches 4
-            $('#szl-content').html(a_articleContent[szlCount]); // set html 
+          // create block to insert into comment table element
+          if ($(this).find('comments').text() !== ''){
+          $(this).find('comments').find('value').each(function(){
+          commentsHtml_block += '  <table style="background-color: #FEF5DF;">' +
+                        '    <tr>' +
+                        '      <td rowspan="3" style="border-top: solid 2px #FEF5DF; width: 51px;">' +
+                        '        <div id="szl-buttons-' + '1' + '">' +
+                        '          <a href="#szl" onclick=RateComment(' + 'abc' + ',1); return false;"><img src="http://www.szzzl.com/images/resized-comment-szzzl.png" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl.png\'" /></a>' +
+                        '          <a href="#fzzzl" onclick=RateComment(' + 'abc' + ',-1); return false;"><img src="http://www.szzzl.com/images/resized-comment-fzzzl.png" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl.png\'" style="margin-top: 10px;" /></a>' +
+                        '        </div>' +
+                        '      </td>' +
+                        '      <td style="border-top: solid 2px #FEF5DF; border-right: solid 1px #888888; background-color: #FFFFFF; padding-left: 3px; padding-right: 3px;">' +
+                        '        <a href="http://www.szzzl.com/users/' + 'abc' + '" target="_blank">' + 'abc' + '</a><span style="color: #888888"> | ' + '11' + '</span> <a href="http://www.szzzl.com/tzzzls">' + 'abcd' + '</a>' +
+                        '      </td>' +
+                        '    </tr>' +
+                        '    <tr>' +
+                        '      <td style="border-right: solid 1px #888888; background-color: #FFFFFF; padding-left: 3px; padding-right: 3px;">' +
+                        '        ' + 'abc' +
+                        '      </td>' +
+                        '    </tr>' +
+                        '    <tr>' +
+                        '      <td style="border-bottom: solid 1px #888888; border-right: solid 1px #888888; background-color: #FFFFFF; color: #888888; padding-left: 3px; padding-right: 3px;">' +
+                        '        ' + 'abc' +
+                        '      </td>' +
+                        '    </tr>' +
+                        '  </table>';
+          });
+          a_commentContent.push(commentsHtml_block); // push comment html
+          commentsHtml_block = '';
           }
-
+          i_articleCache += 1;
+          if (i_articleCache == 4){ // insert first block of html once cache reaches 4
+            $('#szl-content').html(a_articleContent[szlCount]); // set html 
+            $('#szl-table').html(a_commentContent[szlCount]);
+          }
+          console.log($(this).find('comments').typeof);
         });
         console.log(a_articleContent.length);
+
+
       })
       .fail(function(){
         alert(' request failed');
       });
-
-          $(document).ready(function(){
-      if ( isiPhone ) {
-        $('#source-a').click(function(){
-          $('#navsub-1').toggle();
-          $('#navsub-1 li').click(function(){
-            setTimeout( function(){
-              $('#navsub-1').hide();
-            }, 500 );
-          });
-        });
-      } else {
-        $('#szl-content').on('mouseenter', '#source-a', function(){
-          console.log('true');
-          $('#navsub-1').show();
-          $('#navsub-1').hover(function(){
-            $(this).show();
-          },function(){
-            $(this).hide();
-          });
-        });
-      }
-    });
 
       $(document).ready(function(){
         szlCount = 0;
@@ -968,6 +980,27 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
           $('#szl-content').empty().html(a_articleContent[szlCount]); // empty current content and replace with next block
           return false;
         });
+
+        if ( isiPhone ) {
+          $('#source-a').click(function(){
+            $('#navsub-1').toggle();
+            $('#navsub-1 li').click(function(){
+              setTimeout( function(){
+                $('#navsub-1').hide();
+              }, 500 );
+            });
+          });
+        } else {
+          $('#szl-content').on('mouseenter', '#source-a', function(){
+            console.log('true');
+            $('#navsub-1').show();
+            $('#navsub-1').hover(function(){
+              $(this).show();
+            },function(){
+              $(this).hide();
+            });
+          });
+        }
       });
 
           /*  var story_id = getElementTextNS( "", "id", items[ii], 0 );
