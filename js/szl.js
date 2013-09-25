@@ -926,39 +926,43 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
           articleHtml_block = ''; // reset the value to make way for next block
 
           // create block to insert into comment table element
-          if ($(this).find('comments').text() !== ''){
-          $(this).find('comments').find('value').each(function(){
-          commentsHtml_block += '  <table style="background-color: #FEF5DF;">' +
-                        '    <tr>' +
-                        '      <td rowspan="3" style="border-top: solid 2px #FEF5DF; width: 51px;">' +
-                        '        <div id="szl-buttons-' + '1' + '">' +
-                        '          <a href="#szl" onclick=RateComment(' + 'abc' + ',1); return false;"><img src="http://www.szzzl.com/images/resized-comment-szzzl.png" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl.png\'" /></a>' +
-                        '          <a href="#fzzzl" onclick=RateComment(' + 'abc' + ',-1); return false;"><img src="http://www.szzzl.com/images/resized-comment-fzzzl.png" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl.png\'" style="margin-top: 10px;" /></a>' +
-                        '        </div>' +
-                        '      </td>' +
-                        '      <td style="border-top: solid 2px #FEF5DF; border-right: solid 1px #888888; background-color: #FFFFFF; padding-left: 3px; padding-right: 3px;">' +
-                        '        <a href="http://www.szzzl.com/users/' + 'abc' + '" target="_blank">' + 'abc' + '</a><span style="color: #888888"> | ' + '11' + '</span> <a href="http://www.szzzl.com/tzzzls">' + 'abcd' + '</a>' +
-                        '      </td>' +
-                        '    </tr>' +
-                        '    <tr>' +
-                        '      <td style="border-right: solid 1px #888888; background-color: #FFFFFF; padding-left: 3px; padding-right: 3px;">' +
-                        '        ' + 'abc' +
-                        '      </td>' +
-                        '    </tr>' +
-                        '    <tr>' +
-                        '      <td style="border-bottom: solid 1px #888888; border-right: solid 1px #888888; background-color: #FFFFFF; color: #888888; padding-left: 3px; padding-right: 3px;">' +
-                        '        ' + 'abc' +
-                        '      </td>' +
-                        '    </tr>' +
-                        '  </table>';
-          });
+          if ($(this).find('comments').find('value').length > 0){
+            console.log('true')
+            $(this).find('comments').find('value').each(function(){
+            commentsHtml_block += '  <table style="background-color: #FEF5DF;">' +
+                          '    <tr>' +
+                          '      <td rowspan="3" style="border-top: solid 2px #FEF5DF; width: 51px;">' +
+                          '        <div id="szl-buttons-' + '1' + '">' +
+                          '          <a href="#szl" onclick=RateComment(' + 'abc' + ',1); return false;"><img src="http://www.szzzl.com/images/resized-comment-szzzl.png" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl.png\'" /></a>' +
+                          '          <a href="#fzzzl" onclick=RateComment(' + 'abc' + ',-1); return false;"><img src="http://www.szzzl.com/images/resized-comment-fzzzl.png" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl.png\'" style="margin-top: 10px;" /></a>' +
+                          '        </div>' +
+                          '      </td>' +
+                          '      <td style="border-top: solid 2px #FEF5DF; border-right: solid 1px #888888; background-color: #FFFFFF; padding-left: 3px; padding-right: 3px;">' +
+                          '        <a href="http://www.szzzl.com/users/' + 'abc' + '" target="_blank">' + 'abc' + '</a><span style="color: #888888"> | ' + '11' + '</span> <a href="http://www.szzzl.com/tzzzls">' + 'abcd' + '</a>' +
+                          '      </td>' +
+                          '    </tr>' +
+                          '    <tr>' +
+                          '      <td style="border-right: solid 1px #888888; background-color: #FFFFFF; padding-left: 3px; padding-right: 3px;">' +
+                          '        ' + 'abc' +
+                          '      </td>' +
+                          '    </tr>' +
+                          '    <tr>' +
+                          '      <td style="border-bottom: solid 1px #888888; border-right: solid 1px #888888; background-color: #FFFFFF; color: #888888; padding-left: 3px; padding-right: 3px;">' +
+                          '        ' + 'abc' +
+                          '      </td>' +
+                          '    </tr>' +
+                          '  </table>';
+            });
+          } else {
+            commentsHtml_block += '<div id="comment-text">There are currently no comments. Be the first to add one!</div>';
+          }
           a_commentContent.push(commentsHtml_block); // push comment html
           commentsHtml_block = '';
-          }
+
           i_articleCache += 1;
           if (i_articleCache == 4){ // insert first block of html once cache reaches 4
             $('#szl-content').html(a_articleContent[szlCount]); // set html 
-            $('#szl-table').html(a_commentContent[szlCount]);
+            $('#szl-table').html(a_commentContent[szlCount]); //
           }
           console.log($(this).find('comments').typeof);
         });
@@ -977,7 +981,8 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
           if (szlCount == 4) { // if count is equal to array length
             szlCount = 0; // reset count
           }
-          $('#szl-content').empty().html(a_articleContent[szlCount]); // empty current content and replace with next block
+          $('#szl-content').empty().html(a_articleContent[szlCount]); // empty current content and replace with next
+          $('#szl-table').empty().html(a_commentContent[szlCount]);   // replace comment
           return false;
         });
 
