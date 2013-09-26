@@ -661,7 +661,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
       urzzl += 'meh.xml';
     }*/
     storiesViewed++;
-  console.log( storiesViewed );
+    console.log( 'storiesViewed: ' + storiesViewed );
     var ud = document.getElementById( "szl-count" );
     if ( ud && ud.innerHTML ){
       ud.innerHTML = storiesSzzzled + '/' + storiesViewed + ' szzzled';
@@ -674,17 +674,19 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
   }
 
   function RateComment( id, rating ) {
+    console.log('true')
+    console.log(id);
     var urzzl = commentURI + id + '/rating/';
     if ( rating == -1 ) {
       urzzl += 'comment_nay.xml';
     } else if ( rating == 1 ) {
       urzzl += 'comment_yay.xml';
     }
-    SendGetAndIgnore( urzzl );
+    //SendGetAndIgnore( urzzl );
   }
 
   function RateSource( id, rating, cyclic ) {
-    /*var urzzl = sourceURI + id + '/rating/';
+    var urzzl = sourceURI + id + '/rating/';
     if ( rating == 1 ) {
       urzzl += 'always.xml';
       $(document).ready(function(){
@@ -782,7 +784,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
         }
       });
     }
-    SendGetAndIgnore( urzzl );*/
+    //SendGetAndIgnore( urzzl );
   }
 
 
@@ -929,6 +931,8 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
         a_articleContent = [],
         a_commentContent = [],
         a_articleID = [],
+        a_commentID = [],
+        commentID,
         articleID,
         tagName, // tag in unrated.xml
         elemContent; // content within XML tag
@@ -966,9 +970,9 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
                         '<div id="titlebar"></div>' +
                         '<h2><a id="source-a" href="' + $(this).find('link').text() + '" target="_blank">' + $(this).find('name').text() + '</a> ' + $(this).find('date').text() + ' EST</h2>' +
                         '<ul id="navsub-1">' +
-                        '    <li id="always-li" style="border-top: 1px #888888 solid;" onClick="RateSource(' + $(this).find('id').text()  + ',1,0);"><input type="checkbox" id="always"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Subscribe to ' + $(this).find('name').text() + '</span></li>' +
-                        '    <li id="sometimes-li" onClick="RateSource(' + $(this).find('id').text() + ',0,0);"><input type="checkbox" id="sometimes"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Unsubscribe from ' + $(this).find('name').text() + '</span></li>' +
-                        '    <li id="never-li" onClick="RateSource(' + $(this).find('id').text()  + ',-1,0);"><input type="checkbox" id="never"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Block ' + $(this).find('name').text() + '</span></li>' +
+                        '    <li id="always-li" style="border-top: 1px #888888 solid;" onclick="RateSource(' + $(this).find('id').text()  + ',1,0);"><input type="checkbox" id="always"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Subscribe to ' + $(this).find('name').text() + '</span></li>' +
+                        '    <li id="sometimes-li" onclick="RateSource(' + $(this).find('id').text() + ',0,0);"><input type="checkbox" id="sometimes"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Unsubscribe from ' + $(this).find('name').text() + '</span></li>' +
+                        '    <li id="never-li" onclick="RateSource(' + $(this).find('id').text()  + ',-1,0);"><input type="checkbox" id="never"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Block ' + $(this).find('name').text() + '</span></li>' +
                         '</ul>' +
                         '<h2>This article was forwarded by user <a href="http://www.szzzl.com/users/' + $(this).find('forwarding-user-id').text() + '" target="_blank">' + $(this).find('forwarding-user').text() + '</a></h2>' +
                         '<h3>' + $(this).find('prediction').text() + '% chance of szl</h3>';
@@ -987,12 +991,14 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
           if ($(this).find('comments').find('value').length){
             //console.log('true');
             $(this).find('comments').find('value').each(function(){
+              commentID = $(this).find('comment-id').text();
+              a_commentID.push(commentID);
             commentsHtml_block += '  <table style="background-color: #FEF5DF;">' +
                           '    <tr>' +
                           '      <td rowspan="3" style="border-top: solid 2px #FEF5DF; width: 51px;">' +
                           '        <div id="szl-buttons-' + $(this).index() + '">' +
-                          '          <a href="#szl" onclick=RateComment(' + 'abc' + ',1); return false;"><img src="img/resized-comment-szzzl.png" style="border: none;" onmouseover="this.src=\'img/resized-comment-szzzl-glow.png\'" onmouseout="this.src=\'img/resized-comment-szzzl.png\'" /></a>' +
-                          '          <a href="#fzzzl" onclick=RateComment(' + 'abc' + ',-1); return false;"><img src="img/resized-comment-fzzzl.png" style="border: none;" onmouseover="this.src=\'img/resized-comment-fzzzl-glow.png\'" onmouseout="this.src=\'img/resized-comment-fzzzl.png\'" style="margin-top: 10px;" /></a>' +
+                          '          <a href="#szl"><img src="img/resized-comment-szzzl.png" style="border: none;" onclick="RateComment(a_commentID['+ $(this).index() + '],1); return false;" onmouseover="this.src=\'img/resized-comment-szzzl-glow.png\'" onmouseout="this.src=\'img/resized-comment-szzzl.png\'" /></a>' +
+                          '          <a href="#fzzzl"><img src="img/resized-comment-fzzzl.png" style="border: none;" onclick="RateComment(a_commentID['+ $(this).index() + '],-1); return false;" onmouseover="this.src=\'img/resized-comment-fzzzl-glow.png\'" onmouseout="this.src=\'img/resized-comment-fzzzl.png\'" style="margin-top: 10px;" /></a>' +
                           '        </div>' +
                           '      </td>' +
                           '      <td style="border-top: solid 2px #FEF5DF; border-right: solid 1px #888888; background-color: #FFFFFF; padding-left: 3px; padding-right: 3px;">' +
