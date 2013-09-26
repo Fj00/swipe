@@ -97,12 +97,8 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
 //---------------------------------------------------------------------//
 
-  /*function Start(){
-    setTimeout(Init(), 100);
-  }
-
-  function Init() {
-    console.log('init');
+  function Start(){
+    //setTimeout(Init(), 100);
     if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test( navigator.userAgent ) ) {
       isiPhone = true;
     }
@@ -116,13 +112,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     }
 
     //Main();
-    setInterval(Main(), 1000 );
-    var d = new Date();
-    scrollDone = d.getTime() - 1000; // scrollDone doesn't show up again after this
-  }
-
-  // check if user is logged in and load stream of unrated articles
-  function Main() {
+    //setInterval(Main(), 1000 );
     var currentDate = new Date();
     var currentTime = currentDate.getTime();
     var currentUrl = document.URL;
@@ -156,7 +146,67 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     } else {
       username = "";
     }
+    var d = new Date();
+    scrollDone = d.getTime() - 1000; // scrollDone doesn't show up again after this
+
   }
+
+  /*function Init() {
+    console.log('init');
+    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test( navigator.userAgent ) ) {
+      isiPhone = true;
+    }
+    if ( isiPhone ) {
+      document.addEventListener( 'touchstart', HideSzzzlBarTouch, false ); // HideSzzzlBarTouch isn't defined anywhere
+    }
+
+    var st = gup( "h" );
+    if ( st !== "" ) {
+      storyType = parseInt(( st ), 10);
+    }
+
+    //Main();
+    setInterval(Main(), 1000 );
+    var d = new Date();
+    scrollDone = d.getTime() - 1000; // scrollDone doesn't show up again after this
+  }*/
+
+  // check if user is logged in and load stream of unrated articles
+  /*function Main() {
+    var currentDate = new Date();
+    var currentTime = currentDate.getTime();
+    var currentUrl = document.URL;
+
+
+    // returns true when 'register', 'login', 'logout' aren't found within the currentUrl
+    userLoggedIn = ( currentUrl.lastIndexOf( "register" ) == -1 && currentUrl.lastIndexOf( "login" ) == -1 && currentUrl.lastIndexOf( "logout" ) == -1 );
+    console.log(currentUrl);
+    console.log(userLoggedIn);
+
+    if ( userLoggedIn ) {
+      if ( timesReqYieldsNoStories == 0 || ( lastRequestTime + ( timesReqYieldsNoStories * 1000 ) < currentTime ) ) {
+        if ( currentlyLoadingStories == false && storyData.length < minStories ) {
+          var uri = "";
+          uri = unratedStreamURI; // unrated articles stream
+
+          if ( uri != "" ) {  // if the unrated stream exists..
+
+            currentlyLoadingStories = true;
+            var reqDate = new Date();
+            lastRequestTime = reqDate.getTime(); // store the time of request
+            loadXMLDoc( uri );  // load xml for stream of unrated articles 
+          }
+        } else {
+          if ( timesReqYieldsNoStories == 0 ) { 
+            var reqDate = new Date();
+            lastRequestTime = reqDate.getTime(); 
+          }
+        }
+      }
+    } else {
+      username = "";
+    }
+  }*/
 
   // click handlers for szl & fzl buttons
   /*$('#szl-button').click(function(){
@@ -221,7 +271,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
 
 
-  function LoadStories() {
+  /*function LoadStories() {
 
     var items = req.responseXML.getElementsByTagName( "item" ); // all 'item' elements from the returned XML
 
@@ -374,7 +424,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
   }*/
 
 
-  function DisplayStory( currStory, forward ){
+  /*function DisplayStory( currStory, forward ){
     displayedStory = currStory;
     var bID = currStory[sId];
     var sID = currStory[sStorySourceId];
@@ -926,29 +976,29 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
           articleHtml_block = ''; // reset the value to make way for next block
 
           // create block to insert into comment table element
-          if ($(this).find('comments').find('value').length > 0){
-            console.log('true')
+          if ($(this).find('comments').find('value').length){
+            console.log('true');
             $(this).find('comments').find('value').each(function(){
             commentsHtml_block += '  <table style="background-color: #FEF5DF;">' +
                           '    <tr>' +
                           '      <td rowspan="3" style="border-top: solid 2px #FEF5DF; width: 51px;">' +
-                          '        <div id="szl-buttons-' + '1' + '">' +
-                          '          <a href="#szl" onclick=RateComment(' + 'abc' + ',1); return false;"><img src="http://www.szzzl.com/images/resized-comment-szzzl.png" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl.png\'" /></a>' +
-                          '          <a href="#fzzzl" onclick=RateComment(' + 'abc' + ',-1); return false;"><img src="http://www.szzzl.com/images/resized-comment-fzzzl.png" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl.png\'" style="margin-top: 10px;" /></a>' +
+                          '        <div id="szl-buttons-' + $(this).index() + '">' +
+                          '          <a href="#szl" onclick=RateComment(' + 'abc' + ',1); return false;"><img src="http://www.szzzl.com/images/resized-comment-szzzl.png" style="border: none;" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl.png\'" /></a>' +
+                          '          <a href="#fzzzl" onclick=RateComment(' + 'abc' + ',-1); return false;"><img src="http://www.szzzl.com/images/resized-comment-fzzzl.png" style="border: none;" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl.png\'" style="margin-top: 10px;" /></a>' +
                           '        </div>' +
                           '      </td>' +
                           '      <td style="border-top: solid 2px #FEF5DF; border-right: solid 1px #888888; background-color: #FFFFFF; padding-left: 3px; padding-right: 3px;">' +
-                          '        <a href="http://www.szzzl.com/users/' + 'abc' + '" target="_blank">' + 'abc' + '</a><span style="color: #888888"> | ' + '11' + '</span> <a href="http://www.szzzl.com/tzzzls">' + 'abcd' + '</a>' +
+                          '        <a href="http://www.szzzl.com/users/' + $(this).find('userID').text() + '" target="_blank">' + $(this).find('userID').text() + '</a><span style="color: #888888"> | ' + '11' + '</span> <a href="http://www.szzzl.com/tzzzls">' + 'Tzzzls' + '</a>' +
                           '      </td>' +
                           '    </tr>' +
                           '    <tr>' +
                           '      <td style="border-right: solid 1px #888888; background-color: #FFFFFF; padding-left: 3px; padding-right: 3px;">' +
-                          '        ' + 'abc' +
+                          '        ' +  $(this).find('commentText').text() +
                           '      </td>' +
                           '    </tr>' +
                           '    <tr>' +
                           '      <td style="border-bottom: solid 1px #888888; border-right: solid 1px #888888; background-color: #FFFFFF; color: #888888; padding-left: 3px; padding-right: 3px;">' +
-                          '        ' + 'abc' +
+                          '        ' + 'date' +
                           '      </td>' +
                           '    </tr>' +
                           '  </table>';
