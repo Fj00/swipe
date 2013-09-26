@@ -1,4 +1,5 @@
-// szzzl public javascripts
+// Szl.it © Copyright 2013 \\
+
 // global flag
 var isIE = false, // flag for IE
     isiPhone = false, // flag for mobile device
@@ -422,7 +423,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     r = Math.floor( Math.random()*256 );
     g = Math.floor( Math.random()*256 );
     b = Math.floor( Math.random()*256 );
-  }*/
+  }
 
 
   function DisplayStory( currStory, forward ){
@@ -590,7 +591,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     addthis.update( 'share', 'url', staticUrl )
     addthis.update( 'share', 'title', currStory[sTitleLong] )    
   }
-/*
+
 
   function OpenStory() {
     //UpdateUserInfo();
@@ -616,7 +617,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
         KillStyles( n.childNodes[ii] );
       }
     }
-  }*/
+  }
 
   function CloseStory( vote, id ) {
     storyBeingShown = false;
@@ -643,17 +644,18 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
       OpenStory();
     }
-  }
+  }*/
 
-  function RateStory( id, rating ) {
+  function rateStory( id, rating ) {
+    console.log('rated');
     var urzzl = voteURI + id + '/rating/'; // /buzzes/ + bID (article ID) + /rating/
-    if ( rating == -1 ) { 
+    if ( rating == -1 ) {
       urzzl += 'nay.xml'; // /buzzes/ + bID + /rating/ + nay.xml
       storiesFzzzled++;
-    } else if ( rating == 1 ) { 
+    } else if ( rating == 1 ) {
       urzzl += 'yay.xml'; // /buzzes/ + bID + /rating/ + yay.xml
       storiesSzzzled++;
-    } 
+    }
     // neutral rating -- no longer used
     /*else if ( rating == 0 ) {  
       urzzl += 'meh.xml';
@@ -668,7 +670,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     if ( displayedStory ) {
       displayedStory[sVote] = rating;
     }
-    SendGetAndIgnore( urzzl );
+    //SendGetAndIgnore( urzzl );
   }
 
   function RateComment( id, rating ) {
@@ -920,7 +922,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
     // attempt at rewriting xml request with jQuery
     var article = $('#szl-content'),
-        szlCount = 0,
+        rateCount = 0,
         articleHtml_block = '',
         commentsHtml_block = '',
         i_articleCache = 0,
@@ -932,7 +934,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
         elemContent; // content within XML tag
 
     var extractContent = function(tagName, parent){ // extract tag name & its associated content 
-      console.log(tagName + ': ' + parent.find(tagName).text());
+      //console.log(tagName + ': ' + parent.find(tagName).text());
       elemContent = parent.find(tagName).text();
       //a_articleContent.push[tagContent]
 
@@ -947,7 +949,6 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
         $(data).find('item').each(function(){ // loop through each 'item' tag (4 total)
           itemIndex = $(this).index(); // get the index of current 'item'
           var self = $(this); // store current value of 'this' for passing to 'extractContent'
-          console.log('item number: ' + itemIndex);
           /*$(this).children().each(function(){ // loop through each child of xml item
             tagName = $(this).prop('tagName'); // get its tag name
             extractContent( tagName, self );
@@ -984,7 +985,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
           // create block to insert into comment table element
           if ($(this).find('comments').find('value').length){
-            console.log('true');
+            //console.log('true');
             $(this).find('comments').find('value').each(function(){
             commentsHtml_block += '  <table style="background-color: #FEF5DF;">' +
                           '    <tr>' +
@@ -1018,10 +1019,9 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
           i_articleCache += 1;
           if (i_articleCache == 4){ // insert first block of html once cache reaches 4
-            $('#szl-content').html(a_articleContent[szlCount]); // set html 
-            $('#szl-table').html(a_commentContent[szlCount]); //
-            articleID = a_articleID[szlCount]; // update ID
-            console.log(articleID);
+            $('#szl-content').html(a_articleContent[rateCount]); // set html 
+            $('#szl-table').html(a_commentContent[rateCount]); //
+            articleID = a_articleID[rateCount]; // update ID
           }
         });
 
@@ -1030,18 +1030,29 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
       .fail(function(){
         alert(' request failed');
       });
+      function showNewArticle(){
+        rateCount += 1;
+        if (rateCount == 4) { // if count is equal to array length
+          rateCount = 0; // reset count
+        }
+        $('#szl-content').empty().html(a_articleContent[rateCount]); // empty current content and replace with next
+        $('#szl-table').empty().html(a_commentContent[rateCount]);   // replace comment
+        articleID = a_articleID[rateCount];
+        console.log(articleID);
+      }
 
       $(document).ready(function(){
-        szlCount = 0;
-        $('#szl-button').click(function(){
-          szlCount += 1;
-          if (szlCount == 4) { // if count is equal to array length
-            szlCount = 0; // reset count
+        rateCount = 0;
+        // set up rating buttons
+        $('#szl-buttons a').click(function(e){
+          showNewArticle();
+          if (e.target.id == 'vote-up'){
+            console.log('szl');
+            rateStory(articleID, 1);
+          } else {
+            console.log('fzl');
+            rateStory(articleID, -1);
           }
-          $('#szl-content').empty().html(a_articleContent[szlCount]); // empty current content and replace with next
-          $('#szl-table').empty().html(a_commentContent[szlCount]);   // replace comment
-          articleID = a_articleID[szlCount];
-          console.log(articleID);
           return false;
         });
 
