@@ -80,7 +80,7 @@ footer a:active  { color:#AF2F4E; text-decoration:none; }
   background-image: -moz-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%);
   background-image: -webkit-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%);
 }
-
+/* classes that get added/removed to/from rateSource menu */
 .always {
   background: linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%);
   background: -o-linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%);
