@@ -10,28 +10,28 @@ var isIE = false, // flag for IE
 
 // story data
 var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.09.22/js/unrated.xml', //unrated articles stream
-    szldCount = 0,  // # szld
-    fzldCount = 0,  // # fzld
+    szldCount = 0,  // # szld *
+    fzldCount = 0,  // # fzld *
     userDataURI = '/stream/user_data.xml',
     userURI = '/users/',
     streamURI = '/stream.xml',
     voteURI = '/buzzes/',
     commentURI = '/comments/',
     sourceURI = '/sources/',
-    storyComments = [],
-    storyData = [],
-    storyHash = {},
+    //storyComments = [],
+    //storyData = [],
+    //storyHash = {},
 //var viewedStories = {};
     last_story_loaded_index = -1,
     streamlastIndex = -1,
     //urlsPosted = 0,
     //storyBeingShown = false,
-    lastStoryRendered = 0,
-    loadingArticles = false,
-    storiesViewed = 0,
-    lastRequestTime = 0,
+    //lastStoryRendered = 0,
+    loadingArticles = false, // *
+    articlesViewed = 0, // *
+    lastRequestTime = 0, // *
     timesReqYieldsNoStories = 0, // # of times the req for content yielded nothing new
-    minStories = 2,
+    minArticles = 2, // *
     //backwardsSuccessful = false,
     //backwardsFailing = 0,
     //backStory,
@@ -130,7 +130,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
     if ( userLoggedIn ) {
       if ( timesReqYieldsNoStories == 0 || ( lastRequestTime + ( timesReqYieldsNoStories * 1000 ) < currentTime ) ) {
-        if ( loadingArticles == false && storyData.length < minStories ) {
+        if ( loadingArticles == false && storyData.length < minArticles ) {
           var uri = "";
           uri = unratedStreamURI; // unrated articles stream
 
@@ -139,7 +139,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
             loadingArticles = true;
             var requestDate = new Date();
             lastRequestTime = requestDate.getTime(); // store the time of request
-            getXML( theURL );  // load xml for stream of unrated articles 
+            getXML( theURL );  // load xml for stream of unrated articles *
           }
         } else {
           if ( timesReqYieldsNoStories == 0 ) { 
@@ -191,7 +191,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
     if ( userLoggedIn ) {
       if ( timesReqYieldsNoStories == 0 || ( lastRequestTime + ( timesReqYieldsNoStories * 1000 ) < currentTime ) ) {
-        if ( loadingArticles == false && storyData.length < minStories ) {
+        if ( loadingArticles == false && storyData.length < minArticles ) {
           var uri = "";
           uri = unratedStreamURI; // unrated articles stream
 
@@ -652,7 +652,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
   function rateStory( articleID, rating ) {
     console.log('article rated');
-    var rateArticleURL = voteURI + articleID + '/rating/'; // /buzzes/ + (article ID) + /rating/
+    var rateArticleURL = voteURI + articleID + '/rating/'; // * /buzzes/ + (article ID) + /rating/
     if ( rating == -1 ) {
       rateArticleURL += 'fzl.xml'; // /buzzes/ + bID + /rating/ + nay.xml
       fzldCount++;
@@ -664,11 +664,11 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     /*else if ( rating == 0 ) {  
       urzzl += 'meh.xml';
     }*/
-    storiesViewed++;
-    console.log( 'storiesViewed: ' + storiesViewed );
-    var ratingCounter = document.getElementById( "szl-count" );
+    articlesViewed++;
+    console.log( 'articlesViewed: ' + articlesViewed );
+    var ratingCounter = document.getElementById( "szl-count" ); // *
     if ( ratingCounter && ratingCounter.innerHTML ){
-      ratingCounter.innerHTML = szldCount + '/' + storiesViewed + ' szzzled';
+      ratingCounter.innerHTML = szldCount + '/' + articlesViewed + ' szzzled';
     }
     
     if ( displayedStory ) {
@@ -680,7 +680,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
   function rateComment( commentID, rating ) {
     console.log('comment rated')
     console.log('commentID, ' + commentID);
-    var rateCommentURL = commentURI + commentID + '/rating/';
+    var rateCommentURL = commentURI + commentID + '/rating/'; // *
     if ( rating == -1 ) {
       console.log('fzl');
       rateCommentURL += 'comment_fzl.xml';
@@ -694,7 +694,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
   function rateSource( sourceID, rating, cyclic ) {
     console.log('source ID, ' + sourceID);
     console.log('source rated')
-    var rateSourceURL = sourceURI + sourceID + '/rating/';
+    var rateSourceURL = sourceURI + sourceID + '/rating/'; // *
     if ( rating == 1 ) {
       rateSourceURL += 'always.xml';
       $(document).ready(function(){
