@@ -2,14 +2,16 @@
 
 // global flag
 var isIE = false, // flag for IE
-    isiPhone = false, // flag for mobile device
+    isMobile = false; // flag for mobile device
 
 // global request and XML document objects
-    req,
-    getter;
+    //req,
+    //getter;
 
 // story data
 var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.09.22/js/unrated.xml', //unrated articles stream
+    szldCount = 0,  // # szld
+    fzldCount = 0,  // # fzld
     userDataURI = '/stream/user_data.xml',
     userURI = '/users/',
     streamURI = '/stream.xml',
@@ -22,33 +24,32 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 //var viewedStories = {};
     last_story_loaded_index = -1,
     streamlastIndex = -1,
-    urlsPosted = 0,
-    storyBeingShown = false,
+    //urlsPosted = 0,
+    //storyBeingShown = false,
     lastStoryRendered = 0,
-    currentlyLoadingStories = false,
+    loadingArticles = false,
     storiesViewed = 0,
-    storiesSzzzled = 0,
-    storiesFzzzled = 0,
     lastRequestTime = 0,
     timesReqYieldsNoStories = 0, // # of times the req for content yielded nothing new
     minStories = 2,
-    backwardsSuccessful = false,
-    backwardsFailing = 0,
-    backStory,
-    backStoryDisplayed = false,
-    displayedStory,
+    //backwardsSuccessful = false,
+    //backwardsFailing = 0,
+    //backStory,
+    //backStoryDisplayed = false,
+    displayedStory;
 
+    /*
     // values set by getRandomColor()
     r = 0,
     g = 0,
     b = 0,
 
     // views
-    storyType = 0,
+    storyType = 0;
 
     // story data lookup
     // positions for items in story data array
-    sTitle = 0,
+    /*sTitle = 0,
     sSummary = 1,
     sFullStory = 2,
     sId = 3,
@@ -70,10 +71,10 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     sStoryForwardingUser = 19,
     sStoryForwardingUserId = 20,
     sStoryForwardingSource = 21,
-    sStoryComments = 22,
+    sStoryComments = 22,*/
 
     // comment data lookup
-    cCommentId = 0,
+    /*cCommentId = 0,
     cCommentUsername = 1,
     cCommentUserTzzzl = 2,
     cCommentUserDzzzl = 3,
@@ -95,53 +96,55 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     dzzzls = 0,
 
     // debug
-    finishedScrolling = 0;
+    finishedScrolling = 0;*/
 
 //---------------------------------------------------------------------//
+  var theURL = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.09.22/js/unrated.xml'; // url for xml source
 
   function Start(){
     //setTimeout(Init(), 100);
     if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test( navigator.userAgent ) ) {
-      isiPhone = true;
+      isMobile = true;
     }
-    if ( isiPhone ) {
+    if ( isMobile ) {
       document.addEventListener( 'touchstart', HideSzzzlBarTouch, false ); // HideSzzzlBarTouch isn't defined anywhere
     }
 
-    var st = gup( "h" );
+    /*var st = gup( "h" );
     if ( st !== "" ) {
       storyType = parseInt(( st ), 10);
-    }
+    }*/
 
     //Main();
     //setInterval(Main(), 1000 );
     var currentDate = new Date();
     var currentTime = currentDate.getTime();
+    //console.log(currentDate);
     var currentUrl = document.URL;
 
 
     // returns true when 'register', 'login', 'logout' aren't found within the currentUrl
     userLoggedIn = ( currentUrl.lastIndexOf( "register" ) == -1 && currentUrl.lastIndexOf( "login" ) == -1 && currentUrl.lastIndexOf( "logout" ) == -1 );
-    console.log(currentUrl);
+    //console.log(currentUrl);
     console.log(userLoggedIn);
 
     if ( userLoggedIn ) {
       if ( timesReqYieldsNoStories == 0 || ( lastRequestTime + ( timesReqYieldsNoStories * 1000 ) < currentTime ) ) {
-        if ( currentlyLoadingStories == false && storyData.length < minStories ) {
+        if ( loadingArticles == false && storyData.length < minStories ) {
           var uri = "";
           uri = unratedStreamURI; // unrated articles stream
 
           if ( uri != "" ) {  // if the unrated stream exists..
 
-            currentlyLoadingStories = true;
-            var reqDate = new Date();
-            lastRequestTime = reqDate.getTime(); // store the time of request
-            loadXMLDoc( uri );  // load xml for stream of unrated articles 
+            loadingArticles = true;
+            var requestDate = new Date();
+            lastRequestTime = requestDate.getTime(); // store the time of request
+            getXML( theURL );  // load xml for stream of unrated articles 
           }
         } else {
           if ( timesReqYieldsNoStories == 0 ) { 
-            var reqDate = new Date();
-            lastRequestTime = reqDate.getTime(); 
+            var requestDate = new Date();
+            lastRequestTime = requestDate.getTime(); 
           }
         }
       }
@@ -152,13 +155,14 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     scrollDone = d.getTime() - 1000; // scrollDone doesn't show up again after this
 
   }
+  Start();
 
   /*function Init() {
     console.log('init');
     if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test( navigator.userAgent ) ) {
-      isiPhone = true;
+      isMobile = true;
     }
-    if ( isiPhone ) {
+    if ( isMobile ) {
       document.addEventListener( 'touchstart', HideSzzzlBarTouch, false ); // HideSzzzlBarTouch isn't defined anywhere
     }
 
@@ -187,21 +191,21 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
     if ( userLoggedIn ) {
       if ( timesReqYieldsNoStories == 0 || ( lastRequestTime + ( timesReqYieldsNoStories * 1000 ) < currentTime ) ) {
-        if ( currentlyLoadingStories == false && storyData.length < minStories ) {
+        if ( loadingArticles == false && storyData.length < minStories ) {
           var uri = "";
           uri = unratedStreamURI; // unrated articles stream
 
           if ( uri != "" ) {  // if the unrated stream exists..
 
-            currentlyLoadingStories = true;
-            var reqDate = new Date();
-            lastRequestTime = reqDate.getTime(); // store the time of request
+            loadingArticles = true;
+            var requestDate = new Date();
+            lastRequestTime = requestDate.getTime(); // store the time of request
             loadXMLDoc( uri );  // load xml for stream of unrated articles 
           }
         } else {
           if ( timesReqYieldsNoStories == 0 ) { 
-            var reqDate = new Date();
-            lastRequestTime = reqDate.getTime(); 
+            var requestDate = new Date();
+            lastRequestTime = requestDate.getTime(); 
           }
         }
       }
@@ -277,7 +281,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
     var items = req.responseXML.getElementsByTagName( "item" ); // all 'item' elements from the returned XML
 
-    currentlyLoadingStories = true;
+    loadingArticles = true;
 
     if ( items.length == 0 ) { // if request didn't return any unrated stories, timesReqYieldsNoStories is incremented by 1
       timesReqYieldsNoStories++;
@@ -347,7 +351,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
         story_full = story_full.replace( /<\/?[^>]+(>|$)/g, "" );
       }
       if ( story_full.length > 1 ) {
-        if ( isiPhone ) {
+        if ( isMobile ) {
           //var story_summary = story_full.substring( 0, 256 );
           var story_summary = getElementTextNS( "", "summary", items[ii], 0 );
         } else {
@@ -414,7 +418,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
       OpenStory();
     }
 
-    currentlyLoadingStories = false;
+    loadingArticles = false;
   }
 
 
@@ -436,15 +440,15 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
     tt += '  <h1><a href="' + currStory[sStoryLink] + '" target="_blank">' + currStory[sTitleLong] + '</a></h1>';
     tt += '  <div id="titlebar"></div>';
-    if ( isiPhone ) {
+    if ( isMobile ) {
       tt += '  <h2><span id="source-a" style="color: #AF2F4E; text-decoration: underline">' + currStory[sStoryName] + '</span> ' + currStory[sStoryDate] + ' EST</h2>';
     } else {
       tt += '  <h2><a id="source-a" href="' + currStory[sStoryHome] + '" target="_blank">' + currStory[sStoryName] + '</a> ' + currStory[sStoryDate] + ' EST</h2>';
     }
     tt += '  <ul id="navsub-1">';
-    tt += '    <li id="always-li" style="border-top: 1px #888888 solid;" onClick="RateSource(' + sID + ',1,0);"><input type="checkbox" id="always"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Subscribe to ' + currStory[sStoryName] + '</span></li>';
-    tt += '    <li id="sometimes-li" onClick="RateSource(' + sID + ',0,0);"><input type="checkbox" id="sometimes"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Unsubscribe from ' + currStory[sStoryName] + '</span></li>';
-    tt += '    <li id="never-li" onClick="RateSource(' + sID + ',-1,0);"><input type="checkbox" id="never"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Block ' + currStory[sStoryName] + '</span></li>';
+    tt += '    <li id="always-li" style="border-top: 1px #888888 solid;" onClick="rateSource(' + sID + ',1,0);"><input type="checkbox" id="always"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Subscribe to ' + currStory[sStoryName] + '</span></li>';
+    tt += '    <li id="sometimes-li" onClick="rateSource(' + sID + ',0,0);"><input type="checkbox" id="sometimes"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Unsubscribe from ' + currStory[sStoryName] + '</span></li>';
+    tt += '    <li id="never-li" onClick="rateSource(' + sID + ',-1,0);"><input type="checkbox" id="never"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Block ' + currStory[sStoryName] + '</span></li>';
     tt += '  </ul>';
     if ( currStory[sStoryForwardingUser].length > 0 ) {
       tt += '  <h2>This article was forwarded by user <a href="http://www.szzzl.com/users/' + currStory[sStoryForwardingUserId] + '" target="_blank">' + currStory[sStoryForwardingUser] + '</a></h2>';
@@ -477,8 +481,8 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     cc += '    <tr>';
     cc += '      <td rowspan="3" style="border-top: solid 2px #FEF5DF; width: 51px;">';
     cc += '        <div id="szl-buttons-' + ( jj + 1 ) + '">';
-    cc += '          <a href="#szl" onclick=RateComment(' + comment_id + ',1); return false;"><img src="http://www.szzzl.com/images/resized-comment-szzzl.png" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl.png\'" /></a>';
-    cc += '          <a href="#fzzzl" onclick=RateComment(' + comment_id + ',-1); return false;"><img src="http://www.szzzl.com/images/resized-comment-fzzzl.png" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl.png\'" style="margin-top: 10px;" /></a>';
+    cc += '          <a href="#szl" onclick=rateComment(' + comment_id + ',1); return false;"><img src="http://www.szzzl.com/images/resized-comment-szzzl.png" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl.png\'" /></a>';
+    cc += '          <a href="#fzzzl" onclick=rateComment(' + comment_id + ',-1); return false;"><img src="http://www.szzzl.com/images/resized-comment-fzzzl.png" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl.png\'" style="margin-top: 10px;" /></a>';
     cc += '        </div>';
     cc += '      </td>';
     cc += '      <td style="border-top: solid 2px #FEF5DF; border-right: solid 1px #888888; background-color: #FFFFFF; padding-left: 3px; padding-right: 3px;">';
@@ -524,7 +528,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     }
 
     $(document).ready(function(){
-      if ( isiPhone ) {
+      if ( isMobile ) {
         $('#source-a').click(function(){
           $('#navsub-1').toggle();
           $('#navsub-1 li').click(function(){
@@ -543,7 +547,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
       }
 
       if ( currStory[sStoryAlways] ) {
-        if ( isiPhone ) {
+        if ( isMobile ) {
           $('#always-li').css('background-color','#AF2F4E');
         } else {
           $('#always-li').css('background-image','linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%)');
@@ -555,7 +559,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
         $('#always').attr('checked',true);
         $('#sometimes, #never').attr('checked',false);
       } else if ( currStory[sStorySometimes] ) {
-        if ( isiPhone ) {
+        if ( isMobile ) {
           $('#sometimes-li').css('background-color','#FEF5DF');
         } else {
           $('#sometimes-li').css('background-image','linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%)');
@@ -567,7 +571,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
         $('#always, #never').attr('checked',false);
         $('#sometimes').attr('checked',true);
       } else if ( currStory[sStoryNever] ) {
-        if ( isiPhone ) {
+        if ( isMobile ) {
           $('#never-li').css('background-color','#2E6D90');
         } else {
           $('#never-li').css('background-image','linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%)');
@@ -646,15 +650,15 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     }
   }*/
 
-  function rateStory( id, rating ) {
-    console.log('rated');
-    var urzzl = voteURI + id + '/rating/'; // /buzzes/ + bID (article ID) + /rating/
+  function rateStory( articleID, rating ) {
+    console.log('article rated');
+    var rateArticleURL = voteURI + articleID + '/rating/'; // /buzzes/ + (article ID) + /rating/
     if ( rating == -1 ) {
-      urzzl += 'nay.xml'; // /buzzes/ + bID + /rating/ + nay.xml
-      storiesFzzzled++;
+      rateArticleURL += 'fzl.xml'; // /buzzes/ + bID + /rating/ + nay.xml
+      fzldCount++;
     } else if ( rating == 1 ) {
-      urzzl += 'yay.xml'; // /buzzes/ + bID + /rating/ + yay.xml
-      storiesSzzzled++;
+      rateArticleURL += 'szl.xml'; // /buzzes/ + bID + /rating/ + yay.xml
+      szldCount++;
     }
     // neutral rating -- no longer used
     /*else if ( rating == 0 ) {  
@@ -662,9 +666,9 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     }*/
     storiesViewed++;
     console.log( 'storiesViewed: ' + storiesViewed );
-    var ud = document.getElementById( "szl-count" );
-    if ( ud && ud.innerHTML ){
-      ud.innerHTML = storiesSzzzled + '/' + storiesViewed + ' szzzled';
+    var ratingCounter = document.getElementById( "szl-count" );
+    if ( ratingCounter && ratingCounter.innerHTML ){
+      ratingCounter.innerHTML = szldCount + '/' + storiesViewed + ' szzzled';
     }
     
     if ( displayedStory ) {
@@ -673,41 +677,45 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     //SendGetAndIgnore( urzzl );
   }
 
-  function RateComment( id, rating ) {
-    console.log('true')
-    console.log(id);
-    var urzzl = commentURI + id + '/rating/';
+  function rateComment( commentID, rating ) {
+    console.log('comment rated')
+    console.log('commentID, ' + commentID);
+    var rateCommentURL = commentURI + commentID + '/rating/';
     if ( rating == -1 ) {
-      urzzl += 'comment_nay.xml';
+      console.log('fzl');
+      rateCommentURL += 'comment_fzl.xml';
     } else if ( rating == 1 ) {
-      urzzl += 'comment_yay.xml';
+      console.log('szl');
+      rateCommentURL += 'comment_szl.xml';
     }
     //SendGetAndIgnore( urzzl );
   }
 
-  function RateSource( id, rating, cyclic ) {
-    var urzzl = sourceURI + id + '/rating/';
+  function rateSource( sourceID, rating, cyclic ) {
+    console.log('source ID, ' + sourceID);
+    console.log('source rated')
+    var rateSourceURL = sourceURI + sourceID + '/rating/';
     if ( rating == 1 ) {
-      urzzl += 'always.xml';
+      rateSourceURL += 'always.xml';
       $(document).ready(function(){
         if ( cyclic == 0 ) {
-          //if ( isiPhone ) {
-            $('#always-li').css('background-color','#AF2F4E');
+          //if ( isMobile ) {
+            /*$('#always-li').css('background-color','#AF2F4E');
             $('#sometimes-li').css('background-color','');
             $('#never-li').css('background-color','');
           //} else {
-            $('#always-li').css('background-image','linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%)');
-            $('#always-li').css('background-image','-o-linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%)');
-            $('#always-li').css('background-image','-ms-linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%)');
-            $('#always-li').css('background-image','-moz-linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%)');
-            $('#always-li').css('background-image','-webkit-linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%)');
-            $('#sometimes-li').css('background-image','');
-            $('#never-li').css('background-image','');
-          //}
-          $('#always, #sometimes, #never').attr('checked',false);
-          $('#always').attr('checked',true);
-        } else if ( cyclic == 1 ) {
-          if ( isiPhone ) {
+            $('#navsub-1 li').removeClass();
+            $('#always-li').addClass('always');
+
+          //}*/
+
+          $('#navsub-1 li').removeClass();
+          $('#always-li').addClass('always');
+          $('#always').prop('checked', true);
+          $('#sometimes, #never').prop('checked', false);
+
+        } /*else if ( cyclic == 1 ) {
+          if ( isMobile ) {
             $('#source-' + id).css('background-color','#AF2F4E');
           } else {
             $('#source-' + id).css('background-image','linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%)');
@@ -716,30 +724,32 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
             $('#source-' + id).css('background-image','-moz-linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%)');
             $('#source-' + id).css('background-image','-webkit-linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%)');
           }
-          $('#source-' + id).attr('onclick','RateSource(' + id + ', -1, 1)');
-        }
+          $('#source-' + id).attr('onclick','rateSource(' + id + ', -1, 1)');
+        }*/
       });
     } else if ( rating == 0 ) {
-      urzzl += 'sometimes.xml';
+      rateSourceURL += 'sometimes.xml';
       $(document).ready(function(){
         if ( cyclic == 0 ) {
-          //if ( isiPhone ) {
+          //if ( isMobile ) {
+            /*
             $('#always-li').css('background-color','');
             $('#sometimes-li').css('background-color','#FEF5DF');
             $('#never-li').css('background-color','');
           //} else {
-            $('#always-li').css('background-image','');
-            $('#sometimes-li').css('background-image','linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%)');
-            $('#sometimes-li').css('background-image','-o-linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%)');
-            $('#sometimes-li').css('background-image','-ms-linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%)');
-            $('#sometimes-li').css('background-image','-moz-linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%)');
-            $('#sometimes-li').css('background-image','-webkit-linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%)');
-            $('#never-li').css('background-image','');
-          //}
-          $('#always, #sometimes, #never').attr('checked',false);
-          $('#sometimes').attr('checked',true);
-        } else if ( cyclic == 1 ) {
-          if ( isiPhone ) {
+            $('#navsub-1 li').removeClass();
+            $('#sometimes-li').addClass('sometimes');
+          //}*/
+
+          $('#navsub-1 li').removeClass();
+          $('#sometimes-li').addClass('sometimes');
+          $('#sometimes').prop('checked', true);
+          $('#never, #always').prop('checked', false);
+
+        } 
+        // not sure what this does
+        /*else if ( cyclic == 1 ) {
+          if ( isMobile ) {
             $('#source-' + id).css('background-color','#FEF5DF');
           } else {
             $('#source-' + id).css('background-image','linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%)');
@@ -748,30 +758,31 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
             $('#source-' + id).css('background-image','-moz-linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%)');
             $('#source-' + id).css('background-image','-webkit-linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%)');
           }
-          $('#source-' + id).attr('onclick','RateSource(' + id + ', 1, 1)');
-        }
+          $('#source-' + id).attr('onclick','rateSource(' + id + ', 1, 1)');
+        }*/
       });
     } else if ( rating == -1 ) {
-      urzzl += 'never.xml';
+      rateSourceURL += 'never.xml';
       $(document).ready(function(){
         if ( cyclic == 0 ) {
-          //if ( isiPhone ) {
+          /*//if ( isMobile ) {
             $('#always-li').css('background-color','');
             $('#sometimes-li').css('background-color','');
             $('#never-li').css('background-color','#2E6D90');
           //} else {
-            $('#always-li').css('background-image','');
-            $('#sometimes-li').css('background-image','');
-            $('#never-li').css('background-image','linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%)');
-            $('#never-li').css('background-image','-o-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%)');
-            $('#never-li').css('background-image','-ms-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%)');
-            $('#never-li').css('background-image','-moz-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%)');
-            $('#never-li').css('background-image','-webkit-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%)');
-          //}
-          $('#always, #sometimes', '#never').attr('checked',false);
-          $('#never').attr('checked',true);
-        } else if ( cyclic == 1 ) {
-          if ( isiPhone ) {
+            $('#navsub-1 li').removeClass();
+            $('#never-li').addClass('never');
+          //}*/
+
+          $('#navsub-1 li').removeClass();
+          $('#never-li').addClass('never');
+          $('#never').prop('checked', true);
+          $('#sometimes, #always').prop('checked', false);
+
+        } 
+        //unsure
+        /*else if ( cyclic == 1 ) {
+          if ( isMobile ) {
             $('#source-' + id).css('background-color','#2E6D90');
           } else {
             $('#source-' + id).css('background-image','linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%)');
@@ -780,8 +791,8 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
             $('#source-' + id).css('background-image','-moz-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%)');
             $('#source-' + id).css('background-image','-webkit-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%)');
           }
-          $('#source-' + id).attr('onclick','RateSource(' + id + ', 0, 1)');
-        }
+          $('#source-' + id).attr('onclick','rateSource(' + id + ', 0, 1)');
+        }*/
       });
     }
     //SendGetAndIgnore( urzzl );
@@ -945,8 +956,8 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
       html_block += parent.find(tagName).text() + '</br>'; // add content from each tag into a main block
     };
 
-    var theURL = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.09.22/js/unrated.xml';
-    $.get(theURL)
+    function getXML( url ) {
+      $.get(url)
       .done(function(data){
         console.log(data); // the returned XML object
 
@@ -970,9 +981,9 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
                         '<div id="titlebar"></div>' +
                         '<h2><a id="source-a" href="' + $(this).find('link').text() + '" target="_blank">' + $(this).find('name').text() + '</a> ' + $(this).find('date').text() + ' EST</h2>' +
                         '<ul id="navsub-1">' +
-                        '    <li id="always-li" style="border-top: 1px #888888 solid;" onclick="RateSource(' + $(this).find('id').text()  + ',1,0);"><input type="checkbox" id="always"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Subscribe to ' + $(this).find('name').text() + '</span></li>' +
-                        '    <li id="sometimes-li" onclick="RateSource(' + $(this).find('id').text() + ',0,0);"><input type="checkbox" id="sometimes"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Unsubscribe from ' + $(this).find('name').text() + '</span></li>' +
-                        '    <li id="never-li" onclick="RateSource(' + $(this).find('id').text()  + ',-1,0);"><input type="checkbox" id="never"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Block ' + $(this).find('name').text() + '</span></li>' +
+                        '    <li id="always-li" style="border-top: 1px #888888 solid;" onclick="rateSource(' + $(this).find('id').text()  + ',1,0);"><input type="checkbox" id="always"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Subscribe to ' + $(this).find('name').text() + '</span></li>' +
+                        '    <li id="sometimes-li" class="sometimes" onclick="rateSource(' + $(this).find('id').text() + ',0,0);"><input type="checkbox" id="sometimes" checked><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Unsubscribe from ' + $(this).find('name').text() + '</span></li>' +
+                        '    <li id="never-li" onclick="rateSource(' + $(this).find('id').text()  + ',-1,0);"><input type="checkbox" id="never" ><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Block ' + $(this).find('name').text() + '</span></li>' +
                         '</ul>' +
                         '<h2>This article was forwarded by user <a href="http://www.szzzl.com/users/' + $(this).find('forwarding-user-id').text() + '" target="_blank">' + $(this).find('forwarding-user').text() + '</a></h2>' +
                         '<h3>' + $(this).find('prediction').text() + '% chance of szl</h3>';
@@ -993,12 +1004,12 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
             $(this).find('comments').find('value').each(function(){
               commentID = $(this).find('comment-id').text();
               a_commentID.push(commentID);
-            commentsHtml_block += '  <table style="background-color: #FEF5DF;">' +
+              commentsHtml_block += '  <table style="background-color: #FEF5DF;">' +
                           '    <tr>' +
                           '      <td rowspan="3" style="border-top: solid 2px #FEF5DF; width: 51px;">' +
                           '        <div id="szl-buttons-' + $(this).index() + '">' +
-                          '          <a href="#szl"><img src="img/resized-comment-szzzl.png" style="border: none;" onclick="RateComment(a_commentID['+ $(this).index() + '],1); return false;" onmouseover="this.src=\'img/resized-comment-szzzl-glow.png\'" onmouseout="this.src=\'img/resized-comment-szzzl.png\'" /></a>' +
-                          '          <a href="#fzzzl"><img src="img/resized-comment-fzzzl.png" style="border: none;" onclick="RateComment(a_commentID['+ $(this).index() + '],-1); return false;" onmouseover="this.src=\'img/resized-comment-fzzzl-glow.png\'" onmouseout="this.src=\'img/resized-comment-fzzzl.png\'" style="margin-top: 10px;" /></a>' +
+                          '          <a href="#szl"><img src="img/resized-comment-szzzl.png" style="border: none;" onclick="rateComment(a_commentID['+ $(this).index() + '],1); return false;" onmouseover="this.src=\'img/resized-comment-szzzl-glow.png\'" onmouseout="this.src=\'img/resized-comment-szzzl.png\'" /></a>' +
+                          '          <a href="#fzzzl"><img src="img/resized-comment-fzzzl.png" style="border: none;" onclick="rateComment(a_commentID['+ $(this).index() + '],-1); return false;" onmouseover="this.src=\'img/resized-comment-fzzzl-glow.png\'" onmouseout="this.src=\'img/resized-comment-fzzzl.png\'" style="margin-top: 10px;" /></a>' +
                           '        </div>' +
                           '      </td>' +
                           '      <td style="border-top: solid 2px #FEF5DF; border-right: solid 1px #888888; background-color: #FFFFFF; padding-left: 3px; padding-right: 3px;">' +
@@ -1036,53 +1047,54 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
       .fail(function(){
         alert(' request failed');
       });
-      function showNewArticle(){
-        rateCount += 1;
-        if (rateCount == 4) { // if count is equal to array length
-          rateCount = 0; // reset count
-        }
-        $('#szl-content').empty().html(a_articleContent[rateCount]); // empty current content and replace with next
-        $('#szl-table').empty().html(a_commentContent[rateCount]);   // replace comment
-        articleID = a_articleID[rateCount];
-        console.log(articleID);
+    }
+
+    function showNewArticle(){
+      rateCount += 1;
+      if (rateCount == 4) { // if count is equal to array length
+      rateCount = 0; // reset count
       }
-
-      $(document).ready(function(){
-        rateCount = 0;
-        // set up rating buttons
-        $('#szl-buttons a').click(function(e){
-          showNewArticle();
-          if (e.target.id == 'vote-up'){
-            console.log('szl');
-            rateStory(articleID, 1);
-          } else {
-            console.log('fzl');
-            rateStory(articleID, -1);
-          }
-          return false;
-        });
-
-        if ( isiPhone ) {
-          $('#source-a').click(function(){
-            $('#navsub-1').toggle();
-            $('#navsub-1 li').click(function(){
-              setTimeout( function(){
-                $('#navsub-1').hide();
-              }, 500 );
-            });
-          });
+      $('#szl-content').empty().html(a_articleContent[rateCount]); // empty current content and replace with next
+      $('#szl-table').empty().html(a_commentContent[rateCount]);   // replace comment
+      articleID = a_articleID[rateCount];
+      console.log(articleID);
+    }
+    $(document).ready(function(){
+      rateCount = 0;
+      // set up rating buttons
+      $('#szl-buttons a').click(function(e){
+        showNewArticle();
+        if (e.target.id == 'vote-up'){
+          console.log('szl');
+          rateStory(articleID, 1);
         } else {
-          $('#szl-content').on('mouseenter', '#source-a', function(){
-            console.log('true');
-            $('#navsub-1').show();
-            $('#navsub-1').hover(function(){
-              $(this).show();
-            },function(){
-              $(this).hide();
-            });
-          });
+          console.log('fzl');
+          rateStory(articleID, -1);
         }
+        return false;
       });
+
+      if ( isMobile ) {
+        $('#source-a').click(function(){
+          $('#navsub-1').toggle();
+          $('#navsub-1 li').click(function(){
+            setTimeout( function(){
+              $('#navsub-1').hide();
+            }, 500 );
+          });
+        });
+      } else {
+        $('#szl-content').on('mouseenter', '#source-a', function(){
+          //console.log('true');
+          $('#navsub-1').show();
+          $('#navsub-1').hover(function(){
+            $(this).show();
+          },function(){
+            $(this).hide();
+          });
+        });
+      }
+    });
 
           /*  var story_id = getElementTextNS( "", "id", items[ii], 0 );
       var story_title_long = getElementTextNS( "", "title", items[ii], 0 );
