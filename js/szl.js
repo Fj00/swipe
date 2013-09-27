@@ -1,5 +1,7 @@
 // Szl.it © Copyright 2013 \\
 
+// * indicates variable name that was changed
+
 // global flag
 var isIE = false, // flag for IE
     isMobile = false; // flag for mobile device
@@ -9,7 +11,7 @@ var isIE = false, // flag for IE
     //getter;
 
 // story data
-var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.09.22/js/unrated.xml', //unrated articles stream
+var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.09.22/js/unrated.xml', // * unrated articles stream
     szldCount = 0,  // # szld *
     fzldCount = 0,  // # fzld *
     userDataURI = '/stream/user_data.xml',
@@ -19,7 +21,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     commentURI = '/comments/',
     sourceURI = '/sources/',
     //storyComments = [],
-    //storyData = [],
+    //storyData = [], // container for article data and content for html elements
     //storyHash = {},
 //var viewedStories = {};
     last_story_loaded_index = -1,
@@ -30,13 +32,14 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     loadingArticles = false, // *
     articlesViewed = 0, // *
     lastRequestTime = 0, // *
-    timesReqYieldsNoStories = 0, // # of times the req for content yielded nothing new
+    requestsWithoutResult = 0, // * # of times the req for content yielded nothing new
     minArticles = 2, // *
     //backwardsSuccessful = false,
     //backwardsFailing = 0,
     //backStory,
     //backStoryDisplayed = false,
     displayedStory;
+    a_articleContent = [];
 
     /*
     // values set by getRandomColor()
@@ -99,7 +102,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     finishedScrolling = 0;*/
 
 //---------------------------------------------------------------------//
-  var theURL = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.09.22/js/unrated.xml'; // url for xml source
+  //var theURL = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.09.22/js/unrated.xml'; // url for xml source
 
   function Start(){
     //setTimeout(Init(), 100);
@@ -129,20 +132,20 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     console.log(userLoggedIn);
 
     if ( userLoggedIn ) {
-      if ( timesReqYieldsNoStories == 0 || ( lastRequestTime + ( timesReqYieldsNoStories * 1000 ) < currentTime ) ) {
-        if ( loadingArticles == false && storyData.length < minArticles ) {
+      if ( requestsWithoutResult == 0 || ( lastRequestTime + ( requestsWithoutResult * 1000 ) < currentTime ) ) {
+        if ( loadingArticles == false && a_articleContent.length < minArticles ) { // if not currently loading articles & article cache is < 2
           var uri = "";
-          uri = unratedStreamURI; // unrated articles stream
+          uri = unratedContent; // unrated articles stream to be passed to get request
 
           if ( uri != "" ) {  // if the unrated stream exists..
 
             loadingArticles = true;
             var requestDate = new Date();
             lastRequestTime = requestDate.getTime(); // store the time of request
-            getXML( theURL );  // load xml for stream of unrated articles *
+            getXML( unratedContent );  // load xml for stream of unrated articles *
           }
         } else {
-          if ( timesReqYieldsNoStories == 0 ) { 
+          if ( requestsWithoutResult == 0 ) { 
             var requestDate = new Date();
             lastRequestTime = requestDate.getTime(); 
           }
@@ -190,7 +193,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     console.log(userLoggedIn);
 
     if ( userLoggedIn ) {
-      if ( timesReqYieldsNoStories == 0 || ( lastRequestTime + ( timesReqYieldsNoStories * 1000 ) < currentTime ) ) {
+      if ( requestsWithoutResult == 0 || ( lastRequestTime + ( requestsWithoutResult * 1000 ) < currentTime ) ) {
         if ( loadingArticles == false && storyData.length < minArticles ) {
           var uri = "";
           uri = unratedStreamURI; // unrated articles stream
@@ -203,7 +206,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
             loadXMLDoc( uri );  // load xml for stream of unrated articles 
           }
         } else {
-          if ( timesReqYieldsNoStories == 0 ) { 
+          if ( requestsWithoutResult == 0 ) { 
             var requestDate = new Date();
             lastRequestTime = requestDate.getTime(); 
           }
@@ -283,12 +286,12 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
     loadingArticles = true;
 
-    if ( items.length == 0 ) { // if request didn't return any unrated stories, timesReqYieldsNoStories is incremented by 1
-      timesReqYieldsNoStories++;
-    if ( timesReqYieldsNoStories > 5 )
-      timesReqYieldsNoStories = 5;
+    if ( items.length == 0 ) { // if request didn't return any unrated stories, requestsWithoutResult is incremented by 1
+      requestsWithoutResult++;
+    if ( requestsWithoutResult > 5 )
+      requestsWithoutResult = 5;
     } else {
-      timesReqYieldsNoStories = 0;
+      requestsWithoutResult = 0;
     }
 
     var storiesLoaded = 0;
@@ -678,7 +681,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
   }
 
   function rateComment( commentID, rating ) {
-    console.log('comment rated')
+    console.log('comment rated');
     console.log('commentID, ' + commentID);
     var rateCommentURL = commentURI + commentID + '/rating/'; // *
     if ( rating == -1 ) {
@@ -693,12 +696,12 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
   function rateSource( sourceID, rating, cyclic ) {
     console.log('source ID, ' + sourceID);
-    console.log('source rated')
+    console.log('source rated');
     var rateSourceURL = sourceURI + sourceID + '/rating/'; // *
     if ( rating == 1 ) {
       rateSourceURL += 'always.xml';
       $(document).ready(function(){
-        if ( cyclic == 0 ) {
+        if ( cyclic === 0 ) {
           //if ( isMobile ) {
             /*$('#always-li').css('background-color','#AF2F4E');
             $('#sometimes-li').css('background-color','');
@@ -727,10 +730,10 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
           $('#source-' + id).attr('onclick','rateSource(' + id + ', -1, 1)');
         }*/
       });
-    } else if ( rating == 0 ) {
+    } else if ( rating === 0 ) {
       rateSourceURL += 'sometimes.xml';
       $(document).ready(function(){
-        if ( cyclic == 0 ) {
+        if ( cyclic === 0 ) {
           //if ( isMobile ) {
             /*
             $('#always-li').css('background-color','');
@@ -746,7 +749,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
           $('#sometimes').prop('checked', true);
           $('#never, #always').prop('checked', false);
 
-        } 
+        }
         // not sure what this does
         /*else if ( cyclic == 1 ) {
           if ( isMobile ) {
@@ -764,7 +767,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
     } else if ( rating == -1 ) {
       rateSourceURL += 'never.xml';
       $(document).ready(function(){
-        if ( cyclic == 0 ) {
+        if ( cyclic === 0 ) {
           /*//if ( isMobile ) {
             $('#always-li').css('background-color','');
             $('#sometimes-li').css('background-color','');
@@ -779,7 +782,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
           $('#never').prop('checked', true);
           $('#sometimes, #always').prop('checked', false);
 
-        } 
+        }
         //unsure
         /*else if ( cyclic == 1 ) {
           if ( isMobile ) {
@@ -933,28 +936,23 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
   }*/
 
 
-    // attempt at rewriting xml request with jQuery
+    // attempt at rewriting xml request and article HTML insertion with jQuery
     var article = $('#szl-content'),
-        rateCount = 0,
+        rateCount = 0, // number of articles rated
         articleHtml_block = '',
         commentsHtml_block = '',
-        i_articleCache = 0,
+        i_articleCache = 0, // number of articles ready for display
+
+        // arrays for storing article and comment data for each 'item'
         a_articleContent = [],
         a_commentContent = [],
         a_articleID = [],
         a_commentID = [],
+
         commentID,
-        articleID,
+        currentArticleID, // numeric ID of currently displayed article
         tagName, // tag in unrated.xml
         elemContent; // content within XML tag
-
-    var extractContent = function(tagName, parent){ // extract tag name & its associated content 
-      //console.log(tagName + ': ' + parent.find(tagName).text());
-      elemContent = parent.find(tagName).text();
-      //a_articleContent.push[tagContent]
-
-      html_block += parent.find(tagName).text() + '</br>'; // add content from each tag into a main block
-    };
 
     function getXML( url ) {
       $.get(url)
@@ -963,27 +961,26 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
 
         $(data).find('item').each(function(){ // loop through each 'item' tag (4 total)
           itemIndex = $(this).index(); // get the index of current 'item'
-          var self = $(this); // store current value of 'this' for passing to 'extractContent'
-          /*$(this).children().each(function(){ // loop through each child of xml item
-            tagName = $(this).prop('tagName'); // get its tag name
-            extractContent( tagName, self );
-          });
-          console.log('');
-          a_articleContent.push(html_block); // push each html_block
-          html_block = ''; // reset the value to make way for next block
-          i_articleCache += 1;
-          if (i_articleCache == 4){ // insert block of html once cache reaches 4
-            //$('#szl-content').html(a_articleContent[szlCount]); // set html 
-          }*/
+          var self = $(this); // store current value of 'this'
+
+          // various pieces of article data
+          articleText = $(this).find('description').text(); // main text
+          articleText = articleText .replace( /<script[\s\S]*<\/script>/gi ,'' ); // takes out script tags
+          articleText = articleText .replace( /<img[^>]+\>/gi ,'' ); // takes out img tags
+          //story_long = story_full;
+          articleText = articleText .replace( /<\/?[^>]+(>|$)/g, "" ); //
+          articleLink = $(this).find('link').text();
+          sourceName  = $(this).find('name').text();
+          articleID   = $(this).find('id').text();
 
           // create an html block for article using text from the XML elements 
-          articleHtml_block += '<h1><a href=' + $(this).find('link').text() + '" target="_blank">' + $(this).find('title').text() + '</a></h1>' +
+          articleHtml_block += '<h1><a href=' + articleLink + '" target="_blank">' + $(this).find('title').text() + '</a></h1>' +
                         '<div id="titlebar"></div>' +
-                        '<h2><a id="source-a" href="' + $(this).find('link').text() + '" target="_blank">' + $(this).find('name').text() + '</a> ' + $(this).find('date').text() + ' EST</h2>' +
+                        '<h2><a id="source-a" href="' + articleLink + '" target="_blank">' + sourceName + '</a> ' + $(this).find('date').text() + ' EST</h2>' +
                         '<ul id="navsub-1">' +
-                        '    <li id="always-li" style="border-top: 1px #888888 solid;" onclick="rateSource(' + $(this).find('id').text()  + ',1,0);"><input type="checkbox" id="always"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Subscribe to ' + $(this).find('name').text() + '</span></li>' +
-                        '    <li id="sometimes-li" class="sometimes" onclick="rateSource(' + $(this).find('id').text() + ',0,0);"><input type="checkbox" id="sometimes" checked><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Unsubscribe from ' + $(this).find('name').text() + '</span></li>' +
-                        '    <li id="never-li" onclick="rateSource(' + $(this).find('id').text()  + ',-1,0);"><input type="checkbox" id="never" ><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Block ' + $(this).find('name').text() + '</span></li>' +
+                        '    <li id="always-li" style="border-top: 1px #888888 solid;" onclick="rateSource(' + articleID  + ',1,0);"><input type="checkbox" id="always"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Subscribe to ' + sourceName + '</span></li>' +
+                        '    <li id="sometimes-li" class="sometimes" onclick="rateSource(' + articleID + ',0,0);"><input type="checkbox" id="sometimes" checked><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Unsubscribe from ' + sourceName+ '</span></li>' +
+                        '    <li id="never-li" onclick="rateSource(' + articleID  + ',-1,0);"><input type="checkbox" id="never" ><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Block ' + sourceName + '</span></li>' +
                         '</ul>' +
                         '<h2>This article was forwarded by user <a href="http://www.szzzl.com/users/' + $(this).find('forwarding-user-id').text() + '" target="_blank">' + $(this).find('forwarding-user').text() + '</a></h2>' +
                         '<h3>' + $(this).find('prediction').text() + '% chance of szl</h3>';
@@ -992,10 +989,12 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
                           articleHtml_block += '<div id="story-image"><img src="' + $(this).find('image').text() + '" /></div>';
                         }
 
-          articleHtml_block += '<div id ="szl-story-long-wrapper">' + $(this).find('description').text() + '</div>' +
-                        '<a href="' + $(this).find('link').text() + '" target="_blank" >Read more</a>';
-          a_articleID.push( $(this).find('id').text() ); // store article's numeric ID
-          a_articleContent.push(articleHtml_block); // push article html
+          articleHtml_block += '<div id ="szl-story-long-wrapper">' + articleText + '</div>' +
+                        '<a href="' + articleLink + '" target="_blank" >Read more</a>';
+          // end block
+
+          a_articleID.push( articleID ); // store article's numeric ID
+          a_articleContent.push(articleHtml_block); // store article html
           articleHtml_block = ''; // reset the value to make way for next block
 
           // create block to insert into comment table element
@@ -1004,6 +1003,8 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
             $(this).find('comments').find('value').each(function(){
               commentID = $(this).find('comment-id').text();
               a_commentID.push(commentID);
+
+              //creat html block for comment table
               commentsHtml_block += '  <table style="background-color: #FEF5DF;">' +
                           '    <tr>' +
                           '      <td rowspan="3" style="border-top: solid 2px #FEF5DF; width: 51px;">' +
@@ -1027,23 +1028,27 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
                           '      </td>' +
                           '    </tr>' +
                           '  </table>';
+              // end comment table block
+
             });
           } else {
+
+            // if no comments..
             commentsHtml_block += '<div id="comment-text">There are currently no comments. Be the first to add one!</div>';
           }
           a_commentContent.push(commentsHtml_block); // push comment html
           commentsHtml_block = '';
 
           i_articleCache += 1;
-          if (i_articleCache == 4){ // insert first block of html once cache reaches 4
-            $('#szl-content').html(a_articleContent[rateCount]); // set html 
-            $('#szl-table').html(a_commentContent[rateCount]); //
-            articleID = a_articleID[rateCount]; // update ID
+          if (i_articleCache == 4){ // insert first article once cache reaches 4
+            $('#szl-content').html(a_articleContent[rateCount]); // set article html 
+            $('#szl-table').html(a_commentContent[rateCount]); // set comment table html
+            currentArticleID = a_articleID[rateCount]; // update article ID
           }
         });
-
-
       })
+
+      // when get request fails
       .fail(function(){
         alert(' request failed');
       });
@@ -1056,11 +1061,13 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
       }
       $('#szl-content').empty().html(a_articleContent[rateCount]); // empty current content and replace with next
       $('#szl-table').empty().html(a_commentContent[rateCount]);   // replace comment
-      articleID = a_articleID[rateCount];
-      console.log(articleID);
+      currentArticleID = a_articleID[rateCount];
+      console.log(currentArticleID);
     }
+
     $(document).ready(function(){
       rateCount = 0;
+
       // set up rating buttons
       $('#szl-buttons a').click(function(e){
         showNewArticle();
@@ -1074,6 +1081,7 @@ var unratedStreamURI = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13
         return false;
       });
 
+      // article source dropdown menu 
       if ( isMobile ) {
         $('#source-a').click(function(){
           $('#navsub-1').toggle();
