@@ -81,6 +81,30 @@ footer a:active  { color:#AF2F4E; text-decoration:none; }
   background-image: -webkit-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%);
 }
 
+.always {
+  background: linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%);
+  background: -o-linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%);
+  background: -ms-linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%);
+  background: -moz-linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%);
+  background: -webkit-linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%);
+}
+
+.sometimes {
+  background: linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%);
+  background: -o-linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%);
+  background: -ms-linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%);
+  background: -moz-linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%);
+  background: -webkit-linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%);
+}
+
+.never {
+  background: linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%);
+  background: -o-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%);
+  background: -ms-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%);
+  background: -moz-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%);
+  background: -webkit-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%);
+}
+
 #navsub-1 li a:link,    
 #navsub-1 li a:visited, 
 #navsub-1 li a:hover,   
