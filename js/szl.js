@@ -3,14 +3,14 @@
 // * indicates variable name that was changed
 
 // global flag
-var isIE = false, // flag for IE
-    isMobile = false; // flag for mobile device
+var isIE = false, // check for IE
+    isMobile = false; // check for mobile device
 
 // global request and XML document objects
     //req,
     //getter;
 
-// story data
+// article data
 var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.09.22/js/unrated.xml', // * unrated articles stream
     szldCount = 0,  // # szld *
     fzldCount = 0,  // # fzld *
@@ -23,7 +23,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
     //storyComments = [],
     //storyData = [], // container for article data and content for html elements
     //storyHash = {},
-//var viewedStories = {};
+    //var viewedStories = {};
     last_story_loaded_index = -1,
     streamlastIndex = -1,
     //urlsPosted = 0,
@@ -39,6 +39,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
     //backStory,
     //backStoryDisplayed = false,
     displayedStory;
+
     a_articleContent = [];
 
     /*
@@ -116,18 +117,18 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
     /*var st = gup( "h" );
     if ( st !== "" ) {
       storyType = parseInt(( st ), 10);
-    }*/
+    }
 
     //Main();
     //setInterval(Main(), 1000 );
     var currentDate = new Date();
     var currentTime = currentDate.getTime();
     //console.log(currentDate);
-    var currentUrl = document.URL;
+    var currentUrl = document.URL;*/
 
 
     // returns true when 'register', 'login', 'logout' aren't found within the currentUrl
-    userLoggedIn = ( currentUrl.lastIndexOf( "register" ) == -1 && currentUrl.lastIndexOf( "login" ) == -1 && currentUrl.lastIndexOf( "logout" ) == -1 );
+    /*userLoggedIn = ( currentUrl.lastIndexOf( "register" ) == -1 && currentUrl.lastIndexOf( "login" ) == -1 && currentUrl.lastIndexOf( "logout" ) == -1 );
     //console.log(currentUrl);
     console.log(userLoggedIn);
 
@@ -141,9 +142,9 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
 
             loadingArticles = true;
             var requestDate = new Date();
-            lastRequestTime = requestDate.getTime(); // store the time of request
+            lastRequestTime = requestDate.getTime(); // store the time of request*/
             getXML( unratedContent );  // load xml for stream of unrated articles *
-          }
+          /*}
         } else {
           if ( requestsWithoutResult == 0 ) { 
             var requestDate = new Date();
@@ -155,10 +156,10 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
       username = "";
     }
     var d = new Date();
-    scrollDone = d.getTime() - 1000; // scrollDone doesn't show up again after this
+    scrollDone = d.getTime() - 1000; // scrollDone doesn't show up again after this*/
 
   }
-  Start();
+  Start(); // check more mobile and load article cache
 
   /*function Init() {
     console.log('init');
@@ -328,7 +329,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
             var comment_date = getElementTextNS( "", "comment-date", story_comments[jj], 0 );
             var content = getElementTextNS( "", "content", story_comments[jj], 0 );
             //console.log( comment_id );
-            if ( comment_id != "n/a" ) {
+            if ( comment_id != "n/a" ) { // if there is a comment
               storyComments.push( [ comment_id, comment_username, comment_user_id, comment_user_tzzzl, comment_user_dzzzl, comment_date, content ] );
             }
           }
@@ -343,7 +344,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
 
       last_story_loaded_index = Number( getElementTextNS( "", "index", items[ii], 0 ) );
 
-      if ( story_description[0].getAttribute( 'nil' ) == 'true' ) {
+      if ( story_description[0].getAttribute( 'nil' ) == 'true' ) { // when would this be the case?
         var story_full = '';
         var story_long = '';
       } else {
@@ -354,15 +355,17 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
         story_full = story_full.replace( /<\/?[^>]+(>|$)/g, "" );
       }
       if ( story_full.length > 1 ) {
+
+        // why do both conditions lead to executing the same code?
         if ( isMobile ) {
-          //var story_summary = story_full.substring( 0, 256 );
           var story_summary = getElementTextNS( "", "summary", items[ii], 0 );
         } else {
           //story_summary = story_full.substring( 0, 1024 );
           story_summary = getElementTextNS( "", "summary", items[ii], 0 );
         }
       } else {
-        //story_summary = '( ' + story_id + ' ) ' + story_link.substring( 0, 32 );
+
+        // GetDomain isn't defined anywhere
         story_summary = GetDomain( story_link );
         story_summary = '( ' + story_id + ' ) ' + GetDomain( story_link );
       }
@@ -370,9 +373,11 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
       story_full += '<p>' + story_link_href + '</p>';
       story_long = '<p>' + story_long + '</p>';
       story_long += '<p>' + story_link_href + '</p>';
+
+
       var story_img = getElementTextNS( "", "image", items[ii], 0 );
       //if ( ii == 10 ) { alert( "story_title = " + story_title ); }
-      if ( ( story_img.indexOf( '?' ) > -1 ) || ( story_img.length < 3 ) ) {
+      if ( ( story_img.indexOf( '?' ) > -1 ) || ( story_img.length < 3 ) ) { // not sure
         //if ( ii == 10 ) { alert( "story_img = " + story_img ); }
         //continue;
         story_img = '';
@@ -674,9 +679,9 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
       ratingCounter.innerHTML = szldCount + '/' + articlesViewed + ' szzzled';
     }
     
-    if ( displayedStory ) {
+    /*if ( displayedStory ) {
       displayedStory[sVote] = rating;
-    }
+    }*/
     //SendGetAndIgnore( urzzl );
   }
 
@@ -968,7 +973,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
           articleText = articleText .replace( /<script[\s\S]*<\/script>/gi ,'' ); // takes out script tags
           articleText = articleText .replace( /<img[^>]+\>/gi ,'' ); // takes out img tags
           //story_long = story_full;
-          articleText = articleText .replace( /<\/?[^>]+(>|$)/g, "" ); //
+          articleText = articleText .replace( /<\/?[^>]+(>|$)/g, "" ); // takes out '<' and '>'
           articleLink = $(this).find('link').text();
           sourceName  = $(this).find('name').text();
           articleID   = $(this).find('id').text();
@@ -985,7 +990,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
                         '<h2>This article was forwarded by user <a href="http://www.szzzl.com/users/' + $(this).find('forwarding-user-id').text() + '" target="_blank">' + $(this).find('forwarding-user').text() + '</a></h2>' +
                         '<h3>' + $(this).find('prediction').text() + '% chance of szl</h3>';
 
-                        if ($(this).find('image').attr('nil') === 'false'){ // if there is an image, add it. otherwise don't create an element for it
+                        if ($(this).find('image').text() !== ''){ // if there is an image, add it. otherwise don't create an element for it
                           articleHtml_block += '<div id="story-image"><img src="' + $(this).find('image').text() + '" /></div>';
                         }
 
@@ -1002,6 +1007,11 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
             //console.log('true');
             $(this).find('comments').find('value').each(function(){
               commentID = $(this).find('comment-id').text();
+              userName = $(this).find('comment-username').text();
+              userID = $(this).find('comment-user-id').text();
+              theDate = $(this).find('comment-date').text();
+              commentText = $(this).find('content').text();
+              Tzzzls = $(this).find('comment-user_tzzzl').text();
               a_commentID.push(commentID);
 
               //creat html block for comment table
@@ -1014,17 +1024,17 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
                           '        </div>' +
                           '      </td>' +
                           '      <td style="border-top: solid 2px #FEF5DF; border-right: solid 1px #888888; background-color: #FFFFFF; padding-left: 3px; padding-right: 3px;">' +
-                          '        <a href="http://www.szzzl.com/users/' + $(this).find('userID').text() + '" target="_blank">' + $(this).find('userID').text() + '</a><span style="color: #888888"> | ' + '11' + '</span> <a href="http://www.szzzl.com/tzzzls">' + 'Tzzzls' + '</a>' +
+                          '        <a href="http://www.szzzl.com/users/' + userID + '" target="_blank">' + userName + '</a><span style="color: #888888"> | ' + Tzzzls + '</span> <a href="http://www.szzzl.com/tzzzls">' + 'Tzzzls' + '</a>' +
                           '      </td>' +
                           '    </tr>' +
                           '    <tr>' +
                           '      <td style="border-right: solid 1px #888888; background-color: #FFFFFF; padding-left: 3px; padding-right: 3px;">' +
-                          '        ' +  $(this).find('commentText').text() +
+                          '        ' +  commentText +
                           '      </td>' +
                           '    </tr>' +
                           '    <tr>' +
                           '      <td style="border-bottom: solid 1px #888888; border-right: solid 1px #888888; background-color: #FFFFFF; color: #888888; padding-left: 3px; padding-right: 3px;">' +
-                          '        ' + 'date' +
+                          '        ' + theDate +
                           '      </td>' +
                           '    </tr>' +
                           '  </table>';
@@ -1044,7 +1054,9 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
             $('#szl-content').html(a_articleContent[rateCount]); // set article html 
             $('#szl-table').html(a_commentContent[rateCount]); // set comment table html
             currentArticleID = a_articleID[rateCount]; // update article ID
+            console.log(a_articleContent.length);
           }
+          console.log(a_articleContent);
         });
       })
 
@@ -1059,8 +1071,15 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
       if (rateCount == 4) { // if count is equal to array length
       rateCount = 0; // reset count
       }
-      $('#szl-content').empty().html(a_articleContent[rateCount]); // empty current content and replace with next
-      $('#szl-table').empty().html(a_commentContent[rateCount]);   // replace comment
+      $('#szl-content').empty().html(a_articleContent[1]); // empty current content and replace with next
+      $('#szl-table').empty().html(a_commentContent[1]);   // replace comment
+      a_articleContent = a_articleContent.slice(1, a_articleContent.length); // remove rated article from the array
+
+      // request more content
+      if (a_articleContent.length == 3){
+        getXML(unratedContent);
+        console.log(a_articleContent.length);
+      }
       currentArticleID = a_articleID[rateCount];
       console.log(currentArticleID);
     }
