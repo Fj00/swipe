@@ -1,0 +1,110 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <title>Szzzl - Where News Meets Intelligence</title>
+
+    <link rel="shortcut icon" href="https://www.szzzl.com/favicon.ico" />
+
+    <link href="szl.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="js/szl.js" type="text/javascript"></script>
+    <script src="js/drag.js" type="text/javascript"></script>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-42964180-1', 'szl.it');
+      ga('send', 'pageview');
+    </script>
+
+    <script src="https://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4f8a5d0021a3fa5a" type="text/javascript"></script>
+  </head>
+  <body>
+    <header>
+      <div id="rateButtons" style="display: inline-block;">
+        <a id="szl-button" href="#szl" ><img id="rateSzl" src="img/resized-szzzl.png"/></a>
+        <a id="fzl-button" href="#fzl" ><img id="rateFzl" src="img/resized-fzzzl.png"/></a>
+      </div>
+    </header>
+
+    <div id="mainContent">
+      <div id="articleContainer">
+        <div id="content">
+          <p style="text-align: center;"><img style="padding-left: 5px; padding-top: 5px;" /><br />
+          Loading your stream of articles</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="sidebar">
+      <span id="position"></span>
+      <div id="dragbar">
+        <div class="addthis_toolbox addthis_default_style addthis_32x32_style" style="margin-left: auto; margin-right: auto;" addthis:url="http://www.szzzl.com/buzzes/" addthis:title="" addthis:description="(via www.szzzl.com)">
+          <a style="margin-top: 5px; margin-left: 3px;" class="addthis_button_facebook"></a>
+          <a style="margin-top: 5px; margin-left: 3px;" class="addthis_button_twitter"></a>
+          <a style="margin-top: 5px; margin-left: 3px;" class="addthis_button_linkedin"></a>
+          <a style="margin-top: 5px; margin-left: 3px;" class="addthis_button_email"></a>
+          <a style="margin-top: 5px; margin-left: 3px;" class="addthis_button_compact"></a>
+        </div>
+        <script>
+          var addthis_share = {
+            templates : {
+              twitter : "{{title}} {{url}} (via @szzzlfzzzl)"
+            }
+          }
+        </script>
+        <div id="back-button"></div>
+        <div id="dragtext">Comments</div>
+      </div>
+      <div id="comment-container">
+        <div id="szl-table">
+          <div id="comment-text">There are currently no comments. Be the first to add one!</div>
+        </div>
+        <div id="comment-text-area">
+          <form action="/comments" class="new_comment" id="new_comment" method="post">
+            <textarea class="comment-text-area" rows="4" id="comment_content" name="comment[content]"></textarea>
+            <input id="comment_buzz_id" name="comment[buzz_id]" type="hidden" value="" />
+            <input class="submit" id="comment-submit" name="commit" type="submit" value="Submit" />
+          </form>
+          <div id="counter">160</div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      
+        <div id="szl-user-data">
+          <div id="username">
+            <a id="username-a" href="http://www.szzzl.com/users">omfguess
+              
+            </a>
+            <ul id="navsub-2">
+              <li style="border-top: 1px #888888 solid;"><a href="http://www.szzzl.com/stats">Szzzl User Statistics</a></li>
+              <li><a href="http://www.szzzl.com/user-stats">Your Statistics</a></li>
+              <li><a href="http://www.szzzl.com/rss">Your RSS Feeds</a></li>
+              <li><a href="http://www.szzzl.com/interests">Interest Map</a></li>
+              <li><a href="http://www.szzzl.com/users/1148">Recent Szzzls / Fzzzls</a></li>
+              <li><a href="http://www.szzzl.com/recent-comments">Recent Comments</a>
+                
+              </li>
+              <li><a href="http://www.szzzl.com/users#">Delete Account</a></li>
+            </ul>
+          </div>
+          <div id="tzzzls">
+            | 48 <a href="http://www.szzzl.com/tzzzls">tzzzls</a> |
+          </div>
+          <div id="szl-count">
+            0/0 szzzled
+          </div>
+        </div>
+        <form id="szl-logout" action="/logout" method="post">
+          <input class="submit" id="logout" type="submit" value="Logout" />
+        </form>
+      
+    </footer>
+  </body>
+</html>

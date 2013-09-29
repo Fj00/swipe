@@ -488,7 +488,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
     cc += '  <table style="background-color: #FEF5DF;">';
     cc += '    <tr>';
     cc += '      <td rowspan="3" style="border-top: solid 2px #FEF5DF; width: 51px;">';
-    cc += '        <div id="szl-buttons-' + ( jj + 1 ) + '">';
+    cc += '        <div id="buttons-' + ( jj + 1 ) + '">';
     cc += '          <a href="#szl" onclick=rateComment(' + comment_id + ',1); return false;"><img src="http://www.szzzl.com/images/resized-comment-szzzl.png" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-szzzl.png\'" /></a>';
     cc += '          <a href="#fzzzl" onclick=rateComment(' + comment_id + ',-1); return false;"><img src="http://www.szzzl.com/images/resized-comment-fzzzl.png" onmouseover="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl-glow.png\'" onmouseout="this.src=\'http://www.szzzl.com/images/resized-comment-fzzzl.png\'" style="margin-top: 10px;" /></a>';
     cc += '        </div>';
@@ -517,7 +517,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
     document.getElementById( "szzzl-button" ).onclick = function() { CloseStory(1,bID); return false; };
     document.getElementById( "fzzzl-button" ).onclick = function() { CloseStory(-1,bID); return false; };
 
-    var storyNode = document.getElementById( "szl-content" ); // set szl-content html as value of tt
+    var storyNode = document.getElementById( "content" ); // set content html as value of tt
     if ( storyNode && storyNode.innerHTML ) {
       storyNode.innerHTML = tt;
     }
@@ -638,7 +638,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
     document.getElementById( "fzzzl-button" ).onclick = function() { return false; };
 
     if ( storyData.length == 1 ) {
-      var storyNode = document.getElementById( "szl-content" );
+      var storyNode = document.getElementById( "content" );
       if ( ! snake ) { // show loading snake
         storyNode.innerHTML = '<p style="text-align: center;"><img style="padding-left: 5px; padding-top: 5px;" src="images/ajax-loader-red.gif" /><br />Loading your stream of articles</p>';
         snake = true;
@@ -942,7 +942,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
 
 
     // attempt at rewriting xml request and article HTML insertion with jQuery
-    var article = $('#szl-content'),
+    var article = $('#content'),
         rateCount = 0, // number of articles rated
         articleHtml_block = '',
         commentsHtml_block = '',
@@ -1018,7 +1018,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
               commentsHtml_block += '  <table style="background-color: #FEF5DF;">' +
                           '    <tr>' +
                           '      <td rowspan="3" style="border-top: solid 2px #FEF5DF; width: 51px;">' +
-                          '        <div id="szl-buttons-' + $(this).index() + '">' +
+                          '        <div id="buttons-' + $(this).index() + '">' +
                           '          <a href="#szl"><img src="img/resized-comment-szzzl.png" style="border: none;" onclick="rateComment(a_commentID['+ $(this).index() + '],1); return false;" onmouseover="this.src=\'img/resized-comment-szzzl-glow.png\'" onmouseout="this.src=\'img/resized-comment-szzzl.png\'" /></a>' +
                           '          <a href="#fzzzl"><img src="img/resized-comment-fzzzl.png" style="border: none;" onclick="rateComment(a_commentID['+ $(this).index() + '],-1); return false;" onmouseover="this.src=\'img/resized-comment-fzzzl-glow.png\'" onmouseout="this.src=\'img/resized-comment-fzzzl.png\'" style="margin-top: 10px;" /></a>' +
                           '        </div>' +
@@ -1051,7 +1051,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
 
           i_articleCache += 1;
           if (i_articleCache == 4){ // insert first article once cache reaches 4
-            $('#szl-content').html(a_articleContent[rateCount]); // set article html 
+            $('#content').html(a_articleContent[rateCount]); // set article html 
             $('#szl-table').html(a_commentContent[rateCount]); // set comment table html
             currentArticleID = a_articleID[rateCount]; // update article ID
             console.log(a_articleContent.length);
@@ -1071,7 +1071,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
       if (rateCount == 4) { // if count is equal to array length
       rateCount = 0; // reset count
       }
-      $('#szl-content').empty().html(a_articleContent[1]); // empty current content and replace with next
+      $('#content').empty().html(a_articleContent[1]); // empty current content and replace with next
       $('#szl-table').empty().html(a_commentContent[1]);   // replace comment
       a_articleContent = a_articleContent.slice(1, a_articleContent.length); // remove rated article from the array
 
@@ -1088,9 +1088,9 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
       rateCount = 0;
 
       // set up rating buttons
-      $('#szl-buttons a').click(function(e){
+      $('#rateButtons a').click(function(e){
         showNewArticle();
-        if (e.target.id == 'vote-up'){
+        if (e.target.id == 'rateSzl'){
           console.log('szl');
           rateStory(articleID, 1);
         } else {
@@ -1111,7 +1111,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
           });
         });
       } else {
-        $('#szl-content').on('mouseenter', '#source-a', function(){
+        $('#content').on('mouseenter', '#source-a', function(){
           //console.log('true');
           $('#navsub-1').show();
           $('#navsub-1').hover(function(){
