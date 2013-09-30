@@ -24,8 +24,8 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
     //storyData = [], // container for article data and content for html elements
     //storyHash = {},
     //var viewedStories = {};
-    last_story_loaded_index = -1,
-    streamlastIndex = -1,
+    //last_story_loaded_index = -1,
+    //streamlastIndex = -1,
     //urlsPosted = 0,
     //storyBeingShown = false,
     //lastStoryRendered = 0,
@@ -645,7 +645,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
       }
       setTimeout( function() { CloseStory( vote, id ) }, 500 );
     } else {
-      RateStory( id, vote );
+      rateArticle( id, vote );
       if ( !backStoryDisplayed ){
         backStory = storyData[0];
         storyData.splice( 0, 1 );
@@ -658,7 +658,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
     }
   }*/
 
-  function rateStory( articleID, rating ) {
+  function rateArticle( articleID, rating ) {
     console.log('article rated');
     var rateArticleURL = voteURI + articleID + '/rating/'; // * /buzzes/ + (article ID) + /rating/
     if ( rating == -1 ) {
@@ -962,7 +962,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
     function getXML( url ) {
       $.get(url)
       .done(function(data){
-        console.log(data); // the returned XML object
+        //console.log(data); // the returned XML object
 
         $(data).find('item').each(function(){ // loop through each 'item' tag (4 total)
           itemIndex = $(this).index(); // get the index of current 'item'
@@ -980,7 +980,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
 
           // create an html block for article using text from the XML elements 
           articleHtml_block += '<h1><a href=' + articleLink + '" target="_blank">' + $(this).find('title').text() + '</a></h1>' +
-                        '<div id="titlebar"></div>' +
+                        '<div id="titleBar"></div>' +
                         '<h2><a id="source-a" href="' + articleLink + '" target="_blank">' + sourceName + '</a> ' + $(this).find('date').text() + ' EST</h2>' +
                         '<ul id="navsub-1">' +
                         '    <li id="always-li" style="border-top: 1px #888888 solid;" onclick="rateSource(' + articleID  + ',1,0);"><input type="checkbox" id="always"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Subscribe to ' + sourceName + '</span></li>' +
@@ -991,10 +991,10 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
                         '<h3>' + $(this).find('prediction').text() + '% chance of szl</h3>';
 
                         if ($(this).find('image').text() !== ''){ // if there is an image, add it. otherwise don't create an element for it
-                          articleHtml_block += '<div id="story-image"><img src="' + $(this).find('image').text() + '" /></div>';
+                          articleHtml_block += '<div id="articleIMG"><img src="' + $(this).find('image').text() + '" /></div>';
                         }
 
-          articleHtml_block += '<div id ="szl-story-long-wrapper">' + articleText + '</div>' +
+          articleHtml_block += '<div id ="articleWrapper">' + articleText + '</div>' +
                         '<a href="' + articleLink + '" target="_blank" >Read more</a>';
           // end block
 
@@ -1050,14 +1050,20 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
           commentsHtml_block = '';
 
           i_articleCache += 1;
-          if (i_articleCache == 4){ // insert first article once cache reaches 4
+          /*if (i_articlecache == 4){ // insert first article once cache reaches 4
             $('#content').html(a_articleContent[rateCount]); // set article html 
             $('#szl-table').html(a_commentContent[rateCount]); // set comment table html
             currentArticleID = a_articleID[rateCount]; // update article ID
-            console.log(a_articleContent.length);
-          }
-          console.log(a_articleContent);
+            //console.log(a_articleContent.length);
+          }*/
+          console.log(a_articleContent.length);
         });
+        if (rateCount == 0 || a_articleContent.length == 4){ // insert first article once cache reaches 4
+            $('#content').html(a_articleContent[0]); // set article html 
+            $('#szl-table').html(a_commentContent[0]); // set comment table html
+            currentArticleID = a_articleID[0]; // update article ID
+            //console.log(a_articleContent.length);
+          }
       })
 
       // when get request fails
@@ -1068,20 +1074,22 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
 
     function showNewArticle(){
       rateCount += 1;
-      if (rateCount == 4) { // if count is equal to array length
-      rateCount = 0; // reset count
-      }
+      //if (rateCount == 4) { // if count is equal to array length
+      //rateCount = 0; // reset count
+      //}
       $('#content').empty().html(a_articleContent[1]); // empty current content and replace with next
       $('#szl-table').empty().html(a_commentContent[1]);   // replace comment
       a_articleContent = a_articleContent.slice(1, a_articleContent.length); // remove rated article from the array
-
+      a_commentContent = a_commentContent.slice(1, a_commentContent.length); // remove its corresponding comment table
+      console.log(a_articleContent.length);
       // request more content
       if (a_articleContent.length == 3){
         getXML(unratedContent);
-        console.log(a_articleContent.length);
       }
+      console.log('ID array length, ' + a_articleID.length);
+      console.log('rateCount, ' + rateCount);
       currentArticleID = a_articleID[rateCount];
-      console.log(currentArticleID);
+      console.log('currentID, ' + currentArticleID);
     }
 
     $(document).ready(function(){
@@ -1092,10 +1100,10 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
         showNewArticle();
         if (e.target.id == 'rateSzl'){
           console.log('szl');
-          rateStory(articleID, 1);
+          rateArticle(articleID, 1);
         } else {
           console.log('fzl');
-          rateStory(articleID, -1);
+          rateArticle(articleID, -1);
         }
         return false;
       });
