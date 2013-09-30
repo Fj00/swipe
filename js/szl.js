@@ -957,12 +957,16 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
         commentID,
         currentArticleID, // numeric ID of currently displayed article
         tagName, // tag in unrated.xml
-        elemContent; // content within XML tag
-
+        elemContent, // content within XML tag
+        requestInProgress = false;
     function getXML( url ) {
-      $.get(url)
-      .done(function(data){
-        //console.log(data); // the returned XML object
+      requestInProgress = true;
+      if ($('#content').text() === '') {
+        console.log('true');
+        var loadingSnake = '<p style="text-align: center;"><img style="padding-left: 5px; padding-top: 5px;" src="img/ajax-loader-red.gif"/><br />hi, Loading your stream of articles</p>';
+        $('#content').empty();
+      }
+      $.get(url, function(data){
 
         $(data).find('item').each(function(){ // loop through each 'item' tag (4 total)
           itemIndex = $(this).index(); // get the index of current 'item'
@@ -1058,52 +1062,78 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
           }*/
           console.log(a_articleContent.length);
         });
-        if (rateCount == 0 || a_articleContent.length == 4){ // insert first article once cache reaches 4
-            $('#content').html(a_articleContent[0]); // set article html 
-            $('#szl-table').html(a_commentContent[0]); // set comment table html
-            currentArticleID = a_articleID[0]; // update article ID
-            //console.log(a_articleContent.length);
-          }
+        if (a_articleContent.length == 4){ // insert first article once cache reaches 4
+          $('#content').html(a_articleContent[0]); // set article html 
+          $('#szl-table').html(a_commentContent[0]); // set comment table html
+          currentArticleID = a_articleID[0]; // update article ID
+          //console.log(a_articleContent.length);
+          snake = false;
+        }
       })
-
+        .done(function(data){
+        //console.log(data); // the returned XML object
+        requestInProgress = false;
+        
+      })
       // when get request fails
       .fail(function(){
-        alert(' request failed');
+        alert('request failed');
+        getXML( unratedContent );
       });
     }
-
+    buttonsDisabled = false;
     function showNewArticle(){
-      rateCount += 1;
-      //if (rateCount == 4) { // if count is equal to array length
-      //rateCount = 0; // reset count
-      //}
-      $('#content').empty().html(a_articleContent[1]); // empty current content and replace with next
-      $('#szl-table').empty().html(a_commentContent[1]);   // replace comment
-      a_articleContent = a_articleContent.slice(1, a_articleContent.length); // remove rated article from the array
-      a_commentContent = a_commentContent.slice(1, a_commentContent.length); // remove its corresponding comment table
       console.log(a_articleContent.length);
-      // request more content
-      if (a_articleContent.length == 3){
-        getXML(unratedContent);
+      if (a_articleContent.length === 1 ) {
+        console.log('true');
+        var loadingSnake = '<p style="text-align: center;"><img style="padding-left: 5px; padding-top: 5px;" src="img/ajax-loader-red.gif" /><br />Loading your stream of articles</p>';
+        $('#content').html(loadingSnake);
+        buttonsDisabled = true; // disable rating buttons while loading new content
+        snake = true; // loading snake visible
+        checkStatus = setInterval(function(){ // check if there is an ongoing xml request. keep loading snake going if so
+          if (requestInProgress == false) { // once request is complete, remove snake, and show a new article
+            snake = false;
+            showNewArticle();
+            clearInterval(checkStatus);
+          }
+        }, 100);
+      } else if (snake == false) {
+        $('#content').empty().html(a_articleContent[1]); // empty current content and replace with next
+        $('#szl-table').empty().html(a_commentContent[1]);   // replace comment
+
+        a_articleContent = a_articleContent.slice(1, a_articleContent.length); // remove rated article from the array
+        a_commentContent = a_commentContent.slice(1, a_commentContent.length); // remove its corresponding comment table
+        //console.log(a_articleContent.length);
+
+        // request more content if there isn't a current request
+        if (a_articleContent.length == 3){
+          if (requestInProgress == false) {
+            getXML(unratedContent);
+          }
+        }
+        //console.log('ID array length, ' + a_articleID.length);
+        //console.log('rateCount, ' + rateCount);
+        currentArticleID = a_articleID[rateCount];
+        //console.log('currentID, ' + currentArticleID);
+        buttonsDisabled = false;
       }
-      console.log('ID array length, ' + a_articleID.length);
-      console.log('rateCount, ' + rateCount);
-      currentArticleID = a_articleID[rateCount];
-      console.log('currentID, ' + currentArticleID);
     }
+    //showNewArticle();
 
     $(document).ready(function(){
       rateCount = 0;
-
       // set up rating buttons
       $('#rateButtons a').click(function(e){
-        showNewArticle();
-        if (e.target.id == 'rateSzl'){
-          console.log('szl');
-          rateArticle(articleID, 1);
-        } else {
-          console.log('fzl');
-          rateArticle(articleID, -1);
+        if (buttonsDisabled == false) { 
+          rateCount += 1;
+          showNewArticle();
+          if (e.target.id == 'rateSzl'){
+            console.log('szl');
+            rateArticle(articleID, 1);
+          } else {
+            console.log('fzl');
+            rateArticle(articleID, -1);
+          }
         }
         return false;
       });
