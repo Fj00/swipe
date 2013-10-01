@@ -6,9 +6,12 @@
 var isIE = false, // check for IE
     isMobile = false; // check for mobile device
 
+// currently unused
+/*
 // global request and XML document objects
     //req,
     //getter;
+*/
 
 // article data
 var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.09.22/js/unrated.xml', // * unrated articles stream
@@ -38,7 +41,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
     //backwardsFailing = 0,
     //backStory,
     //backStoryDisplayed = false,
-    displayedStory;
+    //displayedStory;
 
     a_articleContent = [];
 
@@ -159,7 +162,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
     scrollDone = d.getTime() - 1000; // scrollDone doesn't show up again after this*/
 
   }
-  Start(); // check more mobile and load article cache
+  Start(); // check for mobile and load articles
 
   /*function Init() {
     console.log('init');
@@ -217,18 +220,6 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
       username = "";
     }
   }*/
-
-  // click handlers for szl & fzl buttons
-  /*$('#szl-button').click(function(){
-    console.log('szl');
-    return false;
-  });
-  $('#fzzzl-button').click(function(){
-    console.log('fzl');
-    return false;
-  });*/
-
-
 
   // not being called
   /*function LoginOrLogout() {
@@ -658,9 +649,10 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
     }
   }*/
 
+
   function rateArticle( articleID, rating ) {
-    console.log('article rated');
-    var rateArticleURL = voteURI + articleID + '/rating/'; // * /buzzes/ + (article ID) + /rating/
+    //console.log('article rated');
+    var rateArticleURL = voteURI + currentArticleID + '/rating/'; // * /buzzes/ + (article ID) + /rating/
     if ( rating == -1 ) {
       rateArticleURL += 'fzl.xml'; // /buzzes/ + bID + /rating/ + nay.xml
       fzldCount++;
@@ -673,7 +665,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
       urzzl += 'meh.xml';
     }*/
     articlesViewed++;
-    console.log( 'articlesViewed: ' + articlesViewed );
+    //console.log( 'articlesViewed: ' + articlesViewed );
     var ratingCounter = document.getElementById( "szl-count" ); // *
     if ( ratingCounter && ratingCounter.innerHTML ){
       ratingCounter.innerHTML = szldCount + '/' + articlesViewed + ' szzzled';
@@ -682,26 +674,48 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
     /*if ( displayedStory ) {
       displayedStory[sVote] = rating;
     }*/
-    //SendGetAndIgnore( urzzl );
+    sendRating( rateArticleURL );
+  }
+
+   function sendRating( url ) {
+
+    $.get(url, function(data){
+      console.log('success');
+    });
+    // branch for native XMLHttpRequest object
+    /*if ( window.XMLHttpRequest ) {
+      getter = new XMLHttpRequest();
+      getter.overrideMimeType( 'text/xml' );
+      getter.open( "GET", url, true );
+      getter.send( null );
+      // branch for IE/Windows ActiveX version
+    } else if ( window.ActiveXObject ) {
+      isIE = true;
+      getter = new ActiveXObject( "Microsoft.XMLHTTP" );
+      if ( getter ) {
+        getter.open( "GET", url, true );
+        getter.send();
+      }
+    }*/
   }
 
   function rateComment( commentID, rating ) {
-    console.log('comment rated');
-    console.log('commentID, ' + commentID);
+    //console.log('comment rated');
+    //console.log('commentID, ' + commentID);
     var rateCommentURL = commentURI + commentID + '/rating/'; // *
     if ( rating == -1 ) {
-      console.log('fzl');
+      //console.log('fzl');
       rateCommentURL += 'comment_fzl.xml';
     } else if ( rating == 1 ) {
-      console.log('szl');
+      //console.log('szl');
       rateCommentURL += 'comment_szl.xml';
     }
-    //SendGetAndIgnore( urzzl );
+    sendRating( rateCommentURL );
   }
 
   function rateSource( sourceID, rating, cyclic ) {
-    console.log('source ID, ' + sourceID);
-    console.log('source rated');
+    //console.log('source ID, ' + sourceID);
+    //console.log('source rated');
     var rateSourceURL = sourceURI + sourceID + '/rating/'; // *
     if ( rating == 1 ) {
       rateSourceURL += 'always.xml';
@@ -803,7 +817,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
         }*/
       });
     }
-    //SendGetAndIgnore( urzzl );
+    sendRating( rateSourceURL );
   }
 
 
@@ -944,8 +958,9 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
     // attempt at rewriting xml request and article HTML insertion with jQuery
     var article = $('#content'),
         rateCount = 0, // number of articles rated
-        articleHtml_block = '',
-        commentsHtml_block = '',
+        shareURL,
+        articleHtml = '',
+        commentsHtml = '',
         i_articleCache = 0, // number of articles ready for display
 
         // arrays for storing article and comment data for each 'item'
@@ -954,36 +969,34 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
         a_articleID = [],
         a_commentID = [],
 
+        // numeric identifiers
         commentID,
-        currentArticleID, // numeric ID of currently displayed article
-        tagName, // tag in unrated.xml
-        elemContent, // content within XML tag
-        requestInProgress = false;
-    function getXML( url ) {
-      requestInProgress = true;
-      if ($('#content').text() === '') {
-        console.log('true');
-        var loadingSnake = '<p style="text-align: center;"><img style="padding-left: 5px; padding-top: 5px;" src="img/ajax-loader-red.gif"/><br />hi, Loading your stream of articles</p>';
-        $('#content').empty();
-      }
-      $.get(url, function(data){
+        currentArticleID,
 
+        // flags
+        buttonsDisabled = false; // rating buttons disabled when this is true
+        snake = false; // loading snake
+        requestInProgress = false; // xml request
+
+    function getXML( url ) {
+
+      requestInProgress = true;
+
+      var request = $.get(url, function(data){
         $(data).find('item').each(function(){ // loop through each 'item' tag (4 total)
           itemIndex = $(this).index(); // get the index of current 'item'
           var self = $(this); // store current value of 'this'
 
           // various pieces of article data
           articleText = $(this).find('description').text(); // main text
-          articleText = articleText .replace( /<script[\s\S]*<\/script>/gi ,'' ); // takes out script tags
-          articleText = articleText .replace( /<img[^>]+\>/gi ,'' ); // takes out img tags
-          //story_long = story_full;
-          articleText = articleText .replace( /<\/?[^>]+(>|$)/g, "" ); // takes out '<' and '>'
+          articleText = articleText.replace( /(<script[\s\S]*<\/script>) (<img[^>]+\>)/gi ,'' ) // takes out script and img tags
+                                   .replace( /<\/?[^>]+(>|$)/g, "" ); // takes out '<' and '>'
           articleLink = $(this).find('link').text();
           sourceName  = $(this).find('name').text();
           articleID   = $(this).find('id').text();
 
-          // create an html block for article using text from the XML elements 
-          articleHtml_block += '<h1><a href=' + articleLink + '" target="_blank">' + $(this).find('title').text() + '</a></h1>' +
+          // create an html block for article using text from the XML elements
+          articleHtml += '<h1 id="title"><a href=' + articleLink + '" target="_blank">' + $(this).find('title').text() + '</a></h1>' +
                         '<div id="titleBar"></div>' +
                         '<h2><a id="source-a" href="' + articleLink + '" target="_blank">' + sourceName + '</a> ' + $(this).find('date').text() + ' EST</h2>' +
                         '<ul id="navsub-1">' +
@@ -995,16 +1008,16 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
                         '<h3>' + $(this).find('prediction').text() + '% chance of szl</h3>';
 
                         if ($(this).find('image').text() !== ''){ // if there is an image, add it. otherwise don't create an element for it
-                          articleHtml_block += '<div id="articleIMG"><img src="' + $(this).find('image').text() + '" /></div>';
+                          articleHtml += '<div id="articleIMG"><img src="' + $(this).find('image').text() + '" /></div>';
                         }
 
-          articleHtml_block += '<div id ="articleWrapper">' + articleText + '</div>' +
+          articleHtml += '<div id ="articleWrapper">' + articleText + '</div>' +
                         '<a href="' + articleLink + '" target="_blank" >Read more</a>';
           // end block
 
           a_articleID.push( articleID ); // store article's numeric ID
-          a_articleContent.push(articleHtml_block); // store article html
-          articleHtml_block = ''; // reset the value to make way for next block
+          a_articleContent.push(articleHtml); // store article html
+          articleHtml = ''; // reset the value to make way for next block
 
           // create block to insert into comment table element
           if ($(this).find('comments').find('value').length){
@@ -1019,7 +1032,7 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
               a_commentID.push(commentID);
 
               //creat html block for comment table
-              commentsHtml_block += '  <table style="background-color: #FEF5DF;">' +
+              commentsHtml += '  <table style="background-color: #FEF5DF;">' +
                           '    <tr>' +
                           '      <td rowspan="3" style="border-top: solid 2px #FEF5DF; width: 51px;">' +
                           '        <div id="buttons-' + $(this).index() + '">' +
@@ -1048,22 +1061,22 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
           } else {
 
             // if no comments..
-            commentsHtml_block += '<div id="comment-text">There are currently no comments. Be the first to add one!</div>';
+            commentsHtml += '<div id="comment-text">There are currently no comments. Be the first to add one!</div>';
           }
-          a_commentContent.push(commentsHtml_block); // push comment html
-          commentsHtml_block = '';
+          a_commentContent.push(commentsHtml); // push comment html
+          commentsHtml = '';
 
           i_articleCache += 1;
           /*if (i_articlecache == 4){ // insert first article once cache reaches 4
-            $('#content').html(a_articleContent[rateCount]); // set article html 
+            $('#content').html(a_articleContent[rateCount]); // set article html
             $('#szl-table').html(a_commentContent[rateCount]); // set comment table html
             currentArticleID = a_articleID[rateCount]; // update article ID
             //console.log(a_articleContent.length);
           }*/
-          console.log(a_articleContent.length);
+          //console.log(a_articleContent.length);
         });
         if (a_articleContent.length == 4){ // insert first article once cache reaches 4
-          $('#content').html(a_articleContent[0]); // set article html 
+          $('#content').html(a_articleContent[0]); // set article html
           $('#szl-table').html(a_commentContent[0]); // set comment table html
           currentArticleID = a_articleID[0]; // update article ID
           //console.log(a_articleContent.length);
@@ -1073,7 +1086,6 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
         .done(function(data){
         //console.log(data); // the returned XML object
         requestInProgress = false;
-        
       })
       // when get request fails
       .fail(function(){
@@ -1081,23 +1093,23 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
         getXML( unratedContent );
       });
     }
-    buttonsDisabled = false;
+
     function showNewArticle(){
-      console.log(a_articleContent.length);
+      //console.log(a_articleContent.length);
       if (a_articleContent.length === 1 ) {
         console.log('true');
         var loadingSnake = '<p style="text-align: center;"><img style="padding-left: 5px; padding-top: 5px;" src="img/ajax-loader-red.gif" /><br />Loading your stream of articles</p>';
         $('#content').html(loadingSnake);
         buttonsDisabled = true; // disable rating buttons while loading new content
         snake = true; // loading snake visible
-        checkStatus = setInterval(function(){ // check if there is an ongoing xml request. keep loading snake going if so
-          if (requestInProgress == false) { // once request is complete, remove snake, and show a new article
+        var checkStatus = setInterval(function(){ // check if there is an ongoing xml request. keep loading snake going if so
+          if (requestInProgress === false) { // once request is complete, remove snake, and show a new article
             snake = false;
             showNewArticle();
             clearInterval(checkStatus);
           }
         }, 100);
-      } else if (snake == false) {
+      } else if (snake === false) {
         $('#content').empty().html(a_articleContent[1]); // empty current content and replace with next
         $('#szl-table').empty().html(a_commentContent[1]);   // replace comment
 
@@ -1105,16 +1117,20 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
         a_commentContent = a_commentContent.slice(1, a_commentContent.length); // remove its corresponding comment table
         //console.log(a_articleContent.length);
 
-        // request more content if there isn't a current request
+        // request more content if there isn't one in progress
         if (a_articleContent.length == 3){
-          if (requestInProgress == false) {
+          if (requestInProgress === false) {
             getXML(unratedContent);
           }
         }
         //console.log('ID array length, ' + a_articleID.length);
         //console.log('rateCount, ' + rateCount);
+        shareURL = 'http://www.szzzl.com/buzzes/' + currentArticleID;
+        addthis.update( 'share', 'url', shareURL );
+        addthis.update( 'share', 'title', $('#title a').text() );
+        console.log(shareURL);
         currentArticleID = a_articleID[rateCount];
-        //console.log('currentID, ' + currentArticleID);
+        console.log('currentID, ' + currentArticleID);
         buttonsDisabled = false;
       }
     }
@@ -1124,21 +1140,21 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
       rateCount = 0;
       // set up rating buttons
       $('#rateButtons a').click(function(e){
-        if (buttonsDisabled == false) { 
+        if (buttonsDisabled === false) {
           rateCount += 1;
-          showNewArticle();
           if (e.target.id == 'rateSzl'){
-            console.log('szl');
+            //console.log('szl');
             rateArticle(articleID, 1);
           } else {
-            console.log('fzl');
+            //console.log('fzl');
             rateArticle(articleID, -1);
           }
+          showNewArticle();
         }
         return false;
       });
 
-      // article source dropdown menu 
+      // article source dropdown menu
       if ( isMobile ) {
         $('#source-a').click(function(){
           $('#navsub-1').toggle();
@@ -1160,20 +1176,3 @@ var unratedContent = 'https://dl.dropboxusercontent.com/u/97446129/13.09.23/13.0
         });
       }
     });
-
-          /*  var story_id = getElementTextNS( "", "id", items[ii], 0 );
-      var story_title_long = getElementTextNS( "", "title", items[ii], 0 );
-      var story_title = story_title_long;
-      var story_date = getElementTextNS( "", "date", items[ii], 0 );
-      var story_link = getElementTextNS( "", "link", items[ii], 0 );
-      var story_source_id = getElementTextNS( "", "source-id", items[ii], 0 );
-      var story_always = getElementTextNS( "", "always", items[ii], 0 ) === 'true';
-      var story_sometimes = getElementTextNS( "", "sometimes", items[ii], 0 ) === 'true';
-      var story_never = getElementTextNS( "", "never", items[ii], 0 ) === 'true';
-      var story_name = getElementTextNS( "", "name", items[ii], 0 );
-      var story_home = getElementTextNS( "", "home", items[ii], 0 );
-      var story_forwarding_user = getElementTextNS( "", "forwarding-user", items[ii], 0 );
-      var story_forwarding_user_id = getElementTextNS( "", "forwarding-user-id", items[ii], 0 );
-      var story_forwarding_source = getElementTextNS( "", "forwarding-source", items[ii], 0 );
-      var story_prediction = getElementTextNS( "", "prediction", items[ii], 0 );
-      var story_comments = items[ii].getElementsByTagName( "comments" ); */
