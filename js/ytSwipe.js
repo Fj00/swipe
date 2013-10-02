@@ -96,7 +96,7 @@ $(document).ready(function(){
 			var szldContent = $('#topArticle').html(); // content from szld article
 			var theIMG = $('#topArticle img').clone();  // pull out just the img from article content
 			var artText = $topArticle.text();
-			$topArticle.animate({left: width},{queue: false, duration: 500,
+			$topArticle.find('iframe').remove().end().animate({left: width},{queue: false, duration: 500,
 				complete: function(){
 					$(this).remove();
 					$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
@@ -645,7 +645,7 @@ $(document).ready(function(){
 		}
 	});*/
 
-	//extract links and push to an array
+	//extract yt video data, push to an array, add them to article element
 	// http://stackoverflow.com/questions/9934944/embedding-youtube-video-refused-to-display-document-because-display-forbidden-b
 	links = [];
 	thumbs = [];
@@ -655,21 +655,24 @@ $(document).ready(function(){
 
 		$(data.feed.entry).each(function(){
 			theString = this.link[0].href;
-			//console.log(theString);
 			var videoID = theString.substr(theString.indexOf('=') + 1, 11);
-			//var videoID = videoLink.substr(videoLink.indexOf('=') + 1, );
 			videoLink = 'http://www.youtube.com/embed/'+ videoID;
-			//console.log(videoLink);
 			vidTitle = this.title.$t;
-			//console.log(this.title.$t);
 			thumb = "<img src='http://img.youtube.com/vi/"+ videoID +"/0.jpg' />";
+
 			links.push('<iframe width="420" height="315" src="' + videoLink + '" frameborder="0" allowfullscreen></iframe>');
 			thumbs.push(thumb);
 			titles.push(vidTitle)
 		});
-		//console.log(links);
+
 		$('#topArticle').html('<h3 class="videoTitle">' + titles[0] + '</h3>' + thumbs[0] );
 		$('#middleArticle').html('<h3 class="videoTitle">' + titles[1] + '</h3>' + thumbs[1] );
+
+		$(document).on('click', '.article', function(){
+			console.log('clicked');
+			$(this).find('h3').remove().end().append(links[thumbNum - 2]).addClass('clicked');
+		});
 		thumbNum += 2;
 	});
+	
 });
