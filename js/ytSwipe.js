@@ -217,13 +217,13 @@ $(document).ready(function(){
 		$('#stream').append(newCont);
 		if ($('#middleArticle').hasClass('requeue')){
 			if(thumbNum === 0){
-				$('#bottomArticle').addClass('article').html(thumbs[thumbNum + 5]).css('margin-top', $(window).height() * 0.03).css('margin-left', artPos);
+				$('#bottomArticle').addClass('article').html('<h3 class="videoTitle">' + titles[thumbNum + 5] + '</h3>' + thumbs[thumbNum + 5]).css('margin-top', $(window).height() * 0.03).css('margin-left', artPos);
 			} else {
-				$('#bottomArticle').addClass('article').html(thumbs[thumbNum-1]).css('margin-top', $(window).height() * 0.03).css('margin-left', artPos);
+				$('#bottomArticle').addClass('article').html('<h3 class="videoTitle">' + titles[thumbNum - 1] + '</h3>' + thumbs[thumbNum - 1]).css('margin-top', $(window).height() * 0.03).css('margin-left', artPos);
 			}
 		}
 		else {
-			$('#bottomArticle').addClass('article').html(thumbs[thumbNum])
+			$('#bottomArticle').addClass('article').html('<h3 class="videoTitle">' + titles[thumbNum] + '</h3>' + thumbs[thumbNum])
 				.css('margin-top', $(window).height() * 0.03)
 				.css('margin-left', artPos);
 			thumbNum += 1;
@@ -351,12 +351,12 @@ $(document).ready(function(){
 		drag: function(e, ui){
 
 
-			var ft = $('footer').position().top;
+			/*var ft = $('footer').position().top;
 			var fh = $('footer').height();
 			//if ( Math.abs(startY - e.pageY) > 10 && Math.abs(startY - e.pageY) > Math.abs(startX - e.pageX) ){
 				$('footer').css('height', fh + (ft - ui.offset.top ) + 'px');
 				$('footer').css('top', ui.offset.top);
-			//}
+			//}*/
 
 
 			//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
@@ -649,7 +649,10 @@ $(document).ready(function(){
 	// http://stackoverflow.com/questions/9934944/embedding-youtube-video-refused-to-display-document-because-display-forbidden-b
 	links = [];
 	thumbs = [];
+	titles = [];
 	$.getJSON('http://gdata.youtube.com/feeds/api/videos?author=LifeHacker&v=2&alt=json', function(data){
+		console.log(data);
+
 		$(data.feed.entry).each(function(){
 			theString = this.link[0].href;
 			//console.log(theString);
@@ -657,13 +660,16 @@ $(document).ready(function(){
 			//var videoID = videoLink.substr(videoLink.indexOf('=') + 1, );
 			videoLink = 'http://www.youtube.com/embed/'+ videoID;
 			//console.log(videoLink);
+			vidTitle = this.title.$t;
+			//console.log(this.title.$t);
 			thumb = "<img src='http://img.youtube.com/vi/"+ videoID +"/0.jpg' />";
 			links.push('<iframe width="420" height="315" src="' + videoLink + '" frameborder="0" allowfullscreen></iframe>');
 			thumbs.push(thumb);
+			titles.push(vidTitle)
 		});
 		//console.log(links);
-		$('#topArticle').html(thumbs[0]);
-		$('#middleArticle').html(thumbs[1]);
+		$('#topArticle').html('<h3 class="videoTitle">' + titles[0] + '</h3>' + thumbs[0] );
+		$('#middleArticle').html('<h3 class="videoTitle">' + titles[1] + '</h3>' + thumbs[1] );
 		thumbNum += 2;
 	});
 });
