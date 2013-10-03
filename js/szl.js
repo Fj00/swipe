@@ -140,7 +140,11 @@ var IE = false, // check for IE *
       });
       if (a_articleContent.length == 4){ // insert first article once cache reaches 4
         currentArticleID = a_articleID[0]; // update article ID
-        $('#content').empty().html(a_articleContent[0]); // empty current content and replace with next
+        $('#topArticle .content').empty().html(a_articleContent[0]); // empty current content and replace with next
+        $('#middleArticle .content').empty().html(a_articleContent[1]);
+        shareURL = 'http://www.szzzl.com/buzzes/' + currentArticleID;
+        addthis.update( 'share', 'url', shareURL ); // pass url
+        addthis.update( 'share', 'title', $('#title a').text() ); // pass article title
         $('#szl-table').empty().html(a_commentContent[0]);   // replace comment
         snakeShowing = false;
       }
@@ -186,7 +190,7 @@ var IE = false, // check for IE *
     //if ( $ratingCounter && $('#szldArticle').text() !== '' ){
     $ratingCounter.html(szldCount + '/' + articlesViewed + ' szled');
     //}
-    sendRating( rateArticleURL );
+    //sendRating( rateArticleURL );
   }
 
   /* send rating data each time user rates an article, source, or comment
@@ -319,7 +323,7 @@ var IE = false, // check for IE *
     sendRating( rateSourceURL );
   }
 
-  function showNewArticle(){
+  function showNewArticle(title){
 
     if (a_articleContent.length === 1 ) { // show loading snake and load more articles if true
 
@@ -338,8 +342,8 @@ var IE = false, // check for IE *
       }, 100);
 
     } else if (snakeShowing === false) {
-      
-      $('#content').empty().html(a_articleContent[1]); // empty current content and replace with next
+      $('#bottomArticle .content').html(a_articleContent[2]);//.html(a_articles[i_articleIndex])
+      //$('#content').empty().html(a_articleContent[1]); // empty current content and replace with next
       $('#szl-table').empty().html(a_commentContent[1]);   // replace comment
       a_articleContent = a_articleContent.slice(1, a_articleContent.length); // remove rated article from the array
       a_commentContent = a_commentContent.slice(1, a_commentContent.length); // remove its corresponding comment table
@@ -350,11 +354,12 @@ var IE = false, // check for IE *
           getXML(unratedContent);
         }
       }
-
+      //currentArticleID = a_articleID[rateCount];
       currentArticleID = a_articleID[rateCount];
+      var title = $('#middleArticle .content').find($('#title a')).text();
       shareURL = 'http://www.szzzl.com/buzzes/' + currentArticleID; // url used by share buttons
       addthis.update( 'share', 'url', shareURL ); // pass url
-      addthis.update( 'share', 'title', $('#title a').text() ); // pass article title
+      addthis.update( 'share', 'title', title ); // pass article title
       //console.log(shareURL);
       //console.log('currentID, ' + currentArticleID);
       buttonsDisabled = false;
@@ -367,16 +372,18 @@ var IE = false, // check for IE *
     // set up rating buttons
     $('#rateButtons a').click(function(e){
 
-      if (buttonsDisabled === false) {
+      if (buttonsDisabled === false && b_isRunning === false) {
         rateCount += 1;
         if (e.target.id == 'rateSzl'){
+          szl();
           //console.log('szl');
           rateArticle(articleID, 1);
         } else {
           //console.log('fzl');
+          fzl();
           rateArticle(articleID, -1);
         }
-        showNewArticle();
+        //showNewArticle();
       }
       return false;
     });
@@ -392,7 +399,7 @@ var IE = false, // check for IE *
         });
       });
     } else {
-      $('#content').on('mouseenter', '#source-a', function(){
+      $('.content').on('mouseenter', '#source-a', function(){
         //console.log('true');
         $('#navsub-1').show();
         $('#navsub-1').hover(function(){
@@ -425,11 +432,14 @@ var IE = false, // check for IE *
     var szl = function(e){
       if (!b_isRunning){
         b_isRunning = true;
+        var topTitle = $('#middleArticle .content').find('#title a').text(); 
         $topArticle = $('#topArticle');
         $topArticle.animate({left: width},{queue: false, duration: 500,
           complete: function(){
             $(this).remove();
-            $('#middleArticle').attr('id', 'topArticle'); 
+            $('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
+            $('#bottomArticle').attr('id', 'middleArticle');
+            //$('#middleArticle .content').html(a_articleContent[0]);
             b_isRunning = false;
           }
         }).css({'box-shadow': '0 0 .5em red'});
@@ -440,33 +450,40 @@ var IE = false, // check for IE *
     var fzl = function(e){
       if (!b_isRunning){
         b_isRunning = true;
+        var topTitle = $('#topArticle .content').find('#title a').text();
         $('#topArticle').animate({left: -2 * $(window).width()}, {queue: false, duration: 500, easing: 'swing',
           complete: function(){
             $(this).remove();
-            $('#middleArticle').attr('id', 'topArticle');
+            $('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
+            $('#bottomArticle').attr('id', 'middleArticle');
             b_isRunning = false;
+
           }
         }).css({'box-shadow': '0 0 .5em blue'});
-        createArticle();
+        createArticle(topTitle);
       }
     };
 
-    var createArticle = function(){
+    var createArticle = function(topTitle){
       var newCont = document.createElement('div');
-        newCont.id = "middleArticle";  //container for next article
+        newCont.id = "bottomArticle";  //container for next article
         $(newCont).addClass('articleContainer');
+        newText = document.createElement('div');
+        $(newText).addClass('content');
 
       $('#mainContent').append(newCont);
-      $('.articleContainer').draggable(newArticle);
+      $('#bottomArticle').append(newText);
+      //$('.articleContainer').draggable(newArticle);
       /*if ($('#middleArticle').hasClass('requeue')){
         if(i_articleIndex === 0){
           $('#bottomArticle').addClass('article').html(a_articles[i_articleIndex + 5]).css('margin-top', $(window).height() * 0.03).css('margin-left', artPos);
         } else {
           $('#bottomArticle').addClass('articleContainer').html(a_articles[i_articleIndex-1]).css('margin-top', $(window).height() * 0.03).css('margin-left', artPos);
         }
-      }*/
-      //else {
-        $('#middleArticle').addClass('articleContainer');//.html(a_articles[i_articleIndex])
+      }
+      else {*/
+        //var topTitle =$('#topArticle .content').find($('#title a')).text();
+        showNewArticle(topTitle);
           //.css('margin-top', $(window).height() * 0.03)
           //.css('margin-left', artPos);
         //i_articleIndex += 1;

@@ -73,7 +73,9 @@ footer {
   height: 30px;
   max-width: 705px;
   text-align: center;
-  clear: both; }
+  clear: both; 
+  z-index: 5; /* otherwise navsub-2 doesn't show */
+}
 
 footer a:link,
 footer a:visited,
@@ -95,7 +97,9 @@ footer a:active {
   white-space: nowrap;
   text-decoration: none;
   text-align: left;
-  cursor: pointer; }
+  cursor: pointer; 
+  z-index: 5;
+}
 
 #navsub-1 li {
   text-decoration: none;
@@ -169,7 +173,9 @@ footer a:active {
   white-space: nowrap;
   text-decoration: none;
   text-align: left;
-  cursor: pointer; }
+  cursor: pointer; 
+  z-index: 5;
+}
 
 #navsub-2 li {
   text-decoration: none;
@@ -326,26 +332,26 @@ h1 {
 #comment-vote-dn {
   margin-top: 10px; }
 
-#content {
+.content {
   padding: 10px;
   color: black; 
 }
 
-#content p {
+.content p {
   font-size: 16px;
   color: black; }
 
-#content a:link,
-#content a:visited,
-#content a:hover,
-#content a:active {
+.content a:link,
+.content a:visited,
+.content a:hover,
+.content a:active {
   color: #AF2F4E;
   text-decoration: underline; }
 
-#content h1 a:link,
-#content h1 a:visited,
-#content h1 a:hover,
-#content h1 a:active {
+.content h1 a:link,
+.content h1 a:visited,
+.content h1 a:hover,
+.content h1 a:active {
   color: #888888;
   text-decoration: none; }
 
