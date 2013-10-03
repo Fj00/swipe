@@ -3,6 +3,9 @@
 // * indicates variable name that was changed
 // others are newly created names
 
+
+//TODO: add swipe & shadow
+
 var IE = false, // check for IE *
     isMobile = false, // check for mobile device *
 
@@ -19,7 +22,7 @@ var IE = false, // check for IE *
     loadingArticles = false, // *
     articlesViewed = 0, // *
     lastRequestTime = 0, // *
-    requestsWithoutResult = 0, // * # of times the req for content yielded nothing new
+    //requestsWithoutResult = 0, // * # of times the req for content yielded nothing new
     minArticles = 2, // *
 
     article = $('#content'), // div for article content
@@ -399,4 +402,139 @@ var IE = false, // check for IE *
         });
       });
     }
+
+    // article swipe functionality
+
+    var swipeStartTime,
+        startPos = {x:0, y:0},
+        distance = {x:0, y:0},
+        scaledDistance, swipeTime, swipeAngle = 0,
+        width = $(window).width(),
+        height = $(window).height(),
+        b_isRunning = false,
+        newArticle = {
+          axis: 'x',
+          start: function(){
+            $(this).css('box-shadow','5px 5px 10px #888888');
+          },
+          stop: function(){
+            $(this).css('box-shadow', 'none');
+          }
+        };
+
+    var szl = function(e){
+      if (!b_isRunning){
+        b_isRunning = true;
+        $topArticle = $('#topArticle');
+        $topArticle.animate({left: width},{queue: false, duration: 500,
+          complete: function(){
+            $(this).remove();
+            $('#middleArticle').attr('id', 'topArticle'); 
+            b_isRunning = false;
+          }
+        }).css({'box-shadow': '0 0 .5em red'});
+        createArticle();
+      }
+    };
+
+    var fzl = function(e){
+      if (!b_isRunning){
+        b_isRunning = true;
+        $('#topArticle').animate({left: -2 * $(window).width()}, {queue: false, duration: 500, easing: 'swing',
+          complete: function(){
+            $(this).remove();
+            $('#middleArticle').attr('id', 'topArticle');
+            b_isRunning = false;
+          }
+        }).css({'box-shadow': '0 0 .5em blue'});
+        createArticle();
+      }
+    };
+
+    var createArticle = function(){
+      var newCont = document.createElement('div');
+        newCont.id = "middleArticle";  //container for next article
+        $(newCont).addClass('articleContainer');
+
+      $('#mainContent').append(newCont);
+      $('.articleContainer').draggable(newArticle);
+      /*if ($('#middleArticle').hasClass('requeue')){
+        if(i_articleIndex === 0){
+          $('#bottomArticle').addClass('article').html(a_articles[i_articleIndex + 5]).css('margin-top', $(window).height() * 0.03).css('margin-left', artPos);
+        } else {
+          $('#bottomArticle').addClass('articleContainer').html(a_articles[i_articleIndex-1]).css('margin-top', $(window).height() * 0.03).css('margin-left', artPos);
+        }
+      }*/
+      //else {
+        $('#middleArticle').addClass('articleContainer');//.html(a_articles[i_articleIndex])
+          //.css('margin-top', $(window).height() * 0.03)
+          //.css('margin-left', artPos);
+        //i_articleIndex += 1;
+      //}
+      //if (i_articleIndex > 5){ i_articleIndex = 0;}*/
+    };
+
+    var checkForSwipe = function(){
+      $topArticle = $('#topArticle');
+      if (Math.abs(swipeAngle) <= 45){
+        if (scaledDistance / swipeTime > 3){
+          if (distance.x > 0){
+            szl();
+          }
+          else if (distance.x < 0){
+            fzl();
+          }
+          else {
+            $topArticle.animate({left: 0 }, 500, 'easeOutBack');
+            console.log('true');
+          }
+        }
+        else if (Math.abs(distance.x / width) > 0.25){
+          if (distance.x > 0) {
+            szl();
+          }
+          else if (distance.x < 0){
+            fzl();
+          }
+        }
+        else {
+          $topArticle.animate({left: 0 }, 500, 'easeOutBack');
+          console.log('true');
+        }
+      }
+      else {
+        $topArticle.animate({left: 0 }, 500, 'easeOutBack');
+        console.log('true');
+      }
+    };
+
+    var start = function(e) {
+      swipeStartTime = new Date();
+      startPos.x = e.pageX;
+      startPos.y = e.pageY;
+    };
+
+    var end = function(e) {
+      var now = new Date();
+      swipeTime = (now - swipeStartTime)/1000;
+      distance.x = e.pageX - startPos.x;
+      distance.y = e.pageY - startPos.y;
+      swipeAngle = Math.atan(distance.y / distance.x) * (180 / Math.PI);
+      scaledDistance = Math.sqrt((distance.x / width)^2 + (distance.y / height)^2);
+    };
+
+    $('#mainContent').mousedown(function(e){
+      start(e);
+    }).mousemove(function(e){
+    //console.log(e.pageX);
+    }).mouseup(function(e){
+      end(e);
+      if (!b_isRunning) checkForSwipe();
+    });
+
+    $('.articleContainer').draggable({
+      axis: 'x',
+      scroll: false
+    });
+
   });

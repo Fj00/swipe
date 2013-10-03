@@ -1,3 +1,10 @@
+html {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  font-family: Verdana, Helvetica, Arial, sans-serif; }
+
 body {
   height: 100%;
   width: 100%;
@@ -14,10 +21,53 @@ header {
   height: 74px;
   width: 70%;
   text-align: center;
-  clear: both; }
+  clear: both; 
+  z-index: 1;
+}
+
+#mainContent {
+  position: relative;
+  height: 100%;
+  width: 70%;
+  padding: 74px 0 31px 0;
+  background-color: #FEF5DF;
+  font-size: 16px;
+  line-height: 26px;
+  float: left;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  overflow: hidden; 
+}
+
+.articleContainer {
+  position: absolute;
+  height: 83%;
+  width: 100%;
+  max-width: 705px;
+  margin-right: auto;
+  margin-left: auto;
+  background-color: #FFFFFF;
+  border: 1px solid #E0E1E1;
+  box-shadow: 3px 3px 5px #888888;
+  left: 0; right: 0;
+  text-align: justify;
+  overflow: auto; 
+}
+
+#topArticle {
+  z-index: 2;
+}
+#middelArticle {
+  z-index: 1;
+}
+
+#bottomArticle {
+  z-index: -1;
+}
 
 footer {
-  background-color: #FEF5DF;
+  /*background-color: #FEF5DF;*/  
   position: fixed;
   bottom: 0;
   height: 30px;
@@ -152,19 +202,6 @@ footer a:active {
 #username-a {
   width: auto; }
 
-#mainContent {
-  height: 100%;
-  width: 70%;
-  padding: 74px 0 31px 0;
-  background-color: #FEF5DF;
-  font-size: 16px;
-  line-height: 26px;
-  float: left;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  overflow-y: hidden; }
-
 #titleBar {
   height: 5px;
   width: 100%;
@@ -174,7 +211,7 @@ footer a:active {
 
 #sidebar {
   height: 100%;
-  width: 412px;
+  width: 42px;
   padding: 58px 0 0 0;
   background-color: #FEF5DF;
   -webkit-box-sizing: border-box;
@@ -238,24 +275,7 @@ h1 {
   line-height: 33px;
   font-weight: normal; }
 
-html {
-  height: 100%;
-  padding: 0;
-  margin: 0;
-  border: none;
-  font-family: Verdana, Helvetica, Arial, sans-serif; }
-
-#articleContainer {
-  height: 100%;
-  max-width: 705px;
-  margin-right: auto;
-  margin-left: auto;
-  background-color: #FFFFFF;
-  border-right: 1px #888888 solid;
-  border-bottom: 1px #888888 solid;
-  text-align: justify;
-  overflow: auto; }
-
+/*
 #comment-container {
   height: 100%;
   max-width: 350px;
@@ -283,7 +303,7 @@ html {
 
 #szl-table table td {
   overflow: visible; }
-
+*/
 .szl-vote {
   text-align: center;
   margin-bottom: 10px;
@@ -308,7 +328,8 @@ html {
 
 #content {
   padding: 10px;
-  color: black; }
+  color: black; 
+}
 
 #content p {
   font-size: 16px;
