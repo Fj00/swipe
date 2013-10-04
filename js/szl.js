@@ -148,7 +148,7 @@ var IE = false, // check for IE *
         $('#szl-table').empty().html(a_commentContent[0]);   // replace comment
         snakeShowing = false;
       }
-      console.log(a_articleContent.length);
+      //console.log(a_articleContent.length);
     })
       .done(function(data){
         requestInProgress = false;
@@ -323,11 +323,11 @@ var IE = false, // check for IE *
     sendRating( rateSourceURL );
   }
 
-  function showNewArticle(){
+  function showNewArticle(title){
 
     if (a_articleContent.length === 1 ) { // show loading snake and load more articles if true
 
-      console.log('true');
+      //console.log('true');
       var loadingSnake = '<p style="text-align: center;"><img style="padding-left: 5px; padding-top: 5px;" src="img/ajax-loader-red.gif" /><br />Loading your stream of articles</p>';
       $('#content').html(loadingSnake);
       buttonsDisabled = true; // disable rating buttons while loading new content
@@ -342,7 +342,7 @@ var IE = false, // check for IE *
       }, 100);
 
     } else if (snakeShowing === false) {
-      $('#bottomArticle .content').html(a_articleContent[2]);//.html(a_articles[i_articleIndex])
+      $('#middleArticle .content').html(a_articleContent[2]);//.html(a_articles[i_articleIndex])
       //$('#content').empty().html(a_articleContent[1]); // empty current content and replace with next
       $('#szl-table').empty().html(a_commentContent[1]);   // replace comment
       a_articleContent = a_articleContent.slice(1, a_articleContent.length); // remove rated article from the array
@@ -356,10 +356,9 @@ var IE = false, // check for IE *
       }
       //currentArticleID = a_articleID[rateCount];
       currentArticleID = a_articleID[rateCount];
-      var title = $('#middleArticle .content').find($('#title a')).text();
       shareURL = 'http://www.szzzl.com/buzzes/' + currentArticleID; // url used by share buttons
       addthis.update( 'share', 'url', shareURL ); // pass url
-      addthis.update( 'share', 'title', title ); // pass article title
+      addthis.update( 'share', 'title', title ); // top article title
       //console.log(shareURL);
       //console.log('currentID, ' + currentArticleID);
       buttonsDisabled = false;
@@ -375,12 +374,12 @@ var IE = false, // check for IE *
       if (buttonsDisabled === false && b_isRunning === false) {
         rateCount += 1;
         if (e.target.id == 'rateSzl'){
-          szl();
-          console.log('szl');
+          szlFzl(e.target.id);
+          //console.log('szl');
           rateArticle(articleID, 1);
         } else {
           //console.log('fzl');
-          fzl();
+          szlFzl(e.target.id);
           rateArticle(articleID, -1);
         }
         //showNewArticle();
@@ -400,7 +399,7 @@ var IE = false, // check for IE *
       });
     } else {
       $('#mainContent').on('mouseenter', '#source-a', function(){
-        console.log('true');
+        //console.log('true');
         $('#navsub-1').show();
         $('#navsub-1').hover(function(){
           $(this).show();
@@ -423,41 +422,47 @@ var IE = false, // check for IE *
           axis: 'x',
         };
 
-    var szl = function(e){
+    // move article left or right and change border color based on the swipe direction or the button that was clicked
+    var szlFzl = function(target){
+
+      // only execute when another swipe animation isn't in progress
       if (!b_isRunning){
         b_isRunning = true;
         $topArticle = $('#topArticle');
-        $topArticle.animate({left: width},{queue: false, duration: 500,
+
+        // if rateSzl button or swipe right called the function, send article right. if not, send it left
+        // set the blue/red border the same way
+        leftOffset = (target == 'rateSzl' || target == 'right') ? width : -2 * width;
+        borderColor = (target == 'rateSzl' || target == 'right') ? '0 0 .5em red' : '0 0 .5em blue';
+        $topArticle.animate({left: leftOffset},{queue: false, duration: 500,
           complete: function(){
-            $(this).remove();
-            $('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
-            $('#bottomArticle').attr('id', 'middleArticle');
-            //$('#middleArticle .content').html(a_articleContent[0]);
+            $(this).remove(); // remove offscreen article
+            createArticle(); // add a new one to bottom of the stack
             b_isRunning = false;
+            console.log('swipe complete');
           }
-        }).css({'box-shadow': '0 0 .5em red'});
-        createArticle();
+        }).css({'box-shadow': borderColor});
       }
     };
 
-    var fzl = function(e){
+    /*var fzl = function(e){
       if (!b_isRunning){
         b_isRunning = true;
         
         $('#topArticle').animate({left: -2 * $(window).width()}, {queue: false, duration: 500, easing: 'swing',
           complete: function(){
             $(this).remove();
-            $('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
-            $('#bottomArticle').attr('id', 'middleArticle');
+            createArticle();
             b_isRunning = false;
+            console.log('swipe complete');
 
           }
         }).css({'box-shadow': '0 0 .5em blue'});
         createArticle();
       }
-    };
+    };*/
 
-    var createArticle = function(topTitle){
+    var createArticle = function(){
       var newCont = document.createElement('div');
         newCont.id = "bottomArticle";  //container for next article
         $(newCont).addClass('articleContainer');
@@ -466,6 +471,9 @@ var IE = false, // check for IE *
 
       $('#mainContent').append(newCont);
       $('#bottomArticle').append(newText);
+      $('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
+      $('#bottomArticle').attr('id', 'middleArticle');
+      var title = $('#topArticle .content').find($('#title a')).text();
       //$('.articleContainer').draggable(newArticle);
       /*if ($('#middleArticle').hasClass('requeue')){
         if(i_articleIndex === 0){
@@ -476,49 +484,58 @@ var IE = false, // check for IE *
       }
       else {*/
         //var topTitle =$('#topArticle .content').find($('#title a')).text();
-        showNewArticle(topTitle);
+        showNewArticle(title);
           //.css('margin-top', $(window).height() * 0.03)
           //.css('margin-left', artPos);
         //i_articleIndex += 1;
       //}
       //if (i_articleIndex > 5){ i_articleIndex = 0;}*/
+      console.log('new article');
     };
 
     var checkForSwipe = function(){
+
       $topArticle = $('#topArticle');
       if (Math.abs(swipeAngle) <= 45){
         if (scaledDistance / swipeTime > 3){
           if (distance.x > 0){
             $topArticle.css({'box-shadow': '0 0 .5em red'});
-            szl();
+            szlFzl('right');
+            rateArticle(articleID, 1);
           }
           else if (distance.x < 0){
             $topArticle.css({'box-shadow': '0 0 .5em blue'});
-            fzl();
+            
+            szlFzl('left');
+            rateArticle(articleID, -1);
           }
           else {
             $topArticle.animate({left: 0 }, 500, 'easeOutBack');
-            console.log('true');
+            //console.log('true');
           }
         }
         else if (Math.abs(distance.x / width) > 0.25){
           if (distance.x > 0) {
             $topArticle.css({'box-shadow': '0 0 .5em red'});
-            szl();
+     
+            szlFzl('right');
+            rateArticle(articleID, 1);
           }
           else if (distance.x < 0){
             $topArticle.css({'box-shadow': '0 0 .5em blue'});
-            fzl();
+            
+            szlFzl('left');
+            rateArticle(articleID, -1);
           }
         }
         else {
           $topArticle.animate({left: 0 }, 500, 'easeOutBack');
-          console.log('true');
+          //console.log('true');
         }
       }
       else {
         $topArticle.animate({left: 0 }, 500, 'easeOutBack');
-        console.log('true');
+        //console.log('true');
       }
     };
 
