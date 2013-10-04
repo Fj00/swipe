@@ -25,6 +25,31 @@ header {
   z-index: 1;
 }
 
+p {
+  color: #FFFFFF;
+  font-size: 16px;
+  line-height: 26px; }
+
+h2 {
+  font-size: 16px;
+  line-height: 26px; }
+
+h3 {
+  color: #AF2F4E;
+  font-size: 16px;
+  line-height: 26px; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: inherit;
+  font-weight: bold;
+  margin: 0;
+  text-rendering: optimizelegibility; }
+
+h1 {
+  font-size: 24px;
+  line-height: 33px;
+  font-weight: normal; }
+
 #mainContent {
   position: relative;
   height: 100%;
@@ -66,23 +91,12 @@ header {
   z-index: -1;
 }
 
-footer {
-  /*background-color: #FEF5DF;*/  
-  position: fixed;
-  bottom: 0;
-  height: 30px;
-  max-width: 705px;
-  text-align: center;
-  clear: both; 
-  z-index: 5; /* otherwise navsub-2 doesn't show */
-}
-
-footer a:link,
-footer a:visited,
-footer a:hover,
-footer a:active {
-  color: #AF2F4E;
-  text-decoration: none; }
+#titleBar {
+  height: 5px;
+  width: 100%;
+  background-color: #888888;
+  margin-top: 7px;
+  margin-bottom: 23px; }
 
 #navsub-1 {
   background-color: #FFFFFF;
@@ -159,6 +173,27 @@ footer a:active {
   color: #AF2F4E;
   text-decoration: none; }
 
+
+footer {
+  /*background-color: #FEF5DF;*/  
+  position: fixed;
+  bottom: 0;
+  height: 30px;
+  max-width: 705px;
+  text-align: center;
+  clear: both; 
+  z-index: 5; /* otherwise navsub-2 doesn't show */
+}
+
+footer a:link,
+footer a:visited,
+footer a:hover,
+footer a:active {
+  color: #AF2F4E;
+  text-decoration: none; }
+
+
+
 #navsub-2 {
   background-color: #FFFFFF;
   padding: 0;
@@ -208,13 +243,6 @@ footer a:active {
 #username-a {
   width: auto; }
 
-#titleBar {
-  height: 5px;
-  width: 100%;
-  background-color: #888888;
-  margin-top: 7px;
-  margin-bottom: 23px; }
-
 #sidebar {
   height: 100%;
   width: 42px;
@@ -248,76 +276,7 @@ footer a:active {
   -moz-transform: rotate(90deg);
   -o-transform: rotate(90deg); }
 
-#back-button {
-  margin-top: 5px;
-  margin-left: 5px; }
-
-#back-button:hover {
-  opacity: 0.6;
-  filter: alpha(opacity=60); }
-
-p {
-  color: #FFFFFF;
-  font-size: 16px;
-  line-height: 26px; }
-
-h2 {
-  font-size: 16px;
-  line-height: 26px; }
-
-h3 {
-  color: #AF2F4E;
-  font-size: 16px;
-  line-height: 26px; }
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: inherit;
-  font-weight: bold;
-  margin: 0;
-  text-rendering: optimizelegibility; }
-
-h1 {
-  font-size: 24px;
-  line-height: 33px;
-  font-weight: normal; }
-
-/*
-#comment-container {
-  height: 100%;
-  max-width: 350px;
-  margin-right: 10px;
-  margin-left: 48px;
-  color: black;
-  text-align: justify; }
-
-#szl-table {
-  overflow: auto;
-  overflow-x: hidden;
-  font-size: 12px; }
-
-#szl-table table a:link,
-#szl-table table a:visited,
-#szl-table table a:hover,
-#szl-table table a:active {
-  color: #AF2F4E;
-  text-decoration: none; }
-
-#szl-table table {
-  width: 335px;
-  border-collapse: collapse;
-  overflow: auto; }
-
-#szl-table table td {
-  overflow: visible; }
-*/
-.szl-vote {
-  text-align: center;
-  margin-bottom: 10px;
-  clear: both; }
-
-#dots {
-  padding-bottom: 7px; }
-
+/* rating buttons */
 #rateSzl {
   padding-right: 20px;
   border: none; }
@@ -326,12 +285,7 @@ h1 {
   padding-left: 20px;
   border: none; }
 
-#comment-vote-up {
-  margin-bottom: 10px; }
-
-#comment-vote-dn {
-  margin-top: 10px; }
-
+/* article content */
 .content {
   padding: 10px;
   color: black; 
@@ -355,6 +309,7 @@ h1 {
   color: #888888;
   text-decoration: none; }
 
+/* user data section in footer */
 #userData a:link,
 #userData a:visited,
 #userData a:hover,
@@ -381,34 +336,6 @@ h1 {
   border: 2px #AF2F4E solid;
   padding: 4px; }
 
-#comment-text {
-  width: 335px; }
-
-#comment-text-area {
-  margin-top: 10px;
-  margin-left: 4px;
-  overflow: hidden; }
-
-#comment-text-area a:link,
-#comment-text-area a:visited,
-#comment-text-area a:hover,
-#comment-text-area a:active {
-  color: #AF2F4E;
-  text-decoration: underline; }
-
-.comment-text-area {
-  width: 331px;
-  border: solid 2px #888888;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box; }
-
-textarea {
-  font-size: inherit;
-  line-height: inherit;
-  font-family: inherit;
-  padding-left: 3px; }
-
 input.submit {
   margin: 0;
   padding: 0;
@@ -418,21 +345,3 @@ input.submit {
   font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
   font-size: 16px;
   cursor: pointer; }
-
-#counter {
-  margin-top: 3px;
-  padding: 0;
-  float: left;
-  display: inline; }
-
-#comment-submit {
-  float: right;
-  display: inline;
-  margin-top: 2px;
-  margin-right: 15px; }
-
-.error {
-  border: 2px solid #CC0000 !important; }
-
-.correct {
-  border: 2px solid #00CC00 !important; }
