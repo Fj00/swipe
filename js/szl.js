@@ -323,7 +323,7 @@ var IE = false, // check for IE *
     sendRating( rateSourceURL );
   }
 
-  function showNewArticle(title){
+  function showNewArticle(){
 
     if (a_articleContent.length === 1 ) { // show loading snake and load more articles if true
 
@@ -376,7 +376,7 @@ var IE = false, // check for IE *
         rateCount += 1;
         if (e.target.id == 'rateSzl'){
           szl();
-          //console.log('szl');
+          console.log('szl');
           rateArticle(articleID, 1);
         } else {
           //console.log('fzl');
@@ -399,8 +399,8 @@ var IE = false, // check for IE *
         });
       });
     } else {
-      $('.content').on('mouseenter', '#source-a', function(){
-        //console.log('true');
+      $('#mainContent').on('mouseenter', '#source-a', function(){
+        console.log('true');
         $('#navsub-1').show();
         $('#navsub-1').hover(function(){
           $(this).show();
@@ -421,18 +421,11 @@ var IE = false, // check for IE *
         b_isRunning = false,
         newArticle = {
           axis: 'x',
-          start: function(){
-            $(this).css('box-shadow','5px 5px 10px #888888');
-          },
-          stop: function(){
-            $(this).css('box-shadow', 'none');
-          }
         };
 
     var szl = function(e){
       if (!b_isRunning){
         b_isRunning = true;
-        var topTitle = $('#middleArticle .content').find('#title a').text(); 
         $topArticle = $('#topArticle');
         $topArticle.animate({left: width},{queue: false, duration: 500,
           complete: function(){
@@ -450,7 +443,7 @@ var IE = false, // check for IE *
     var fzl = function(e){
       if (!b_isRunning){
         b_isRunning = true;
-        var topTitle = $('#topArticle .content').find('#title a').text();
+        
         $('#topArticle').animate({left: -2 * $(window).width()}, {queue: false, duration: 500, easing: 'swing',
           complete: function(){
             $(this).remove();
@@ -460,7 +453,7 @@ var IE = false, // check for IE *
 
           }
         }).css({'box-shadow': '0 0 .5em blue'});
-        createArticle(topTitle);
+        createArticle();
       }
     };
 
@@ -496,9 +489,11 @@ var IE = false, // check for IE *
       if (Math.abs(swipeAngle) <= 45){
         if (scaledDistance / swipeTime > 3){
           if (distance.x > 0){
+            $topArticle.css({'box-shadow': '0 0 .5em red'});
             szl();
           }
           else if (distance.x < 0){
+            $topArticle.css({'box-shadow': '0 0 .5em blue'});
             fzl();
           }
           else {
@@ -508,9 +503,11 @@ var IE = false, // check for IE *
         }
         else if (Math.abs(distance.x / width) > 0.25){
           if (distance.x > 0) {
+            $topArticle.css({'box-shadow': '0 0 .5em red'});
             szl();
           }
           else if (distance.x < 0){
+            $topArticle.css({'box-shadow': '0 0 .5em blue'});
             fzl();
           }
         }
@@ -549,9 +546,6 @@ var IE = false, // check for IE *
       if (!b_isRunning) checkForSwipe();
     });
 
-    $('.articleContainer').draggable({
-      axis: 'x',
-      scroll: false
-    });
+    $('.articleContainer').draggable(newArticle);
 
   });
