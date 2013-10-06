@@ -3,6 +3,8 @@
 // * indicates variable name that was changed
 // others are newly created names
 
+// the purpose of this file is to create articles from xml data..
+// and send the rating of those articles back to the server
 
 //TODO: add swipe & shadow
 
@@ -155,7 +157,7 @@ var IE = false, // check for IE *
     })
     // when get request fails
     .fail(function(){
-      alert('request failed');
+      //alert('request failed');
       getXML( unratedContent );
     });
   }
@@ -188,7 +190,7 @@ var IE = false, // check for IE *
     // update szld/rated count in the footer
     var $ratingCounter = $('#szldArticle'); // *
     //if ( $ratingCounter && $('#szldArticle').text() !== '' ){
-    $ratingCounter.html(szldCount + '/' + articlesViewed + ' szled');
+    $ratingCounter.html(szldCount + '/' + articlesViewed + ' szld');
     //}
     //sendRating( rateArticleURL );
   }
@@ -224,33 +226,11 @@ var IE = false, // check for IE *
       rateSourceURL += 'always.xml';
       $(document).ready(function(){
         if ( cyclic === 0 ) {
-          //if ( isMobile ) {
-            /*$('#always-li').css('background-color','#AF2F4E');
-            $('#sometimes-li').css('background-color','');
-            $('#never-li').css('background-color','');
-          //} else {
-            $('#navsub-1 li').removeClass();
-            $('#always-li').addClass('always');
-
-          //}*/
-
           $('#navsub-1 li').removeClass();
           $('#always-li').addClass('always');
           $('#always').prop('checked', true);
           $('#sometimes, #never').prop('checked', false);
-
-        } /*else if ( cyclic == 1 ) {
-          if ( isMobile ) {
-            $('#source-' + id).css('background-color','#AF2F4E');
-          } else {
-            $('#source-' + id).css('background-image','linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%)');
-            $('#source-' + id).css('background-image','-o-linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%)');
-            $('#source-' + id).css('background-image','-ms-linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%)');
-            $('#source-' + id).css('background-image','-moz-linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%)');
-            $('#source-' + id).css('background-image','-webkit-linear-gradient(-90deg, #FFFFFF 0%, #AF2F4E 100%)');
-          }
-          $('#source-' + id).attr('onclick','rateSource(' + id + ', -1, 1)');
-        }*/
+        }
       });
     } else if ( rating === 0 ) {
       rateSourceURL += 'sometimes.xml';
@@ -272,52 +252,16 @@ var IE = false, // check for IE *
           $('#never, #always').prop('checked', false);
 
         }
-        // not sure what this does
-        /*else if ( cyclic == 1 ) {
-          if ( isMobile ) {
-            $('#source-' + id).css('background-color','#FEF5DF');
-          } else {
-            $('#source-' + id).css('background-image','linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%)');
-            $('#source-' + id).css('background-image','-o-linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%)');
-            $('#source-' + id).css('background-image','-ms-linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%)');
-            $('#source-' + id).css('background-image','-moz-linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%)');
-            $('#source-' + id).css('background-image','-webkit-linear-gradient(-90deg, #FFFFFF 0%, #FEF5DF 100%)');
-          }
-          $('#source-' + id).attr('onclick','rateSource(' + id + ', 1, 1)');
-        }*/
       });
     } else if ( rating == -1 ) {
       rateSourceURL += 'never.xml';
       $(document).ready(function(){
         if ( cyclic === 0 ) {
-          /*//if ( isMobile ) {
-            $('#always-li').css('background-color','');
-            $('#sometimes-li').css('background-color','');
-            $('#never-li').css('background-color','#2E6D90');
-          //} else {
-            $('#navsub-1 li').removeClass();
-            $('#never-li').addClass('never');
-          //}*/
-
           $('#navsub-1 li').removeClass();
           $('#never-li').addClass('never');
           $('#never').prop('checked', true);
           $('#sometimes, #always').prop('checked', false);
-
         }
-        //unsure
-        /*else if ( cyclic == 1 ) {
-          if ( isMobile ) {
-            $('#source-' + id).css('background-color','#2E6D90');
-          } else {
-            $('#source-' + id).css('background-image','linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%)');
-            $('#source-' + id).css('background-image','-o-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%)');
-            $('#source-' + id).css('background-image','-ms-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%)');
-            $('#source-' + id).css('background-image','-moz-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%)');
-            $('#source-' + id).css('background-image','-webkit-linear-gradient(-90deg, #FFFFFF 0%, #2E6D90 100%)');
-          }
-          $('#source-' + id).attr('onclick','rateSource(' + id + ', 0, 1)');
-        }*/
       });
     }
     sendRating( rateSourceURL );
@@ -354,7 +298,7 @@ var IE = false, // check for IE *
           getXML(unratedContent);
         }
       }
-      //currentArticleID = a_articleID[rateCount];
+
       currentArticleID = a_articleID[rateCount];
       shareURL = 'http://www.szzzl.com/buzzes/' + currentArticleID; // url used by share buttons
       addthis.update( 'share', 'url', shareURL ); // pass url
@@ -363,6 +307,10 @@ var IE = false, // check for IE *
       //console.log('currentID, ' + currentArticleID);
       buttonsDisabled = false;
 
+      $('#topArticle, #articleWrapper').dragscrollable({
+        dragSelector: 'p',
+        //acceptPropagatedEvent: false
+      });
     }
   }
 
@@ -418,8 +366,33 @@ var IE = false, // check for IE *
         width = $(window).width(),
         height = $(window).height(),
         b_isRunning = false,
+        startDragX,
+        startDragY,
         newArticle = {
           axis: 'x',
+          //helper: 'clone',
+          start: function(e){
+
+            // get starting point of the drag
+            startDragX = e.pageX;
+            startDragY = e.pageY;
+          },
+          drag: function(e, ui){
+
+            // prevent drag until user has moved 30px horizontally
+            if (Math.abs(e.pageX - startDragX) < 30){
+              ui.position.left = 0;
+            } else {
+              if (ui.position.left < 0) {
+
+                // left drag
+                ui.position.left = ui.position.left + 30;
+              } else {
+                // right drag
+                ui.position.left = ui.position.left - 30;
+              }
+            }
+          }
         };
 
     // move article left or right and change border color based on the swipe direction or the button that was clicked
@@ -432,7 +405,7 @@ var IE = false, // check for IE *
 
         // if rateSzl button or swipe right called the function, send article right. if not, send it left
         // set the blue/red border the same way
-        leftOffset = (target == 'rateSzl' || target == 'right') ? width : -2 * width;
+        leftOffset = (target == 'rateSzl' || target == 'right') ? -2 * width : width;
         borderColor = (target == 'rateSzl' || target == 'right') ? '0 0 .5em red' : '0 0 .5em blue';
         $topArticle.animate({left: leftOffset},{queue: false, duration: 500,
           complete: function(){
@@ -500,13 +473,13 @@ var IE = false, // check for IE *
         if (scaledDistance / swipeTime > 3){
           if (distance.x > 0){
             $topArticle.css({'box-shadow': '0 0 .5em red'});
-            szlFzl('right');
+            szlFzl('left');
             rateArticle(articleID, 1);
           }
           else if (distance.x < 0){
             $topArticle.css({'box-shadow': '0 0 .5em blue'});
             
-            szlFzl('left');
+            szlFzl('right');
             rateArticle(articleID, -1);
           }
           else {
@@ -518,13 +491,13 @@ var IE = false, // check for IE *
           if (distance.x > 0) {
             $topArticle.css({'box-shadow': '0 0 .5em red'});
      
-            szlFzl('right');
+            szlFzl('left');
             rateArticle(articleID, 1);
           }
           else if (distance.x < 0){
             $topArticle.css({'box-shadow': '0 0 .5em blue'});
             
-            szlFzl('left');
+            szlFzl('right');
             rateArticle(articleID, -1);
           }
         }
@@ -563,6 +536,7 @@ var IE = false, // check for IE *
       if (!b_isRunning) checkForSwipe();
     });
 
+    // init draggable for initial top article
     $('.articleContainer').draggable(newArticle);
 
   });
