@@ -24,11 +24,10 @@ body {
 
 header {
   position: absolute;
-  background-color: white;
   height: 74px;
   width: 80%;
   text-align: center;
-  z-index: 1;
+  z-index: 5;
   margin-right: auto;
   margin-left: auto;
   left: 0; right: 0;
@@ -80,18 +79,18 @@ h1 {
 
 .articleContainer {
   position: absolute;
-  height: 83%;
   width: 90%;
   max-width: 705px;
-  margin-right: auto;
-  margin-left: auto;
+  margin: auto;
+  margin-top: 74px;
+  margin-bottom: 40px;
   background-color: #f4f4f4;
   border: 1px solid #E0E1E1;
   box-shadow: 3px 3px 5px #888888;
   -webkit-box-shadow: 5px 5px 5px #999999;
-  left: 0; right: 0;
+  left: 0; right: 0; bottom: 0; top: 0;
   text-align: justify;
-  overflow: hidden; 
+  overflow: auto; 
   -webkit-overflow-scrolling: touch;
 }
 
@@ -194,7 +193,8 @@ footer {
   /*background-color: #FEF5DF;*/  
   position: absolute;
   bottom: 0;
-  height: 5%;
+  height: 30px;
+  background: white;
   width: 75%;
   max-width: 705px;
   text-align: center;
@@ -364,4 +364,17 @@ input.submit {
 
 #articleWrapper {
   font-size: 1em;
+}
+
+
+
+@media screen and (max-width: 375px){
+  #dragbar {
+    display: none;
+  }
+
+  footer {
+    width: 100%;
+    background: white;
+  }
 }
