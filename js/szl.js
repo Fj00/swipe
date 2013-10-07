@@ -405,8 +405,8 @@ var IE = false, // check for IE *
 
         // if rateSzl button or swipe right called the function, send article right. if not, send it left
         // set the blue/red border the same way
-        leftOffset = (target == 'rateSzl' || target == 'right') ? -2 * width : width;
-        borderColor = (target == 'rateSzl' || target == 'right') ? '0 0 .5em red' : '0 0 .5em blue';
+        leftOffset = (target == 'rateSzl' || target == 'left') ? -2 * width : width;
+        borderColor = (target == 'rateSzl' || target == 'left') ? '0 0 .5em red' : '0 0 .5em blue';
         $topArticle.animate({left: leftOffset},{queue: false, duration: 500,
           complete: function(){
             $(this).remove(); // remove offscreen article
@@ -473,14 +473,14 @@ var IE = false, // check for IE *
         if (scaledDistance / swipeTime > 3){
           if (distance.x > 0){
             $topArticle.css({'box-shadow': '0 0 .5em red'});
-            szlFzl('left');
-            rateArticle(articleID, 1);
+            szlFzl('right');
+            rateArticle(articleID, -1);
           }
           else if (distance.x < 0){
             $topArticle.css({'box-shadow': '0 0 .5em blue'});
             
-            szlFzl('right');
-            rateArticle(articleID, -1);
+            szlFzl('left');
+            rateArticle(articleID, 1);
           }
           else {
             $topArticle.animate({left: 0 }, 500, 'easeOutBack');
@@ -491,14 +491,14 @@ var IE = false, // check for IE *
           if (distance.x > 0) {
             $topArticle.css({'box-shadow': '0 0 .5em red'});
      
-            szlFzl('left');
-            rateArticle(articleID, 1);
+            szlFzl('right');
+            rateArticle(articleID, -1);
           }
           else if (distance.x < 0){
             $topArticle.css({'box-shadow': '0 0 .5em blue'});
             
-            szlFzl('right');
-            rateArticle(articleID, -1);
+            szlFzl('left');
+            rateArticle(articleID, 1);
           }
         }
         else {

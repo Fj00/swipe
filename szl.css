@@ -23,15 +23,28 @@ body {
 }
 
 header {
+  /*background-color: #FEF5DF;*/  
   position: absolute;
-  height: 74px;
-  width: 80%;
+  height: 1.5em;
+  background: white;
+  width: 75%;
+  max-width: 705px;
   text-align: center;
-  z-index: 5;
+  clear: both; 
+  font-size: 1em;
+  z-index: 5; /* otherwise navsub-2 doesn't show */
   margin-right: auto;
   margin-left: auto;
   left: 0; right: 0;
+  border-bottom: 1px solid #dddddd;
 }
+
+header a:link,
+header a:visited,
+header a:hover,
+header a:active {
+  color: #AF2F4E;
+  text-decoration: none; }
 
 p {
   font-size: 1em;
@@ -82,8 +95,8 @@ h1 {
   width: 90%;
   max-width: 705px;
   margin: auto;
-  margin-top: 74px;
-  margin-bottom: 40px;
+  margin-top: 40px;
+  margin-bottom: 74px;
   background-color: #f4f4f4;
   border: 1px solid #E0E1E1;
   box-shadow: 3px 3px 5px #888888;
@@ -190,28 +203,16 @@ h1 {
 
 
 footer {
-  /*background-color: #FEF5DF;*/  
   position: absolute;
   bottom: 0;
-  height: 30px;
-  background: white;
-  width: 75%;
-  max-width: 705px;
+  height: 74px;
+  width: 80%;
   text-align: center;
-  clear: both; 
-  z-index: 5; /* otherwise navsub-2 doesn't show */
+  z-index: 5;
   margin-right: auto;
   margin-left: auto;
   left: 0; right: 0;
-  border-top: 1px solid #dddddd;
 }
-
-footer a:link,
-footer a:visited,
-footer a:hover,
-footer a:active {
-  color: #AF2F4E;
-  text-decoration: none; }
 
 
 
@@ -373,7 +374,7 @@ input.submit {
     display: none;
   }
 
-  footer {
+  header {
     width: 100%;
     background: white;
   }

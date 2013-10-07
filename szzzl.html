@@ -3,7 +3,7 @@
 <html>
   <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
     <title>Szzzl - Where News Meets Intelligence</title>
 
     <link rel="shortcut icon" href="https://www.szzzl.com/favicon.ico" />
@@ -13,6 +13,8 @@
     <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <script src="js/easing.js"></script>
+    <script src="js/touchAndPunch.js" type="text/javascript"></script>
+    <script src="http://hitconsultants.com/dragscroll_scrollsync/dragscrollable.js"></script>
     <script src="js/szl.js" type="text/javascript"></script>
     <script src="js/drag.js" type="text/javascript"></script>
 
@@ -26,63 +28,6 @@
   </head>
   <body>
     <header>
-      <div id="rateButtons" style="display: inline-block;">
-        <a id="szl-button" href="#szl" ><img id="rateSzl" src="img/resized-szzzl.png"/></a>
-        <a id="fzl-button" href="#fzl" ><img id="rateFzl" src="img/resized-fzzzl.png"/></a>
-      </div>
-    </header>
-
-    <div id="mainContent">
-      <div class="articleContainer" id="topArticle">
-        <div id="content">
-          <p style="text-align: center;"><img style="padding-left: 5px; padding-top: 5px;" src="img/ajax-loader-red.gif" /><br />
-          Loading your stream of articles</p>
-        </div>
-      </div>
-      <div class="articleContainer" id="middleArticle">
-        <div id="content">
-          <p style="text-align: center;"><img style="padding-left: 5px; padding-top: 5px;" src="img/ajax-loader-red.gif" /><br />
-          Loading your stream of articles</p>
-        </div>
-      </div>
-    </div>
-
-    <div id="sidebar">
-      <span id="position"></span>
-      <div id="dragbar">
-        <div class="addthis_toolbox addthis_default_style addthis_32x32_style" style="margin-left: auto; margin-right: auto;" addthis:url="http://www.szzzl.com/buzzes/" addthis:title="" addthis:description="(via www.szzzl.com)">
-          <a style="margin-top: 5px; margin-left: 3px;" class="addthis_button_facebook"></a>
-          <a style="margin-top: 5px; margin-left: 3px;" class="addthis_button_twitter"></a>
-          <a style="margin-top: 5px; margin-left: 3px;" class="addthis_button_linkedin"></a>
-          <a style="margin-top: 5px; margin-left: 3px;" class="addthis_button_email"></a>
-          <a style="margin-top: 5px; margin-left: 3px;" class="addthis_button_compact"></a>
-        </div>
-        <script>
-          var addthis_share = {
-            templates : {
-              twitter : "{{title}} {{url}} (via @szzzlfzzzl)"
-            }
-          }
-        </script>
-        <div id="back-button"></div>
-        <div id="dragtext">Comments</div>
-      </div>
-      <!--<div id="comment-container">
-        <div id="szl-table">
-          <div id="comment-text">There are currently no comments. Be the first to add one!</div>
-        </div>
-        <div id="comment-text-area">
-          <form action="/comments" class="new_comment" id="new_comment" method="post">
-            <textarea class="comment-text-area" rows="4" id="comment_content" name="comment[content]"></textarea>
-            <input id="comment_buzz_id" name="comment[buzz_id]" type="hidden" value="" />
-            <input class="submit" id="comment-submit" name="commit" type="submit" value="Submit" />
-          </form>
-          <div id="counter">160</div>
-        </div>
-      </div>-->
-    </div>
-
-    <footer>
       
         <div id="userData">
           <div id="username">
@@ -105,12 +50,68 @@
             | 48 <a href="http://www.szzzl.com/tzzzls">tzzzls</a> |
           </div>
           <div id="szldArticle">
-            0/0 szzzled
+            0/0 szld
           </div>
         </div>
         <form id="szl-logout" action="/logout" method="post">
           <input class="submit" id="logout" type="submit" value="Logout" />
         </form>
+    </header>
+
+    <div id="mainContent">
+      <div class="articleContainer" id="topArticle">
+        <div class="content">
+          <p style="text-align: center;"><img style="padding-left: 5px; padding-top: 5px;" src="img/ajax-loader-red.gif" /><br />
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error, soluta, ut, architecto ea laudantium commodi at voluptates distinctio aliquid similique aut ipsa hic debitis officiis dolorum explicabo dolorem earum inventore.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit, accusamus, totam exercitationem magni ullam cumque nesciunt modi porro consequuntur odit veritatis quis quas earum quidem doloribus esse a magnam cum!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, ad, deserunt a tenetur atque incidunt nostrum perspiciatis ullam. Quis, aspernatur amet repudiandae fugit esse veritatis qui debitis natus ullam harum.Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, rerum, placeat, voluptatum, neque et officia quaerat laudantium cum minima repellendus accusantium non nesciunt possimus provident veritatis! Odit pariatur culpa veniam?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptas, expedita, quasi accusamus impedit optio dolore quas quia sit. Sunt iste porro quaerat voluptate ex. Incidunt, fuga iusto ipsum blanditiis natus?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus, unde, esse nemo accusantium praesentium perferendis quis maxime dolore quaerat labore deserunt tempora voluptatibus facilis dignissimos soluta cum impedit! Eum, tempora.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi, ex beatae amet suscipit obcaecati asperiores sapiente molestias cum ducimus. Ab ullam perspiciatis doloribus molestiae laborum atque culpa alias reprehenderit maxime!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est, doloremque nulla deserunt quam cupiditate! Natus, possimus, ipsam libero error sint quos fugiat cumque nemo eligendi ipsa ad labore dignissimos sit.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab, accusamus, eveniet odit eligendi ipsa aut saepe impedit eius magnam nulla quam expedita sit dolorum esse veniam molestias iusto iure explicabo.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, impedit, error, sapiente expedita ipsa excepturi totam ea fugit similique aut eligendi ad veritatis sunt soluta rem doloremque ratione labore ut!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laboriosam, quam, ducimus, voluptas sed quo commodi voluptate maiores quod doloribus dolores animi perferendis et id. Officiis explicabo nam molestias possimus est?Lorem ipsum dolor sit amet, consectetur adipisicing elit. In, deserunt, sit, voluptates fuga vel inventore veniam voluptatibus sint nulla voluptas amet officiis enim dolor porro odio repellat provident labore officia!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam, sapiente, quis numquam culpa placeat aliquid doloribus voluptates deserunt ipsam inventore asperiores ipsa iste. Dolores, distinctio, quisquam soluta rem numquam veritatis.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Placeat, nulla, consectetur a iste quis sit iusto facilis vel quia sint perferendis molestias officia sapiente ratione nostrum delectus dicta non quaerat.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate, inventore, possimus, in dicta enim laudantium aliquid quia qui vel culpa omnis ex illo atque laboriosam magnam dolor quo veritatis delectus?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse, laboriosam tenetur totam culpa repellendus porro quisquam necessitatibus recusandae odio ullam similique quod nihil minus aliquam laudantium inventore itaque ducimus perferendis.</p>
+        </div>
+      </div>
+      <div class="articleContainer" id="middleArticle">
+        <div class="content">
+          <p style="text-align: center;"><img style="padding-left: 5px; padding-top: 5px;" src="img/ajax-loader-red.gif" /><br />
+          Loading your stream of articles</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="sidebar">
+      <span id="position"></span>
+      <div id="dragbar">
+        <div class="addthis_toolbox addthis_default_style addthis_32x32_style" style="margin-left: auto; margin-right: auto;" addthis:url="http://www.szzzl.com/buzzes/" addthis:title="" addthis:description="(via www.szzzl.com)">
+          <a style="margin: 3px;" class="addthis_button_facebook"></a>
+          <a style="margin: 3px;" class="addthis_button_twitter"></a>
+          <a style="margin: 3px;" class="addthis_button_linkedin"></a>
+          <a style="margin: 3px;" class="addthis_button_email"></a>
+          <a style="margin: 3px;" class="addthis_button_compact"></a>
+        </div>
+        <script>
+          var addthis_share = {
+            templates : {
+              twitter : "{{title}} {{url}} (via @szzzlfzzzl)"
+            }
+          }
+        </script>
+        <!--<div id="back-button"></div>-->
+        <!--<div id="dragtext"></div>-->
+      </div>
+      <!--<div id="comment-container">
+        <div id="szl-table">
+          <div id="comment-text">There are currently no comments. Be the first to add one!</div>
+        </div>
+        <div id="comment-text-area">
+          <form action="/comments" class="new_comment" id="new_comment" method="post">
+            <textarea class="comment-text-area" rows="4" id="comment_content" name="comment[content]"></textarea>
+            <input id="comment_buzz_id" name="comment[buzz_id]" type="hidden" value="" />
+            <input class="submit" id="comment-submit" name="commit" type="submit" value="Submit" />
+          </form>
+          <div id="counter">160</div>
+        </div>
+      </div>-->
+    </div>
+    <footer>
+      <div id="rateButtons" style="display: inline-block;">
+        <a id="szl-button" href="#szl" ><img id="rateSzl" src="img/resized-szzzl.png"/></a>
+        <a id="fzl-button" href="#fzl" ><img id="rateFzl" src="img/resized-fzzzl.png"/></a>
+      </div>
     </footer>
   </body>
 </html>
