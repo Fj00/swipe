@@ -38,6 +38,7 @@ var IE = false, // check for IE *
     a_commentContent = [],
     a_articleID = [],
     a_commentID = [],
+    a_sourceID = [],
 
     // numeric identifiers
     commentID,
@@ -67,15 +68,16 @@ var IE = false, // check for IE *
         articleLink = $(this).find('link').text();
         sourceName  = $(this).find('name').text();
         articleID   = $(this).find('id').text();
+        sourceID    = $(this).find('source-id').text();
 
         // create an html block for article using text from the XML elements
         articleHtml += '<h1 id="title"><a href=' + articleLink + '" target="_blank">' + $(this).find('title').text() + '</a></h1>' +
                       '<div id="titleBar"></div>' +
                       '<h2><a id="source-a" href="' + articleLink + '" target="_blank">' + sourceName + '</a> ' + $(this).find('date').text() + ' EST</h2>' +
                       '<ul id="navsub-1">' +
-                      '    <li id="always-li" style="border-top: 1px #888888 solid;" onclick="rateSource(' + articleID  + ',1,0);"><input type="checkbox" id="always"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Subscribe to ' + sourceName + '</span></li>' +
-                      '    <li id="sometimes-li" class="sometimes" onclick="rateSource(' + articleID + ',0,0);"><input type="checkbox" id="sometimes" checked><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Unsubscribe from ' + sourceName+ '</span></li>' +
-                      '    <li id="never-li" onclick="rateSource(' + articleID  + ',-1,0);"><input type="checkbox" id="never" ><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Block ' + sourceName + '</span></li>' +
+                      '    <li id="always-li" style="border-top: 1px #888888 solid;" onclick="rateSource(' + sourceID  + ',1,0);"><input type="checkbox" id="always"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Subscribe to ' + sourceName + '</span></li>' +
+                      '    <li id="sometimes-li" class="sometimes" onclick="rateSource(' + sourceID + ',0,0);"><input type="checkbox" id="sometimes" checked><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Unsubscribe from ' + sourceName+ '</span></li>' +
+                      '    <li id="never-li" onclick="rateSource(' + sourceID  + ',-1,0);"><input type="checkbox" id="never" ><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Block ' + sourceName + '</span></li>' +
                       '</ul>' +
                       '<h2>This article was forwarded by user <a href="http://www.szzzl.com/users/' + $(this).find('forwarding-user-id').text() + '" target="_blank">' + $(this).find('forwarding-user').text() + '</a></h2>' +
                       '<h3>' + $(this).find('prediction').text() + '% chance of szl</h3>';
@@ -87,7 +89,7 @@ var IE = false, // check for IE *
         articleHtml += '<div id ="articleWrapper">' + articleText + '</div>' +
                       '<a href="' + articleLink + '" target="_blank" >Read more</a>';
         // end block
-
+        a_sourceID.push ( sourceID );
         a_articleID.push( articleID ); // store article's numeric ID
         a_articleContent.push(articleHtml); // store article html
         articleHtml = ''; // reset the value to make way for next block
@@ -219,7 +221,7 @@ var IE = false, // check for IE *
   }
 
   function rateSource( sourceID, rating, cyclic ) {
-    //console.log('source ID, ' + sourceID);
+    console.log('source ID, ' + sourceID);
     //console.log('source rated');
     var rateSourceURL = sourceLink + sourceID + '/rating/'; // *
     if ( rating == 1 ) {
