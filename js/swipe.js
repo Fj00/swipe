@@ -60,7 +60,7 @@ $(document).ready(function(){
 		$('body').show();
 
 		//article overlaps 10% of adjacent article
-		var overlap = $(window).width() * 0.10,
+		var overlap = $(window).width() * 0.02,
 			difference = (($(window).width()/STARTSIZE * 100) - 100),// % difference between initial width and current width
 			szldWidth = ($(window).width() * 0.2)  + (difference/5),
 			w_box = $(window).width(),
@@ -75,18 +75,10 @@ $(document).ready(function(){
 		$('#shareMenu').css("left", ($(window).width() - parseInt($('#shareMenu').css('width'), 10) + 'px'));
 		$('footer').css({'top': '81%', 'height':'19%'});
 
-		//TODO: adjust szld items on window resize
-		if($('.szld').length){
-			$('.szld').css({
-				// 'left': parseInt($(this).css('left'), 10) - 0.10 + 'px',
-				'width': szldWidth
-				/// 'left': $(this).offset().left + (difference * $(this).offset().left)
-			});
-			console.log($('.szld').width());
-		}
+		artPos = $('#topArticle').css('margin-left'); // used for setting margin for newly created articles
+		artLeft = $('#topArticle').css('left');		  // value changes depending on window size
 
-		artPos = $('#topArticle').css('margin-left');
-		artLeft = $('#topArticle').css('left');
+		// updated window dimensions
 		width = $(window).width();
 		height = $(window).height();
 
@@ -138,12 +130,13 @@ $(document).ready(function(){
 
 				// create new div, add it to queue, append contents from szld article
 					newDiv = document.createElement('div');
+					//reflectionDiv = document.createElement('div');
 					newDiv.id = "newSzl" + i_szlCount;
-					$(newDiv).addClass('szld');
+					//$(newDiv, reflectionDiv).addClass('szld');
 					$('#queue').append($(newDiv)
 						.addClass('szld')
 						.css({'display':'none', 'width': $('#queue').height() * 0.72, 'z-index': i_szlCount + 1}));
-
+					//$('#queue').append($(reflectionDiv).addClass('szld').css('top', $('#newSzl' + i_szlCount).height() + 5));
 				//$(a_theContent).each(function(index){
 					//console.log(theContent[index]);
 					$('#newSzl' + i_szlCount).append(theIMG).fadeIn(500);
@@ -351,19 +344,38 @@ $(document).ready(function(){
             dragStartTime = new Date();
             var lastSzld = $('.szld:last');
                 lastSzldID = $('.szld:last').attr('id');
+            $(this).data('dir', ''); 
 		},
 
 		//if initial pageY is < current pageY and starting pageX is within x amount from current pageX..don't drag
 
 		drag: function(e, ui){
 
+			var dir = $(this).data('dir');
+				// If we don't have a direction, decide where we're going
+				if ((dir != 'y') && (dir != 'x')) {
+				var dy = ui.originalPosition.top - ui.position.top;
+				var dx = ui.originalPosition.left - ui.position.left;
+				dir = (Math.abs(dy) > Math.abs(dx))?'y':'x';
+				$(this).data('dir', dir);
+			}
 
-			var ft = $('footer').position().top;
+			if (dir == 'y') { 
+				// Change the height
+				var ft = $('footer').position().top;
+				var fh = $('footer').height();
+				$('footer').css('height', fh + (ft - ui.offset.top )+ 'px');
+				$('footer').css('top', ui.offset.top);
+				ui.originalPosition.left = 0;
+				// Prevent the drag from happening
+				// ??? 
+			}
+			/*var ft = $('footer').position().top;
 			var fh = $('footer').height();
-			if ( Math.abs(startY - e.pageY) > 10 && Math.abs(startY - e.pageY) > Math.abs(startX - e.pageX) ){
+			//if ( Math.abs(startY - e.pageY) > 10 && Math.abs(startY - e.pageY) > Math.abs(startX - e.pageX) ){
 				$('footer').css('height', fh + (ft - ui.offset.top ) + 'px');
 				$('footer').css('top', ui.offset.top);
-			}
+			//}*/
 
 
 			//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
@@ -446,6 +458,7 @@ $(document).ready(function(){
 				velocity = dragDistance/timeDiff;
 				//console.log(a_theTime.length + ', ' + a_pos.length);
 
+			$(this).data('dir', ''); 	
 			//time and distance between final two points during drag
 				endOfDragDistance = Math.abs( a_pos[a_pos.length - 1] - a_pos[a_pos.length - 2] );
 				endOfDragTime = ( a_theTime[a_theTime.length - 1] - a_theTime[a_theTime.length - 2] );
