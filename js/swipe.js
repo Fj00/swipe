@@ -364,7 +364,7 @@ $(document).ready(function(){
 				// Change the height
 				var ft = $('footer').position().top;
 				var fh = $('footer').height();
-				$('footer').css('height', fh + (ft - ui.offset.top )+ 'px');
+				$('footer').css({'height': fh + (ft - ui.offset.top )+ 'px', 'z-index':'5'});
 				$('footer').css('top', ui.offset.top);
 				ui.originalPosition.left = 0;
 				// Prevent the drag from happening
