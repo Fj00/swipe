@@ -259,11 +259,24 @@ $(document).ready(function(){
 		scaledDistance = Math.sqrt((distance.x / width)^2 + (distance.y / height)^2);
 	}
 
+	var downPoint,
+		mouseIsDown;
 	$('#content').mousedown(function(e){
+		downPoint = e.pageX - $('#topArticle').offset().left;
+		mouseIsDown = true;
 		start(e);
 	}).mousemove(function(e){
 		//console.log(e.pageX);
+		if(mouseIsDown){
+			if ((downPoint - e.pageX) < 0){
+				$currentTop = $('#topArticle');
+				// trying to implement custom drag interaction instead of using draggable
+				$currentTop.offset({left: e.pageX - downPoint});
+			}
+		}
+
 	}).mouseup(function(e){
+		mouseIsDown = false;
 		end(e);
 		if (!b_isRunning) checkForSwipe();
 	});
@@ -360,13 +373,14 @@ $(document).ready(function(){
 				$(this).data('dir', dir);
 			}
 
-			if (dir == 'y') { 
+			if (dir == 'y') {
 				// Change the height
 				var ft = $('footer').position().top;
 				var fh = $('footer').height();
-				$('footer').css({'height': fh + (ft - ui.offset.top )+ 'px', 'z-index':'5'});
-				$('footer').css('top', ui.offset.top);
-				ui.originalPosition.left = 0;
+				console.log(ft - ui.offset.top);
+				//console.log(ft);
+				$('footer').css('height', fh + (ft - ui.offset.top )+ 'px');
+				$('footer').css('top', ui.offset.top).css('z-index', '5');
 				// Prevent the drag from happening
 				// ??? 
 			}
