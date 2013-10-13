@@ -37,6 +37,7 @@ header {
   margin-left: auto;
   left: 0; right: 0;
   border-bottom: 1px solid #dddddd;
+  padding-bottom: 3px;
 }
 
 header a:link,
@@ -89,7 +90,7 @@ h1 {
   box-sizing: border-box;
   overflow:visible; 
 }
-
+/* make background lighter */
 .articleContainer {
   position: absolute;
   width: 90%;
@@ -97,7 +98,7 @@ h1 {
   margin: auto;
   margin-top: 40px;
   margin-bottom: 74px;
-  background-color: #f4f4f4;
+  background-color: #F9F9F9;
   border: 1px solid #E0E1E1;
   box-shadow: 3px 3px 5px #888888;
   -webkit-box-shadow: 5px 5px 5px #999999;
@@ -314,7 +315,7 @@ footer {
   font-weight:normal; 
   font-size: .5em;
   color: #777777;
-  background: #f4f4f4;
+  background: #F9F9F9;
 }
 
 .content a:link,
@@ -360,8 +361,11 @@ input.submit {
   border: none;
   color: #AF2F4E;
   background-color: transparent;
-  font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
-  cursor: pointer; }
+  font-family:Arial, Helvetica, sans-serif; 
+  cursor: pointer; 
+  padding: 0;
+  font-size: 1em;
+}
 
 #articleWrapper {
   font-size: 1em;
