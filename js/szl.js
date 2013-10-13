@@ -309,10 +309,6 @@ var IE = false, // check for IE *
       //console.log('currentID, ' + currentArticleID);
       buttonsDisabled = false;
 
-      $('#topArticle, #articleWrapper').dragscrollable({
-        dragSelector: 'p',
-        //acceptPropagatedEvent: false
-      });
     }
   }
 
@@ -380,6 +376,7 @@ var IE = false, // check for IE *
             startDragY = e.pageY;
           },
           drag: function(e, ui){
+            console.log(ui.offset.left); // calculated different in ff and chrome..
 
             // prevent drag until user has moved 30px horizontally
             if (Math.abs(e.pageX - startDragX) < 30){
@@ -446,7 +443,7 @@ var IE = false, // check for IE *
 
       $('#mainContent').append(newCont);
       $('#bottomArticle').append(newText);
-      $('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
+      $('#middleArticle').attr('id', 'topArticle')//.draggable(newArticle);
       $('#bottomArticle').attr('id', 'middleArticle');
       var title = $('#topArticle .content').find($('#title a')).text();
       //$('.articleContainer').draggable(newArticle);
@@ -529,16 +526,38 @@ var IE = false, // check for IE *
       scaledDistance = Math.sqrt((distance.x / width)^2 + (distance.y / height)^2);
     };
 
-    $('#mainContent').mousedown(function(e){
+    var downPoint,
+        mouseIsDown,
+        $currentTop;
+    $('body').on('mousedown touchstart', '.articleContainer',function(e){
+      $currentTop = $('#topArticle');
+      downPoint = event.touches[0].screenX - $('#topArticle').offset().left;
+      mouseIsDown = true;
       start(e);
-    }).mousemove(function(e){
+    }).on('mousemove touchmove', '.articleContainer', function(e){
     //console.log(e.pageX);
-    }).mouseup(function(e){
+      //alert('true');
+      
+
+      //if ((downPoint - e.pageX) < 0){
+        // trying to implement custom drag interaction instead of using draggable
+
+        $currentTop.offset({left: e.touches[0].screenX - downPoint}); // touch device support..
+        $currentTop.offset({left: e.pagex - downPoint}); // normal
+        //$currentTop.html('<div>' + event.touches[0].screenX + 'px</div>');
+        //$currentTop.addClass('unselectable'); // prevent text highlighting during drag
+            //} else {
+      //currentTop.offset({left: e.pageX - downPoint});
+            //}
+      
+    }).on('mouseup touchend', '.articleContainer', function(e){
+      mouseIsDown = false;
+      $currentTop.removeClass('unselectable');
       end(e);
       if (!b_isRunning) checkForSwipe();
     });
 
     // init draggable for initial top article
-    $('.articleContainer').draggable(newArticle);
+    //$('.articleContainer').draggable(newArticle);
 
   });
