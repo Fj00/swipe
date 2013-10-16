@@ -201,7 +201,7 @@ $(document).ready(function(){
 					});
 				}
 				$(this).remove();
-				$('#middleArticle').attr('id', 'topArticle').css('margin-left', artPos).draggable(newArticle);
+				$('#middleArticle').attr('id', 'topArticle').css('margin-left', artPos)//.draggable(newArticle);
 				$('#bottomArticle').attr('id', 'middleArticle').css('margin-left', artPos);
 				b_isRunning = false;
 				}
@@ -260,23 +260,31 @@ $(document).ready(function(){
 	}
 
 	var downPoint,
-		mouseIsDown;
+		mouseIsDown,
+		$currentTop;
 	$('#content').mousedown(function(e){
+		$currentTop = $('#topArticle');
 		downPoint = e.pageX - $('#topArticle').offset().left;
 		mouseIsDown = true;
 		start(e);
 	}).mousemove(function(e){
 		//console.log(e.pageX);
-		if(mouseIsDown){
-			if ((downPoint - e.pageX) < 0){
-				$currentTop = $('#topArticle');
+		// Problem: drag starts when trying to select text..
+		if(mouseIsDown) {
+
+			//if ((downPoint - e.pageX) < 0){
+
 				// trying to implement custom drag interaction instead of using draggable
 				$currentTop.offset({left: e.pageX - downPoint});
-			}
+				$currentTop.addClass('unselectable'); // prevent text highlighting during drag
+			//} else {
+//currentTop.offset({left: e.pageX - downPoint});
+			//}
 		}
 
 	}).mouseup(function(e){
 		mouseIsDown = false;
+		$currentTop.removeClass('unselectable');
 		end(e);
 		if (!b_isRunning) checkForSwipe();
 	});
@@ -364,7 +372,8 @@ $(document).ready(function(){
 
 		drag: function(e, ui){
 
-			var dir = $(this).data('dir');
+
+			/*var dir = $(this).data('dir');
 				// If we don't have a direction, decide where we're going
 				if ((dir != 'y') && (dir != 'x')) {
 				var dy = ui.originalPosition.top - ui.position.top;
@@ -383,7 +392,7 @@ $(document).ready(function(){
 				$('footer').css('top', ui.offset.top).css('z-index', '5');
 				// Prevent the drag from happening
 				// ??? 
-			}
+			}*/
 			/*var ft = $('footer').position().top;
 			var fh = $('footer').height();
 			//if ( Math.abs(startY - e.pageY) > 10 && Math.abs(startY - e.pageY) > Math.abs(startX - e.pageX) ){
