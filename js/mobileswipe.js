@@ -41,7 +41,10 @@ $(document).ready(function(){
 		STARTSIZE = $(window).width(),
 		overlap = $(window).height() * 0.10, // percentage each article overlaps into its neighbor
 		currentDate,	// time when queue drag is released
-		sidevalue = 0.15;	// used to define the clickable area on right and left edges
+		sidevalue = 0.15,	// used to define the clickable area on right and left edges
+
+		direction = 'undetermined', //will equal 'determined' or not, depending on if direction of touchmove has been determined for swiping or for scrolling content up and down
+		touch;  //somethign to do with the swipe and scroll the article content combination
 
 	a_articles.push(
 		"<img src='img/df.jpg' /><p class='articleText'><b>article1 article1 article1 </b>article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1</p>",
@@ -49,7 +52,7 @@ $(document).ready(function(){
 		"<img src='img/cat.jpg' /><p class='articleText'>article3 article3 <h1>article3 article3 article3 </h1>article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 article3 </p>",
 		"<img src='img/mandel.jpg' /><p class='articleText'>article#4 article#4 article#4 article#4 article#4 article#4 article#4 </p><p>article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4</p> <p>article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 article#4 </p>",
 		"<img src='img/golden.jpg' /><p class='articleText'>article5 <p>article5 article5 article5 article5 article5<p> article5 article5 article5 article5 article5 article5 article5 article5<p>",
-		"<img src='img/laser.jpg' /><h1><a href=''target=''>Giant microwave blaster lets bread stay fresh-ish for over 60 days</a></h1><h2><a href='https://dvice.com/' target='_blank'>DVICE</a> November 30th, 2012 16:46 EST</h2><div id='szzzl-story-long-wrapper'><p><div><div><p class='articleText'>About a third of the bread that consumers buy gets tossed out or fed to ducks who don't know any better after it goes stale or gets moldy. You just cant win with bread- either you keep it moist and gross stuff grows on it, or you dry it out and it turns into a rock. A Texas company says it has a solution, in the form of a huge homogenized microwave cannon.</p><p class='articleText'>Microwaves, being radiation, work quite well at killing things like fungi. The reason that you cant use your microwave to kill fungi is that your microwave sucks, and due to the wavelength of the microwaves used in microwave ovens (just under five inches), you get hot spots and cold spots that show up at half of that wavelength. Microzap's microwave chamber, on the other hand, works differently, and much better. CEO Don Stull explains:</p><div>For the latest tech stories, follow DVICE on Twitter at @dvice or find us on Facebook</div></div></div></p><p><a href='https://dvice.com/archives/2012/11/giant-microwave.php' target='_blank'>Read more</a></p></div>"
+		"<img src='img/laser.jpg' /><h1><a href=''target=''>Giant microwave blaster lets bread stay fresh-ish for over 60 days</a></h1><h2><a href='https://dvice.com/' target='_blank'>DVICE</a> November 30th, 2012 16:46 EST</h2><div id='szzzl-story-long-wrapper'><p><div><div><p class='articleText'>About a third of the bread that consumers buy gets tossed out or fed to ducks who don't know any better after it goes stale or gets moldy. You just cant win with bread- either you keep it moist and gross stuff grows on it, or you dry it out and it turns into a rock. A Texas company says it has a solution, in the form of a huge homogenized microwave cannon.</p><p class='articleText'>Microwaves, being radiation, work quite well at killing things like fungi. The reason that you cant use your microwave to kill fungi is that your microwave sucks, and due to the wavelength of the microwaves used in microwave ovens (just under five inches), you get hot spots and cold spots that show up at half of that wavelength. Microzap's microwave chamber, on the other hand, works differently, and mud that consumers buy gets tossed out or fed to ducks who don't know any better after it goes stale or gets moldy. You just cant win with bread- either you keep it moist and gross stuff grows on it, or you dry it out and it turns into a rock. A Texas company says it has a solution, in the form of a huge homogenized microwave cannon.</p><p class='articleText'>Microwaves, being radiation, work quite well at killing things like fungi. The reason that you cant use your microwave to kill fungi is that your microwave sucks, and due to the wavelength of the microwaves used in microwave ovens (just under five inches), you get hot spots and cold spots that show up at half of that wavelength. Microzap's microwave chamber, on the other hand, works differently, and mud that consumers buy gets tossed out or fed to ducks who don't know any better after it goes stale or gets moldy. You just cant win with bread- either you keep it moist and gross stuff grows on it, or you dry it out and it turns into a rock. A Texas company says it has a solution, in the form of a huge homogenized microwave cannon.</p><p class='articleText'>Microwaves, being radiation, work quite well at killing things like fungi. The reason that you cant use your microwave to kill fungi is that your microwave sucks, and due to the wavelength of the microwaves used in microwave ovens (just under five inches), you get hot spots and cold spots that show up at half of that wavelength. Microzap's microwave chamber, on the other hand, works differently, and mud that consumers buy gets tossed out or fed to ducks who don't know any better after it goes stale or gets moldy. You just cant win with bread- either you keep it moist and gross stuff grows on it, or you dry it out and it turns into a rock. A Texas company says it has a solution, in the form of a huge homogenized microwave cannon.</p><p class='articleText'>Microwaves, being radiation, work quite well at killing things like fungi. The reason that you cant use your microwave to kill fungi is that your microwave sucks, and due to the wavelength of the microwaves used in microwave ovens (just under five inches), you get hot spots and cold spots that show up at half of that wavelength. Microzap's microwave chamber, on the other hand, works differently, and much better. CEO Don Stull explains:</p><div>For the latest tech stories, follow DVICE on Twitter at @dvice or find us on Facebook</div></div></div></p><p><a href='https://dvice.com/archives/2012/11/giant-microwave.php' target='_blank'>Read more</a></p></div>"
 	);
 
 	//TODO: orientation change messes up element sizes
@@ -100,7 +103,7 @@ $(document).ready(function(){
 			$topArticle.animate({left: width},{queue: false, duration: 500,
 				complete: function(){
 					$(this).remove();
-					$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
+					$('#middleArticle').attr('id', 'topArticle')//.draggable(newArticle);
 					$('#bottomArticle').attr('id', 'middleArticle');
 					b_isRunning = false;
 					//$('#stream').bind('click');
@@ -245,57 +248,76 @@ $(document).ready(function(){
 	//$article.draggable(newArticle);
 
 	
-	var start = function(e) {
+	var start = function(downPointX, downPointY) {
 		swipeStartTime = new Date();
-		startPos.x = e.pageX;
-		startPos.y = e.pageY;
+		startPos.x = downPointX;
+		startPos.y = downPointY;
 	}
 
-	var end = function(e) {
+	var end = function(endPointX, endPointY) {
 		var now = new Date();
 		swipeTime = (now - swipeStartTime)/1000;
-		distance.x = e.pageX - startPos.x;
-		distance.y = e.pageY - startPos.y;
+		distance.x = endPointX - startPos.x;
+		distance.y = endPointY - startPos.y;
 		swipeAngle = Math.atan(distance.y / distance.x) * (180 / Math.PI);
 		scaledDistance = Math.sqrt((distance.x / width)^2 + (distance.y / height)^2);
 	}
 
-	var downPoint,
-		mouseIsDown,
-		$currentTop;
-		var firstTouch;
+	var mouseIsDown,
+		$currentTop,
+		downPointX,
+		downPointY,
+		endPointX,
+		endPointY,
+		firstTouch;
 	$('#content').on('touchstart',function(e){
+		console.log('higuys');
 		firstTouch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
 		//alert(touch.pageX);
 		$currentTop = $('#topArticle');
-		downPoint = firstTouch.pageX - $('#topArticle').offset().left;
+		downPointX = firstTouch.pageX; //- $('#topArticle').offset().left;
+		downPointY = firstTouch.pageY;
 		mouseIsDown = true;
-		start(e);
+		start(downPointX, downPointY);
+		$('#content').on('touchmove', function(e){		
+			//if (direction == 'undetermined') {
+				if(mouseIsDown) {
+					touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+					//alert('beforeif');
+					//console.log(downPoint);
+					console.log(firstTouch.pageX);
+					if (((Math.abs(touch.pageX - downPointX)) > (Math.abs(touch.pageY - downPointY)))) { 
+						direction = 'determined';
+						$('#topArticle').addClass('unscrollable');
+					//if ((downPoint - touch.pageX) < 0){
+						// trying to implement custom drag interaction instead of using draggable
+							$currentTop.offset({left: touch.pageX - downPointX});
+							$currentTop.addClass('unselectable'); // prevent text highlighting during drag
+					//} else {
+		//currentTop.offset({left: e.pageX - downPoint});
+					}
+					//}
+				}
+			//}
+		});
+	});
+    //alert(downPoint +', ' + touch.pageX);
+	/*$(document).on('touchmove', function(e){ 
+		e.preventDefault();
 	});
 	$('#content').on('touchmove', function(e){
-		//alert(e.pageX);
-		//console.log(e.pageX);
-		// Problem: drag starts when trying to select text..
-		var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
-    //alert(downPoint +', ' + touch.pageX);
-		if(mouseIsDown) {
-			
-
-			//if ((downPoint - touch.pageX) < 0){
-
-				// trying to implement custom drag interaction instead of using draggable
-				$currentTop.offset({left: touch.pageX - downPoint});
-				$currentTop.addClass('unselectable'); // prevent text highlighting during drag
-			//} else {
-//currentTop.offset({left: e.pageX - downPoint});
-			//}
-		}
-
-	}).on('touchend' , function(e){
+		e.stopPropagation();
+	});*/
+	$('#content').on('touchend' , function(e){
+		$('#topArticle').removeClass('unscrollable');
+		direction = 'undetermined';
+		lastTouch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+		endPointX = lastTouch.pageX;
+		endPointY = lastTouch.pageY;
 		//alert('up');
 		mouseIsDown = false;
 		$currentTop.removeClass('unselectable');
-		end(e);
+		end(endPointX, endPointY);
 		if (!b_isRunning) checkForSwipe();
 	});
 
