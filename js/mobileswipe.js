@@ -261,6 +261,7 @@ $(document).ready(function(){
 		distance.y = endPointY - startPos.y;
 		swipeAngle = Math.atan(distance.y / distance.x) * (180 / Math.PI);
 		scaledDistance = Math.sqrt((distance.x / width)^2 + (distance.y / height)^2);
+		if (!b_isRunning) checkForSwipe();
 	}
 
 	var mouseIsDown,
@@ -270,55 +271,53 @@ $(document).ready(function(){
 		endPointX,
 		endPointY,
 		firstTouch;
+
 	$('#content').on('touchstart',function(e){
-		console.log('higuys');
-		firstTouch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
-		//alert(touch.pageX);
-		$currentTop = $('#topArticle');
-		downPointX = firstTouch.pageX; //- $('#topArticle').offset().left;
-		downPointY = firstTouch.pageY;
 		mouseIsDown = true;
+
+		// get position of first coordinate
+		firstTouch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+		$currentTop = $('#topArticle');
+		downPointX = firstTouch.pageX - $('#topArticle').offset().left;
+		downPointY = firstTouch.pageY;
+
+		// pass starting position 
 		start(downPointX, downPointY);
-		$('#content').on('touchmove', function(e){		
-			//if (direction == 'undetermined') {
-				if(mouseIsDown) {
-					touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
-					//alert('beforeif');
-					//console.log(downPoint);
-					console.log(firstTouch.pageX);
-					if (((Math.abs(touch.pageX - downPointX)) > (Math.abs(touch.pageY - downPointY)))) { 
-						direction = 'determined';
-						$('#topArticle').addClass('unscrollable');
-					//if ((downPoint - touch.pageX) < 0){
-						// trying to implement custom drag interaction instead of using draggable
-							$currentTop.offset({left: touch.pageX - downPointX});
-							$currentTop.addClass('unselectable'); // prevent text highlighting during drag
-					//} else {
-		//currentTop.offset({left: e.pageX - downPoint});
-					}
-					//}
+	});
+
+	// disable this function for kindle because touchmove doesn't work properly
+	if (navigator.userAgent.indexOf("Silk") == -1) {
+		$('#content').on('touchmove', function(e){
+			if(mouseIsDown) {
+
+				// current touch position
+				touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+				console.log(firstTouch.pageX);
+
+				// if touchmove is horizontal, start a drag
+				if (((Math.abs(touch.pageX - downPointX)) > (Math.abs(touch.pageY - downPointY)))) {
+
+					// prevent content scrolling during drag
+					$('#topArticle').addClass('unscrollable');
+
+					// trying to implement custom drag interaction instead of using draggable
+					$currentTop.offset({left: touch.pageX - downPointX});
+					$currentTop.addClass('unselectable'); // prevent text highlighting during drag	
 				}
-			//}
+			}
 		});
-	});
-    //alert(downPoint +', ' + touch.pageX);
-	/*$(document).on('touchmove', function(e){ 
-		e.preventDefault();
-	});
-	$('#content').on('touchmove', function(e){
-		e.stopPropagation();
-	});*/
+	}
+
 	$('#content').on('touchend' , function(e){
-		$('#topArticle').removeClass('unscrollable');
-		direction = 'undetermined';
+		mouseIsDown = false;
+		$currentTop.removeClass('unscrollable unselectable');
+		// get last touch coordinate
 		lastTouch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
 		endPointX = lastTouch.pageX;
 		endPointY = lastTouch.pageY;
-		//alert('up');
-		mouseIsDown = false;
-		$currentTop.removeClass('unselectable');
+
+		// pass to end function to determine swipe
 		end(endPointX, endPointY);
-		if (!b_isRunning) checkForSwipe();
 	});
 
 	var checkForSwipe = function(){
