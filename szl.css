@@ -106,6 +106,38 @@ h1 {
   text-align: justify;
   overflow: auto; 
   -webkit-overflow-scrolling: touch;
+  transition: -webkit-transform-origin 0.5s cubic-bezier(0.26,.86,.44,.985),
+              -webkit-transform 0.5s cubic-bezier(0.26,.86,.44,.985),
+              opacity 0.5s cubic-bezier(0.26,.86,.44,.985);
+
+}
+
+.left {
+  -webkit-transform-origin: 0% 0%;
+     -moz-transform-origin: 0% 0%;
+      -ms-transform-origin: 0% 0%;
+          transform-origin: 0% 0%;
+
+  -webkit-transform: translate3d(-40%, 0, 0) rotateY(-80deg);
+     -moz-transform: translate3d(-40%, 0, 0) rotateY(-80deg);
+      -ms-transform: translate3d(-40%, 0, 0) rotateY(-80deg);
+          transform: translate3d(-40%, 0, 0) rotateY(-80deg);
+
+  opacity: 0;
+}
+
+.right {
+  -webkit-transform-origin: 0% 0%;
+     -moz-transform-origin: 0% 0%;
+      -ms-transform-origin: 0% 0%;
+          transform-origin: 0% 0%;
+
+  -webkit-transform: translate3d(120%, 0, 0) rotateY(80deg);
+     -moz-transform: translate3d(120%, 0, 0) rotateY(80deg);
+      -ms-transform: translate3d(120%, 0, 0) rotateY(80deg);
+          transform: translate3d(120%, 0, 0) rotateY(80deg);
+
+  opacity: 0;
 }
 
 #topArticle {
