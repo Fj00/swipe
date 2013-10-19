@@ -404,18 +404,30 @@ var IE = false, // check for IE *
 
         // if rateSzl button or swipe right called the function, send article right. if not, send it left
         // set the blue/red border the same way
-        leftOffset = (target == 'rateSzl' || target == 'left') ? -2 * width : width;
-        borderColor = (target == 'rateSzl' || target == 'left') ? '0 0 .5em red' : '0 0 .5em blue';
-        $topArticle.animate({left: leftOffset},{queue: false, duration: 500,
+        //leftOffset = (target == 'rateSzl' || target == 'left') ? -2 * width : width;
+        //borderColor = (target == 'rateSzl' || target == 'left') ? '0 0 .5em red' : '0 0 .5em blue';
+        
+        // using css animations
+        direction = (target == 'rateSzl' || target == 'left') ? 'left' : 'right';
+        $topArticle.addClass(direction);
+        discard = setTimeout(function(){
+              $('.articleContainer:first').remove();
+              createArticle(); // add a new one to bottom of the stack
+              b_isRunning = false;
+              }, 500); // remove offscreen article*/
+
+        // old version
+        /*animate({left: leftOffset},{queue: false, duration: 500,
           complete: function(){
             $(this).remove(); // remove offscreen article
             createArticle(); // add a new one to bottom of the stack
             b_isRunning = false;
             console.log('swipe complete');
           }
-        }).css({'box-shadow': borderColor});
+        }).css({'box-shadow': borderColor});*/
       }
     };
+       
 
     /*var fzl = function(e){
       if (!b_isRunning){
@@ -443,7 +455,7 @@ var IE = false, // check for IE *
 
       $('#mainContent').append(newCont);
       $('#bottomArticle').append(newText);
-      $('#middleArticle').attr('id', 'topArticle')//.draggable(newArticle);
+      $('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
       $('#bottomArticle').attr('id', 'middleArticle');
       var title = $('#topArticle .content').find($('#title a')).text();
       //$('.articleContainer').draggable(newArticle);
@@ -529,7 +541,7 @@ var IE = false, // check for IE *
     var downPoint,
         mouseIsDown,
         $currentTop;
-    $('body').on('mousedown touchstart', '.articleContainer',function(e){
+    /*$('body').on('mousedown touchstart', '.articleContainer',function(e){
       $currentTop = $('#topArticle');
       downPoint = event.touches[0].screenX - $('#topArticle').offset().left;
       mouseIsDown = true;
@@ -555,9 +567,9 @@ var IE = false, // check for IE *
       $currentTop.removeClass('unselectable');
       end(e);
       if (!b_isRunning) checkForSwipe();
-    });
+    });*/
 
     // init draggable for initial top article
-    //$('.articleContainer').draggable(newArticle);
+    $('.articleContainer').draggable(newArticle);
 
   });
