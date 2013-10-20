@@ -89,6 +89,8 @@ h1 {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   overflow:visible; 
+  perspective: 600px;
+  -webkit-perspective:1000px;
 }
 /* make background lighter */
 .articleContainer {
@@ -118,10 +120,10 @@ h1 {
       -ms-transform-origin: 0% 0%;
           transform-origin: 0% 0%;
 
-  -webkit-transform: translate3d(-40%, 0, 0) rotateY(-80deg);
-     -moz-transform: translate3d(-40%, 0, 0) rotateY(-80deg);
-      -ms-transform: translate3d(-40%, 0, 0) rotateY(-80deg);
-          transform: translate3d(-40%, 0, 0) rotateY(-80deg);
+  -webkit-transform: translate3d(-20%, 0, 0) rotateY(-80deg);
+     -moz-transform: translate3d(-20%, 0, 0) rotateY(-80deg);
+      -ms-transform: translate3d(-20%, 0, 0) rotateY(-80deg);
+          transform: translate3d(-20%, 0, 0) rotateY(-80deg);
 
   opacity: 0;
 }
