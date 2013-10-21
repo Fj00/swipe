@@ -78,9 +78,15 @@ var IE = false, // check for IE *
                       '    <li id="always-li" style="border-top: 1px #888888 solid;" onclick="rateSource(' + sourceID  + ',1,0);"><input type="checkbox" id="always"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Subscribe to ' + sourceName + '</span></li>' +
                       '    <li id="sometimes-li" class="sometimes" onclick="rateSource(' + sourceID + ',0,0);"><input type="checkbox" id="sometimes" checked><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Unsubscribe from ' + sourceName+ '</span></li>' +
                       '    <li id="never-li" onclick="rateSource(' + sourceID  + ',-1,0);"><input type="checkbox" id="never" ><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Block ' + sourceName + '</span></li>' +
-                      '</ul>' +
-                      '<h2>This article was forwarded by user <a href="http://www.szzzl.com/users/' + $(this).find('forwarding-user-id').text() + '" target="_blank">' + $(this).find('forwarding-user').text() + '</a></h2>' +
-                      '<h3>' + $(this).find('prediction').text() + '% chance of szl</h3>';
+                      '</ul>';
+
+                      if ($(this).find('forwarding-user-id').text() === '') {
+                        articleHtml += '<h2>This article was forwarded based on prediction</h2>';
+                      } else {
+                        articleHtml += '<h2>This article was forwarded by user <a href="http://www.szzzl.com/users/' + $(this).find('forwarding-user-id').text() + '" target="_blank">' + $(this).find('forwarding-user').text() + '</a></h2>'
+                      }
+                      
+                      articleHtml += '<h3>' + $(this).find('prediction').text() + '% chance of szl</h3>';
 
                       if ($(this).find('image').text() !== ''){ // if there is an image, add it. otherwise don't create an element for it
                         articleHtml += '<div id="articleIMG"><img src="' + $(this).find('image').text() + '" /></div>';
@@ -365,8 +371,8 @@ var IE = false, // check for IE *
         height = $(window).height(),
         b_isRunning = false,
         startDragX,
-        startDragY,
-        newArticle = {
+        startDragY;
+        /*newArticle = {
           axis: 'x',
           //helper: 'clone',
           start: function(e){
@@ -392,7 +398,7 @@ var IE = false, // check for IE *
               }
             }
           }
-        };
+        };*/
 
     // move article left or right and change border color based on the swipe direction or the button that was clicked
     var szlFzl = function(target){
@@ -408,13 +414,15 @@ var IE = false, // check for IE *
         //borderColor = (target == 'rateSzl' || target == 'left') ? '0 0 .5em red' : '0 0 .5em blue';
         
         // using css animations
+        // pass left or right string to addClass based on which button was pressed
         direction = (target == 'rateSzl' || target == 'left') ? 'left' : 'right';
         $topArticle.addClass(direction);
-        discard = setTimeout(function(){
-              $('.articleContainer:first').remove();
-              createArticle(); // add a new one to bottom of the stack
-              b_isRunning = false;
-              }, 500); // remove offscreen article*/
+
+        discard = setTimeout(function(){ // runs once animation completes
+                    $('.articleContainer:first').remove(); // remove offscreen article*/
+                    createArticle(); // add a new one to bottom of the stack
+                    b_isRunning = false;
+                  }, 500);
 
         // old version
         /*animate({left: leftOffset},{queue: false, duration: 500,
@@ -427,24 +435,6 @@ var IE = false, // check for IE *
         }).css({'box-shadow': borderColor});*/
       }
     };
-       
-
-    /*var fzl = function(e){
-      if (!b_isRunning){
-        b_isRunning = true;
-        
-        $('#topArticle').animate({left: -2 * $(window).width()}, {queue: false, duration: 500, easing: 'swing',
-          complete: function(){
-            $(this).remove();
-            createArticle();
-            b_isRunning = false;
-            console.log('swipe complete');
-
-          }
-        }).css({'box-shadow': '0 0 .5em blue'});
-        createArticle();
-      }
-    };*/
 
     var createArticle = function(){
       var newCont = document.createElement('div');
@@ -455,26 +445,10 @@ var IE = false, // check for IE *
 
       $('#mainContent').append(newCont);
       $('#bottomArticle').append(newText);
-      $('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
+      $('#middleArticle').attr('id', 'topArticle');//.draggable(newArticle);
       $('#bottomArticle').attr('id', 'middleArticle');
       var title = $('#topArticle .content').find($('#title a')).text();
-      //$('.articleContainer').draggable(newArticle);
-      /*if ($('#middleArticle').hasClass('requeue')){
-        if(i_articleIndex === 0){
-          $('#bottomArticle').addClass('article').html(a_articles[i_articleIndex + 5]).css('margin-top', $(window).height() * 0.03).css('margin-left', artPos);
-        } else {
-          $('#bottomArticle').addClass('articleContainer').html(a_articles[i_articleIndex-1]).css('margin-top', $(window).height() * 0.03).css('margin-left', artPos);
-        }
-      }
-      else {*/
-        //var topTitle =$('#topArticle .content').find($('#title a')).text();
-        showNewArticle(title);
-          //.css('margin-top', $(window).height() * 0.03)
-          //.css('margin-left', artPos);
-        //i_articleIndex += 1;
-      //}
-      //if (i_articleIndex > 5){ i_articleIndex = 0;}*/
-      console.log('new article');
+      showNewArticle(title);
     };
 
     var checkForSwipe = function(){
@@ -541,35 +515,21 @@ var IE = false, // check for IE *
     var downPoint,
         mouseIsDown,
         $currentTop;
-    /*$('body').on('mousedown touchstart', '.articleContainer',function(e){
+    $('body').on('mousedown', '.articleContainer', function(e){
       $currentTop = $('#topArticle');
-      downPoint = event.touches[0].screenX - $('#topArticle').offset().left;
-      mouseIsDown = true;
+      //downPoint = event.touches[0].screenX - $('#topArticle').offset().left;
+      //mouseIsDown = true;
       start(e);
-    }).on('mousemove touchmove', '.articleContainer', function(e){
-    //console.log(e.pageX);
-      //alert('true');
-      
-
-      //if ((downPoint - e.pageX) < 0){
-        // trying to implement custom drag interaction instead of using draggable
-
-        $currentTop.offset({left: e.touches[0].screenX - downPoint}); // touch device support..
-        $currentTop.offset({left: e.pagex - downPoint}); // normal
-        //$currentTop.html('<div>' + event.touches[0].screenX + 'px</div>');
-        //$currentTop.addClass('unselectable'); // prevent text highlighting during drag
-            //} else {
-      //currentTop.offset({left: e.pageX - downPoint});
-            //}
-      
-    }).on('mouseup touchend', '.articleContainer', function(e){
-      mouseIsDown = false;
-      $currentTop.removeClass('unselectable');
+    }).on('mousemove', '.articleContainer', function(e){
+    
+    }).on('mouseup', '.articleContainer', function(e){
+     // mouseIsDown = false;
+      //$currentTop.removeClass('unselectable');
       end(e);
       if (!b_isRunning) checkForSwipe();
-    });*/
+    });
 
     // init draggable for initial top article
-    $('.articleContainer').draggable(newArticle);
+    //$('.articleContainer').draggable(newArticle);
 
   });
