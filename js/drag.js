@@ -1,21 +1,20 @@
 $(document).ready(function(){
-  $('#source-a').hover(function(){
+  /*$('#source-a').hover(function(){
     $('#navsub-1').show();
     $('#navsub-1').hover(function(){
       $(this).show();
     },function(){
       $(this).hide();
     });
+  });*/
+
+  $('#username .userNav').hover(function(){
+    console.log('hover');
+    $('#navsub-2').show();
+    },function(){
+    $('#navsub-2').hide();
   });
 
-  $('#username-a').hover(function(){
-    $('#navsub-2').show();
-    $('#navsub-2').hover(function(){
-      $(this).show();
-    },function(){
-      $(this).hide();
-    });
-  });
 
   var nameLength = $('#username-a').width() + 4;
   $('#tzls').css('left', nameLength + 'px');
@@ -26,7 +25,7 @@ $(document).ready(function(){
   var documentHeight = $(document).height();
   var sidebarFixedWidth = 412;
   var dragbarFixedWidth = 42;
-  var mainWidth = documentWidth - sidebarFixedWidth;
+  var mainWidth = documentWidth - dragbarFixedWidth;
   var tableFixedHeight = $('#szl-table').height();
   if ( mainWidth > 705 ) {
     var marginLeft = Math.round(( mainWidth - 705 )/2);
@@ -40,21 +39,18 @@ $(document).ready(function(){
   } else {
     var tableHeight = tableFixedHeight;
   }
-  if ( $('#back-button').children().length ) {
-    var marginTop = Math.round(( documentHeight - 222 - 80 + 20 )/2);
-  } else {
-    var marginTop = Math.round(( documentHeight - 185 - 80 + 20 )/2);
-  }
 
-  $('#mainContent').css('width',mainWidth);
-  $('header').css('width',mainWidth);
-  $('footer').css('width',footerWidth);
-  $('footer').css('margin-left',marginLeft);
+  var marginTop = Math.round(( documentHeight - 185 - 80 + 20 )/2);
+
+  //$('#mainContent').css('width',mainWidth);
+  //$('header').css('width',mainWidth);
+  //$('footer').css('width',footerWidth);
+  //$('footer').css('margin-left',marginLeft);
   $('#dragtext').css('margin-top',marginTop);
   //$('#szl-table').css('height',tableHeight);
 
   //hi
-  $(window).resize(function(){
+  /*$(window).resize(function(){
     var documentWidth = $(document).width();
     var documentHeight = $(document).height();
     var sidebarWidth = $('#sidebar').width();
@@ -82,7 +78,7 @@ $(document).ready(function(){
     $('footer').css('margin-left',marginLeft);
     $('#dragtext').css('margin-top',marginTop);
     //$('#szl-table').css('height',tableHeight);
-  });
+  });*/
   //1-5
   //6-37
   //38-42
@@ -95,7 +91,7 @@ $(document).ready(function(){
   //154-185
 
   // BORG FUNCTION
-  $('#dragbar').click(function(e){
+  /*$('#dragbar').click(function(e){
     var dragbarOffset = $(this).parent().offset();
     var dragbarClickX = e.pageX - dragbarOffset.left;
     var dragbarClickY = e.pageY;
@@ -148,7 +144,7 @@ $(document).ready(function(){
         setTimeout(function(){ $('#dragbar').css('cursor','e-resize'); }, 500);
       }
     }
-  });
+  });*/
 
   //comment counter
   $('#comment-submit').hide();
