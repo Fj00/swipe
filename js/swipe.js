@@ -84,6 +84,8 @@ $(document).ready(function(){
 
 	});
 
+	$('#topArticle').html(a_articles[5]);
+
 	// return nonlinear top value based on the element's left offset
 	var adjustTop = function(offset){
 		return 100 * (1.0-Math.min(0.98,(0.75 + ( 0.25/ (Math.exp(0.003*offset))) )) ) + '%';
@@ -99,7 +101,7 @@ $(document).ready(function(){
 			$topArticle.animate({left: width},{queue: false, duration: 500,
 				complete: function(){
 					$(this).remove();
-					$('#middleArticle').attr('id', 'topArticle').draggable(newArticle);
+					$('#middleArticle').attr('id', 'topArticle')//.draggable(newArticle);
 					$('#bottomArticle').attr('id', 'middleArticle');
 					b_isRunning = false;
 					//$('#stream').bind('click');
@@ -136,13 +138,13 @@ $(document).ready(function(){
 					$('#queue').append($(newDiv)
 						.addClass('szld')
 						.css({'display':'none', 'width': $('#queue').height() * 0.72, 'z-index': i_szlCount + 1}));
-					//$('#queue').append($(reflectionDiv).addClass('szld').css('top', $('#newSzl' + i_szlCount).height() + 5));
-				//$(a_theContent).each(function(index){
-					//console.log(theContent[index]);
 					$('#newSzl' + i_szlCount).append(theIMG).fadeIn(500);
 				//});
+
 				$queueItems = $('#queue div.szld');
-				if ($queueItems.length > 11){
+				// remove far right item when visible queue is filled
+				if ( $queueItems.length * ($('.szld').width() - (overlap / 2)) > $(window).width() ){
+					console.log('true');
 					$queueItems.eq(0).remove();
 				}
 				/*var newDiv = document.createElement('div');
@@ -232,7 +234,7 @@ $(document).ready(function(){
 	};
 
 	//enable article dragging
-	var newArticle = {
+	/*var newArticle = {
 		axis: 'x',
 		start: function(){
 			$(this).css('box-shadow','5px 5px 10px #888888');
@@ -240,7 +242,7 @@ $(document).ready(function(){
 		stop: function(){
 			$(this).css('box-shadow', 'none');
 		}
-	};
+	};*/
 	//$article.draggable(newArticle);
 
 	
@@ -258,7 +260,7 @@ $(document).ready(function(){
 		swipeAngle = Math.atan(distance.y / distance.x) * (180 / Math.PI);
 		scaledDistance = Math.sqrt((distance.x / width)^2 + (distance.y / height)^2);
 	}
-
+ 
 	var downPoint,
 		mouseIsDown,
 		$currentTop;
@@ -437,7 +439,7 @@ $(document).ready(function(){
 			var lastOne = $('.szld').length - 1;// get the eq position of the last one on the left
 
 			// if the offset of the last one on the left becomes < 0..
-			if ($queueItems.length >= 12 && $('.szld').eq(lastOne).offset().left < 0 && (a_theContent.length - $queueItems.length) >= arrayPos){
+			if ( $queueItems.length * ($('.szld').width() - (overlap / 2)) > $(window).width() && $('.szld').eq(lastOne).offset().left < 0 && (a_theContent.length - $queueItems.length) >= arrayPos){
 				//remove it
 				$('.szld').eq(lastOne).remove();
 
