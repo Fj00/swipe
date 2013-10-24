@@ -1,0 +1,297 @@
+
+Film
+Source.create( :name => "Bleeding Cool", :home => "http://www.bleedingcool.com ", :url => "http://www.bleedingcool.com/feed/" )
+Source.create( :name => "First Showing", :home => "http://www.firstshowing.net", :url => "http://rss.firstshowing.net/firstshowing" )
+Source.create( :name => "Movie Web", :home => "http://www.movieweb.com", :url => "http://feeds.movieweb.com/movieweb_movienews" )
+Source.create( :name => "MTV Movies Blog", :home => "http://moviesblog.mtv.com", :url => "http://moviesblog.mtv.com/feed" )
+
+TV
+Source.create( :name => "TV Fanatic", :home => "http://www.tvfanatic.com", :url => "http://feeds.tvfanatic.com/tvfanatic" )
+Source.create( :name => "Tv Newser", :home => "http://www.mediabistro.com/tvnewser/", :url => "http://www.mediabistro.com/tvnewser/feed" )
+
+
+Others: 
+firtshowing.net
+hollywoodlife.com
+movieweb.com
+comic book movie
+mtv movies blog
+film school rejects
+
+Apple
+Source.create( :name => "iPhone Hack", :home => "http://www.iphonehacks.com", :url => "http://www.iphonehacks.com/feed" )
+Source.create( :name => "Computerworld Blogs", :home => "http://blogs.computerworld.com", :url => "http://blogs.computerworld.com/rss.xml" )
+Source.create( :name => "Redmond Pie", :home => "http://www.redmondpie.com", :url => "http://www.redmondpie.com/feed/" )
+Source.create( :name => "OS X Daily", :home => "http://osxdaily.com", :url => "http://osxdaily.com/feed/" )
+
+Gaming
+Source.create( :name => "Geek.com", :home => "http://www.geek.com", :url => "http://www.geek.com/feed/" )
+Source.create( :name => "Major Nelson", :home => "http://majornelson.com", :url => "http://majornelson.com/blog/feed/" )
+
+Entertainment
+Source.create( :name => "Hollywood Life", :home => "http://www.hollywoodlife.com", :url => "http://hollywoodlife.com/feed/" )
+
+Cars
+Source.create( :name => "Autoblog Green", :home => "http://green.autoblog.com", :url => "http://green.autoblog.com/rss.xml" )
+Source.create( :name => "AutoGuide News Blog", :home => "http://www.autoguide.com/auto-news/", :url => "http://www.autoguide.com/auto-news/feed" )
+Source.create( :name => "Car Advice", :home => "http://www.caradvice.com.au", :url => "http://www.caradvice.com.au/feed/" )
+Source.create( :name => "The Truth About Cars", :home => "http://www.thetruthaboutcars.com", :url => "http://www.thetruthaboutcars.com/feed/" )
+Source.create( :name => "Top Speed", :home => "http://www.topspeed.com", :url => "http://www.topspeed.com/rss.xml" )
+Source.create( :name => "Paul Tan's Automotive News", :home => "http://paultan.org", :url => "http://paultan.org/feed/" )
+Source.create( :name => "Green Car Reports", :home => "http://GreenCarReports.com", :url => "http://feeds2.feedburner.com/GreenCarReports" )
+
+Business
+Source.create( :name => "Frugal Rules", :home => "http://www.frugalrules.com", :url => "http://www.frugalrules.com/feed/" )
+Source.create( :name => "Business 2 Community", :home => "http://www.business2community.com", :url => "http://feeds.feedburner.com/b2cmarketinginsider" )
+Source.create( :name => "Inside AdWords", :home => "http://adwords.blogspot.com", :url => "http://feeds.feedburner.com/blogspot/ATHs" )
+Source.create( :name => "Mom and Dad Money", :home => "http://momanddadmoney.com", :url => "http://momanddadmoney.com/feed/" )
+
+
+Green
+Source.create( :name => "Think Progress", :home => "http://thinkprogress.org", :url => "http://thinkprogress.org/feed/" )
+Source.create( :name => "Earth Techling", :home => "http://www.earthtechling.com/", :url => "http://feeds.feedburner.com/Earthtechling" )
+Source.create( :name => "Inside Climate News", :home => "http://insideclimatenews.org", :url => "http://feeds.feedburner.com/solveclimate/blog" )
+Source.create( :name => "Climate Audit", :home => "http://www.climateaudit.org/", :url => "http://climateaudit.org/feed/" )
+Source.create( :name => "DeSmog Blog", :home => "http://www.desmogblog.com", :url => "http://www.desmogblog.com/rss.xml" )
+
+Sports
+Source.create( :name => "NFL Nation", :home => "http://espn.go.com/blog/nflnation", :url => "http://espn.go.com/blog/feed?blog=nflnation" )
+Source.create( :name => "SB Nation", :home => "http://www.sbnation.com", :url => "http://www.sbnation.com/rss/current" )
+Source.create( :name => "Rant Sports", :home => "http://www.rantsports.com", :url => "http://www.rantsports.com/feed/" )
+Source.create( :name => "Sports Grid", :home => "http://www.sportsgrid.com/", :url => "http://www.sportsgrid.com/feed/" )
+Source.create( :name => "MLB Rumors", :home => "http://mlbtraderumors.com/", :url => "http://feeds.feedburner.com/MlbTradeRumors" )
+
+DIY
+Source.create( :name => "Dumb Little Man", :home => "http://www.dumblittleman.com", :url => "http://feeds.feedburner.com/DumbLittleMan" )
+Source.create( :name => "Geek Crafts", :home => "http://geekcrafts.com", :url => "http://feeds.feedburner.com/GeekCrafts" )
+Source.create( :name => "Hacked Gadgets", :home => "http://hackedgadgets.com", :url => "http://hackedgadgets.com/feed/" )
+Source.create( :name => "DIY Lifestyle Mag", :home => "www.diylifestylemag.com", :url => "http://www.diylifestylemag.com/feed/" )
+
+Retail
+Source.create( :name => "Consumer Reports", :home => "http://www.consumerreports.org/cro/index.htm", :url => "http://simplefeed.consumerreports.org/f/100001s37j59do52okz.rss" )
+Source.create( :name => "Consumer Search", :home => "http://www.consumersearch.com/", :url => "http://rss.consumersearch.com/product-reviews" ) 
+Source.create( :name => "CES Blog", :home => "http://cesweb.org/", :url => "http://cesweb.org/News/News-Feed.aspx" )
+Source.create( :name => "PC Mag", :home => "", :url => "http://feeds2.feedburner.com/ziffdavis/pcmag" ) 
+Source.create( :name => "Top Ten Reviews", :home => "http://www.toptenreviews.com", :url => "http://api.toptenreviews.com/rss/xml/all_reviews.xml" ) feed for articles --> http://api.toptenreviews.com/rss/xml/all_articles.xml
+Source.create( :name => "Laptop Mag", :home => "http://www.laptopmag.com/", :url => "http://feeds.feedburner.com/laptopmag" )
+Source.create( :name => "CNET", :home => "http://www.cnet.com/", :url => "http://feeds.feedburner.com/cnet/YIff" )
+Source.create( :name => "Choice", :home => "http://www.choice.com.au/reviews-and-tests/household.aspx", :url => "http://www.choice.com.au/reviews-and-tests/household.aspx?rss=1" )
+Source.create( :name => "Good Guide", :home => "http://blog.goodguide.com/", :url => "http://feeds.feedburner.com/goodguide" )
+
+Home
+Source.create( :name => "Vogue Living", :home => "http://blog.vogueliving.com.au/", :url => "http://blog.vogueliving.com.au/feed/" )
+Source.create( :name => "Crib candy", :home => "http://cribcandy.com/", :url => "http://feeds2.feedburner.com/cribcandy" )
+Source.create( :name => "Freshome", :home => "http://freshome.com/", :url => "http://feeds.feedburner.com/FreshInspirationForYourHome/" )
+Source.create( :name => "Houzz", :home => "http://www.houzz.com/", :url => "http://feeds.feedburner.com/houzz" )
+Source.create( :name => "Desire to Inspire", :home => "http://www.desiretoinspire.net/", :url => "http://www.desiretoinspire.net/blog/rss.xml" )
+Source.create( :name => "Design Milk", :home => "http://design-milk.com", :url => "http://feeds.feedburner.com/DesignMilkHomeFurnishings" )
+Source.create( :name => "Deconstructing Jen", :home => "http://deconstructingjen.com/", :url => "http://deconstructingjen.com/feed/" )
+Source.create( :name => "Trendir", :home => "http://www.trendir.com", :url => "http://www.trendir.com/index.xml" )
+
+Books
+Source.create( :name => "Book Riot", :home => "http://bookriot.com/", :url => "Source.create( :name => "Trendir", :home => "http://www.trendir.com", :url => "http://www.trendir.com/index.xml" )" )
+Source.create( :name => "Open Culture", :home => "http://www.openculture.com/", :url => "http://feeds.feedburner.com/OpenCulture" )
+Source.create( :name => "Brain Pickings", :home => "http://www.brainpickings.org/", :url => "http://feeds.feedburner.com/brainpickings/rss" )
+Source.create( :name => "The Broke and the Bookish", :home => "http://www.brokeandbookish.blogspot.com/", :url => "http://feeds.feedburner.com/blogspot/JywQY" )
+Source.create( :name => "Harriet", :home => "http://www.poetryfoundation.org/harriet/", :url => "http://feeds.poetryfoundation.org/HarrietTheBlog" )
+Source.create( :name => "Omnivoracious", :home => "http://www.omnivoracious.com", :url => "http://www.omnivoracious.com/atom.xml" )
+Source.create( :name => "Crooked Timber", :home => "http://crookedtimber.org/", :url => "http://crookedtimber.org/feed/" )
+
+Law
+Source.create( :name => "WSJ Law Blog", :home => "http://blogs.wsj.com/law/", :url => "http://blogs.wsj.com/law/feed/" )
+Source.create( :name => "Legal Times", :home => "http://legaltimes.typepad.com/blt/", :url => "http://legaltimes.typepad.com/blt/atom.xml" )
+Source.create( :name => "The Debate Link", :home => "http://dsadevil.blogspot.com/", :url => "http://dsadevil.blogspot.com/feeds/posts/default" )
+Source.create( :name => "Norml", :home => "http://blog.norml.org", :url => "http://blog.norml.org/feed/" )
+Source.create( :name => "Lowering the Bar", :home => "http://www.loweringthebar.net/", :url => "http://feeds.feedburner.com/LoweringTheBar" )
+Source.create( :name => "Legal Schnauzer", :home => "http://legalschnauzer.blogspot.com", :url => "http://legalschnauzer.blogspot.com/feeds/posts/default" )
+
+Health
+Source.create( :name => "Greatist", :home => "http://greatist.com", :url => "http://feeds.feedblitz.com/greatist" )
+Source.create( :name => "Food Politics", :home => "http://www.foodpolitics.com/", :url => "http://feeds.feedburner.com/foodpoliticsfeed" )
+Source.create( :name => "Men's Health", :home => "http://www.menshealth.com/", :url => "http://www.menshealth.com/events-promotions/washpofeed" )
+Source.create( :name => "Women's Health", :home => "http://www.womenshealth.com/", :url => "http://www.womenshealthmag.com/washpofeed" )
+Source.create( :name => "Health.com", :home => "http://www.health.com/health/", :url => "http://www.health.com/health/healthy-happy/feed" )
+Source.create( :name => "Scope Blog", :home => "http://scopeblog.stanford.edu/", :url => "http://feeds.feedburner.com/stanford/scope" )
+
+Music
+Source.create( :name => "Consequence of Sound", :home => "http://consequenceofsound.net", :url => "http://consequenceofsound.net/feed/" )
+Source.create( :name => "MissInfo.tv", :home => "http://www.missinfo.tv", :url => "http://www.missinfo.tv/index.php/feed/" )
+Source.create( :name => "Idolator", :home => "http://www.idolator.com", :url => "http://www.idolator.com/feed" )
+Source.create( :name => "Pitchfork", :home => "http://pitchfork.com/", :url => "http://pitchfork.com/rss/news/" )
+Source.create( :name => "ZME", :home => "http://www.zmemusic.com/", :url => "http://feeds.feedburner.com/zmemusic" )
+Source.create( :name => "Great American Country", :home => "http://blog.gactv.com/", :url => "http://blog.gactv.com/feed/" )
+Source.create( :name => "Guitar International", :home => "http://guitarinternational.com", :url => "http://feeds.feedburner.com/GuitarInternationalMagazine" )
+Source.create( :name => "Rap-Up", :home => "http://www.rap-up.com", :url => "http://www.rap-up.com/feed/" )
+
+rankin mckenzie notes:
+not just personalized, but customized
+bill calusa, bob pickens
+data on what people don't choose during their search is something others aren't doing
+-fzl is a way to gather that type of data
+look at XYDO.com
+
+
+Technology Top 10:
+techcrunch
+nextweb
+9 to 5 mac
+gigaOM
+mashable 
+macRumors
+9 to 5 google - Source.create( :name => "9 to 5 Google", :home => "http://9to5google.com", :url => "http://feeds.feedburner.com/9to5Google" )
+VentureBeat
+UnofficialAppleWeblog
+Nokia Conversations
+
+More News
+CBS
+CNN 
+Infowars
+Source.create( :name => "Fox News", :home => "http://www.foxnews.com/", :url => "http://feeds.foxnews.com/foxnews/latest" )
+Source.create( :name => "Aljazeera America", :home => "http://america.aljazeera.com/", :url => "http://america.aljazeera.com/content/ajam/articles.rss" )
+Source.create( :name => "Wall Street Journal", :home => "http://online.wsj.com/home-page", :url => "http://online.wsj.com/xml/rss/3_7085.xml" )
+Source.create( :name => "Reuters", :home => "http://www.reuters.com/", :url => "http://feeds.reuters.com/reuters/topNews" )
+Source.create( :name => "NBC News", :home => "http://www.nbcnews.com/", :url => "http://feeds.nbcnews.com/feeds/topstories" )
+Source.create( :name => "Natural news", :home => "http://www.naturalnews.com/", :url => "http://www.naturalnews.com/rss.xml" )
+Source.create( :name => "BBC", :home => "http://www.bbc.co.uk/", :url => "http://feeds.bbci.co.uk/news/rss.xml" )
+Source.create( :name => "Nat Geo", :home => "http://news.nationalgeographic.com/", :url => "http://news.nationalgeographic.com/index.rss" )
+
+Finance Top 10
+
+Source.create( :name => "MoneyBeat", :home => "http://blogs.wsj.com/moneybeat/", :url => "http://blogs.wsj.com/moneybeat/feed/" )
+zero hedge
+Paul Krugman
+Source.create( :name => "Clusterstock", :home => "http://www.businessinsider.com/clusterstock", :url => "http://feeds.feedburner.com/clusterstock?format=xml" )
+Source.create( :name => "The Motley Fool", :home => "http://www.fool.com/", :url => "http://www.fool.com/feeds/index.aspx?id=foolwatch&format=rss2" )
+Source.create( :name => "Buttonwood's Notebook", :home => "http://www.economist.com/blogs/buttonwood", :url => "http://www.economist.com/blogs/buttonwood/index.xml" )
+Ft Alphaville
+Source.create( :name => "Calculated Risk", :home => "http://feeds.feedburner.com/CalculatedRisk", :url => "http://feeds.feedburner.com/CalculatedRisk" )
+Naked Capitalism
+Source.create( :name => "Buttonwood's Notebook", :home => "http://www.economist.com/blogs/buttonwood", :url => "http://www.economist.com/blogs/buttonwood/index.xml" )
+Felix Salmon
+
+Science Top 10
+real climate
+universe today
+next big future
+geekosystem
+Source.create( :name => "The Daily Galaxy", :home => "http://www.dailygalaxy.com ", :url => "http://feeds.feedburner.com/TheDailyGalaxyNewsFromPlanetEarthBeyond" )
+Source.create( :name => "NASA Spaceflight", :home => "http://www.nasaspaceflight.com/", :url => "http://www.nasaspaceflight.com/feed/?cat=-6%2C-378" )
+Source.create( :name => "Roger Pielke Jr.'s Blog", :home => "http://rogerpielkejr.blogspot.com/", :url => "http://feeds.feedburner.com/RogerPielkeJrsBlog" )
+Source.create( :name => "The Reference Frame", :home => "http://motls.blogspot.com", :url => "http://feeds.feedburner.com/LuboMotlsReferenceFrame" )
+Source.create( :name => "it is NOT junk", :home => "http://www.michaeleisen.org/blog", :url => "http://www.michaeleisen.org/blog/?feed=rss2" )
+Source.create( :name => "Real Clear Science", :home => "http://www.realclearscience.com/blog/", :url => "http://www.realclearscience.com/blog/index.xml" )
+
+http://feeds.feedburner.com/seriouseatsfeaturesvideos
+
+Food
+Source.create( :name => "Serious Eats", :home => "http://www.seriouseats.com/", :url => "http://feeds.feedburner.com/seriouseatsfeaturesvideos" )
+Source.create( :name => "Food Network", :home => "http://blog.foodnetwork.com/fn-dish/", :url => "http://blog.foodnetwork.com/fn-dish/feed/" )
+Source.create( :name => "Food.com", :home => "http://www.food.com", :url => "http://www.food.com/rss?" )
+Source.create( :name => "All Recipes", :home => "http://allrecipes.com/", :url => "http://rss.allrecipes.com/daily.aspx?hubID=84" )
+Source.create( :name => "Brand Eating", :home => "http://www.brandeating.com", :url => "http://feeds.feedburner.com/BrandEatingFoodReviewsFoodNewsAndFoodRecipes" )
+Source.create( :name => "Amateur Gourmet", :home => "http://www.amateurgourmet.com", :url => "http://feeds.feedburner.com/TheAmateurGourmet" )
+Source.create( :name => "Consumer Queen", :home => "http://www.consumerqueen.com/", :url => "http://feeds.feedblitz.com/consumerqueen" ) // lots of coupons..might not be good
+Source.create( :name => "Sprouted Kitchen", :home => "http://www.sproutedkitchen.com/", :url => "http://www.sproutedkitchen.com/home/rss.xml" )
+Source.create( :name => "Eater", :home => "http://eater.com/", :url => "http://feeds.feedburner.com/EaterNational" )
+Source.create( :name => "Food Beast", :home => "http://www.foodbeast.com", :url => "http://foodbeast.com/feed/" )
+Source.create( :name => "Civil Eats", :home => "civileats.com", :url => "http://feeds.feedburner.com/civileats/pfjg" )
+Source.create( :name => "My Royal Kitchen", :home => "http://myroyalkitchen.com/", :url => "http://myroyalkitchen.com/feed/" )
+
+LGBT
+Source.create( :name => "Towleroad News", :home => "http://www.towleroad.com/", :url => "http://feeds.towleroad.com/towleroad/feed" )
+
+Luxury
+Source.create( :name => "Life of Luxury", :home => "http://www.thelifeofluxury.com/", :url => "http://www.thelifeofluxury.com/feed/" )
+Source.create( :name => "Robb Report", :home => "http://robbreport.com/", :url => "http://robbreport.com/Feeds/RSSPulse.aspx" )
+// could go in business/finance instead
+Source.create( :name => "Forbes", :home => "http://www.forbes.com/", :url => "http://www.forbes.com/real-time/feed2/" )
+Source.create( :name => "Born Rich", :home => "http://www.bornrich.com/", :url => "http://www.bornrich.com/feed" )
+Source.create( :name => "Jetset Magazine", :home => "http://www.jetsetmag.com/", :url => "http://www.jetsetmag.com/newsroom/feed/" )
+
+Design
+
+// didn't have it and it's in technorati top 100
+Source.create( :name => "Design Boom", :home => "http://www.designboom.com", :url => "http://www.designboom.com/feed/" )
+
+Photography
+Source.create( :name => "Pop Photo", :home => "http://www.popphoto.com", :url => "http://feeds.popphoto.com/c/34565/f/637826/index.rss" )
+Source.create( :name => "SLR Lounge", :home => "http://www.slrlounge.com", :url => "http://www.slrlounge.com/feed" )
+Source.create( :name => "Lomography Magazine", :home => "http://www.lomography.com/magazine", :url => "http://feeds.feedburner.com/lomographic-society-international-atom" )
+Source.create( :name => "Digital Photo", :home => "http://www.dpmag.com", :url => "http://www.dpmag.com/feed" )
+Source.create( :name => "DP Review", :home => "http://www.dpreview.com/", :url => "http://www.dpreview.com/feeds/reviews.xml" ) // camera reviews
+
+Wine
+Source.create( :name => "Wine Enthusiast", :home => "http://www.winemag.com/", :url => "http://www.winemag.com/feeds/Wine+Enthusiast+Web+Edition" )
+
+Fitness
+Source.create( :name => "Men's Fitness", :home => "http://www.mensfitness.com/", :url => "http://www.mensfitness.com/rss.xml" )
+Source.create( :name => "Bodybuilding.com", :home => "http://www.bodybuilding.com/", :url => "http://www.bodybuilding.com/rss/articles/training" )
+Source.create( :name => "Prevention Magazine", :home => "http://www.prevention.com/", :url => "http://www.prevention.com/rss.xml" )
+Source.create( :name => "Self Magazine", :home => "http://www.self.com/", :url => "http://www.self.com/services/rss/feeds/fitness.xml" )
+Source.create( :name => "Nerd Fitness", :home => "http://www.nerdfitness.com/blog/", :url => "http://www.nerdfitness.com/blog/feed/" )
+Source.create( :name => "Dr. Weil's Daily Health Tips", :home => "http://www.drweilblog.com/", :url => "http://feeds.feedburner.com/DrWeilsDailyHealthTips" )
+Source.create( :name => "", :home => "", :url => "" )
+Source.create( :name => "", :home => "", :url => "" )
+Source.create( :name => "", :home => "", :url => "" )
+
+Crime
+Source.create( :name => "The Smoking Gun", :home => "http://www.thesmokinggun.com/", :url => "http://www.thesmokinggun.com/rss" )
+Source.create( :name => "Early American Crime", :home => "http://www.earlyamericancrime.com/", :url => "http://www.earlyamericancrime.com/feed" )
+Source.create( :name => "", :home => "", :url => "" )
+
+Paranormal
+Source.create( :name => "Coast to Coast AM", :home => "http://www.coasttocoastam.com/", :url => "http://feeds2.feedburner.com/C2C-Articles" )
+Source.create( :name => "The Anomalist", :home => "http://www.anomalist.com/", :url => "http://feed43.com/anomalist.xml" )
+Source.create( :name => "Who Forted", :home => "http://whofortedblog.com/", :url => "http://whofortedblog.com/feed/" )
+Source.create( :name => "Ghost Theory", :home => "http://www.ghosttheory.com/", :url => "http://feeds.feedburner.com/GhostTheory" )
+Source.create( :name => "UFO Digest", :home => "http://ufodigest.com/", :url => "http://ufodigest.com/rss.xml" )
+
+Animals
+Source.create( :name => "Fun Times Guide", :home => "http://dogs.thefuntimesguide.com/", :url => "http://feeds.feedburner.com/TheFunTimesGuideToDogs" )
+Source.create( :name => "Cute Overload", :home => "http://cuteoverload.com/", :url => "http://cuteoverload.com/feed/" )
+Source.create( :name => "Oddity Central", :home => "http://www.odditycentral.com/", :url => "http://feeds.feedburner.com/OddityCentral" )
+Source.create( :name => "Wildlife Promise", :home => "http://blog.nwf.org/topics/wildlife/", :url => "http://blog.nwf.org/topics/wildlife/feed/" )
+Source.create( :name => "All About Wildlife", :home => "http://www.allaboutwildlife.com/", :url => "http://feeds.feedburner.com/allaboutwildlife/sMDO" )
+
+Fashion 
+Source.create( :name => "Styleite", :home => "http://www.styleite.com", :url => "http://www.styleite.com/feed/" )
+Source.create( :name => "Hollywood Life", :home => "http://www.hollywoodlife.com", :url => "http://hollywoodlife.com/feed/" )
+Source.create( :name => "Bella Sugar", :home => "http://www.bellasugar.com/", :url => "http://www.bellasugar.com/feed/" )
+Source.create( :name => "RCFA", :home => "http://www.redcarpet-fashionawards.com/", :url => "http://feeds2.feedburner.com/RedCarpetFashionAwards" )
+Source.create( :name => "Be Voguish", :home => "http://www.bevoguish.com/", :url => "http://www.bevoguish.com/feed/" )
+
+Humor
+Source.create( :name => "Can Has Cheezburger", :home => "http://www.cheezburger.com/", :url => "http://feeds.feedburner.com/ICanHasCheezburger" )
+Source.create( :name => "Fail Blog", :home => "http://failblog.cheezburger.com/", :url => "http://feeds.feedburner.com/failblog" )
+Source.create( :name => "LOL Cats", :home => "http://www.lolcats.com/", :url => "http://feeds.feedburner.com/lolcats/rss" )
+Source.create( :name => "", :home => "", :url => "" )
+Source.create( :name => "", :home => "", :url => "" )
+Source.create( :name => "", :home => "", :url => "" )
+Source.create( :name => "", :home => "", :url => "" )
+Source.create( :name => "", :home => "", :url => "" )
+Source.create( :name => "", :home => "", :url => "" )
+Source.create( :name => "", :home => "", :url => "" )
+
+Nature
+Source.create( :name => "NWF", :home => "http://blog.nwf.org/", :url => "http://blog.nwf.org/feed/" )
+Source.create( :name => "Monga Bay", :home => "http://news.mongabay.com/", :url => "http://news.mongabay.com/news.xml" )
+Source.create( :name => "", :home => "", :url => "" )
+Source.create( :name => "", :home => "", :url => "" )
+Source.create( :name => "", :home => "", :url => "" )
+
+
+
+
+DNS's
+66.40.52.47
+	
+66.40.66.152	
+
+default
+184.168.221.39	
+
+
+
+
+
