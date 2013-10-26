@@ -41,7 +41,7 @@ $(document).ready(function(){
 		STARTSIZE = $(window).width(),
 		overlap = 0, // percentage each article overlaps into its neighbor
 		currentDate,	// time when queue drag is released
-		sidevalue = 0.15;	// used to define the clickable area on right and left edges
+		sidevalue = 0.15;	// used to define the size of the clickable area on right and left edges
 
 	a_articles.push(
 		"<img src='img/df.jpg' /><p class='articleText'><b>article1 article1 article1 </b>article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1 article1</p>",
@@ -130,30 +130,22 @@ $(document).ready(function(){
 				}
 
 				// create new div, add it to queue, append contents from szld article
-					newDiv = document.createElement('div');
-					//reflectionDiv = document.createElement('div');
-					newDiv.id = "newSzl" + i_szlCount;
-					//$(newDiv, reflectionDiv).addClass('szld');
-					$('#queue').append($(newDiv)
-						.addClass('szld')
-						.css({'display':'none', 'width': $('#queue').height() * 0.72, 'z-index': i_szlCount + 1}));
-					$('#newSzl' + i_szlCount).append(theIMG).fadeIn(500);
+				newDiv = document.createElement('div');
+				newDiv.id = "newSzl" + i_szlCount;
+				$('#queue').append($(newDiv)
+					.addClass('szld')
+					.css({'display':'none', 'width': $('#queue').height() * 0.72, 'z-index': i_szlCount + 1}));
+				$('#newSzl' + i_szlCount).append(theIMG).fadeIn(500);
 				//});
 				$queueItems = $('#queue div.szld');
 				console.log($queueItems.length);
 				console.log(a_theContent.length);
-				// remove
+				// remove new item if it's out of view
 				if ( $queueItems.length * $('.szld').width() > $(window).width()  + $('.szld').width()){
 					console.log('true');
 					$queueItems.eq(0).remove();
 				}
-				/*var newDiv = document.createElement('div');
-				$szlQueue.append($(newDiv).attr('id', 'newSzl' + i_szlCount).addClass('szld').css({  //use i_szlCount number as position in array to pull text from 
-					'width': $(window).width() * 0.20,
-					'z-index': i_szlCount + 1
-				}).append(szld));*/
 				i_szlCount += 1;
-				//$queueItems = $('#queue div.szld');
 				$lastSzld = $queueItems.filter(':last');
 
 				//TODO: adding new item when last one is off screen messes up previous items
@@ -185,7 +177,6 @@ $(document).ready(function(){
 	};
 	var adjustValues = function($queueItems){
 		$queueItems.each(function(){
-			//console.log($(this).css('left') + ' ,' + $(this).offset().left);
 			$(this).css({
 				'top': adjustTop($(this).offset().left),
 				'height': i_STARTHEIGHT - ($(this).position().top)/2 + '%',
@@ -280,15 +271,9 @@ $(document).ready(function(){
 		//console.log(e.pageX);
 		// Problem: drag starts when trying to select text..
 		if(mouseIsDown) {
-
-			//if ((downPoint - e.pageX) < 0){
-
-				// trying to implement custom drag interaction instead of using draggable
-				$currentTop.offset({left: e.pageX - downPoint});
-				$currentTop.addClass('unselectable'); // prevent text highlighting during drag
-			//} else {
-//currentTop.offset({left: e.pageX - downPoint});
-			//}
+			// trying to implement custom drag interaction instead of using draggable
+			$currentTop.offset({left: e.pageX - downPoint});
+			$currentTop.addClass('unselectable'); // prevent text highlighting during drag
 		}
 
 	}).mouseup(function(e){
@@ -353,9 +338,6 @@ $(document).ready(function(){
 				'border': '1px solid #FF4D4D'
 			}).siblings().css({'border':'none', 'box-shadow':'0 0 .8em black'});
 		}
-
-
-
 	};
 	
 	//object passed to draggable method
@@ -363,7 +345,7 @@ $(document).ready(function(){
 	var arrayPos = 0,
 		direction,
 		startY,
-    	startX;
+		startX;
 
     $('footer').mousedown(function(e){
 		startY = e.pageY;
@@ -378,11 +360,11 @@ $(document).ready(function(){
             dragStartTime = new Date();
             var lastSzld = $('.szld:last');
                 lastSzldID = $('.szld:last').attr('id');
-            $(this).data('dir', ''); 
-            $('#queue .szld').each(function(){
-            	$(this).css('z-index', $(this).index());
-            });
-            startX = event.pageX
+			$(this).data('dir', '');
+			$('#queue .szld').each(function(){
+				$(this).css('z-index', $(this).index());
+			});
+			startX = event.pageX;
 		},
 
 		//if initial pageY is < current pageY and starting pageX is within x amount from current pageX..don't drag
@@ -432,10 +414,6 @@ $(document).ready(function(){
 				var $this = $(this);
 				setZ(szldItem, $this);
 
-				//set shadow for peripheral items
-				//if (szldItem > 8 && szldItem < 15) {
-					//$(this).css({'z-index' : $(this).closest().css('z-index') - 1});
-				//}
 				if ($(this).offset().left > 0 && $(this).offset().left < overlap){
 					var rotation = (-90 * (1-($(this).offset().left/overlap)));
 					if (rotation >= -45){
@@ -488,8 +466,6 @@ $(document).ready(function(){
 						'height': '50%'//i_STARTHEIGHT - ($(this).position().top)/2 + '%'
 					});
 
-				//console.log($('#newSzl' + (a_theContent.length - $queueItems.length)).offset().left);
-				//console.log($('#newSzl' + (a_theContent.length - $queueItems.length)).css('top'));
 				//adjust containment to prevent last one on the right from being b_dragged off left side
 				//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
 
@@ -521,8 +497,6 @@ $(document).ready(function(){
 						'height': '50%'//i_STARTHEIGHT - ($(this).position().top)/2 + '%'
 					});
 
-				//console.log($('#newSzl' + (a_theContent.length - $queueItems.length)).offset().left);
-				//console.log($('#newSzl' + (a_theContent.length - $queueItems.length)).css('top'));
 				//adjust containment to prevent last one on the right from being b_dragged off left side
 				//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
 
@@ -540,7 +514,7 @@ $(document).ready(function(){
 				velocity = dragDistance/timeDiff;
 				//console.log(a_theTime.length + ', ' + a_pos.length);
 
-			$(this).data('dir', ''); 	
+			$(this).data('dir', '');	
 			//time and distance between final two points during drag
 				endOfDragDistance = Math.abs( a_pos[a_pos.length - 1] - a_pos[a_pos.length - 2] );
 				endOfDragTime = ( a_theTime[a_theTime.length - 1] - a_theTime[a_theTime.length - 2] );
