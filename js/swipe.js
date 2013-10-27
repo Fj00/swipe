@@ -115,7 +115,7 @@ $(document).ready(function(){
 				//if not in queue, add it
 				if (i_szlCount > 0){
 					$queueItems.each(function(){
-						var cssLeft = parseInt($(this).css('left'), 10);
+						var cssLeft = $(this).offset().left;
 						$(this).animate({left: cssLeft + $(this).width() + 'px'},{duration: 500, queue: false,
 							complete: function(){
 
@@ -525,7 +525,7 @@ $(document).ready(function(){
 				//console.log(finalVelocity);
 				
 				//animate drag continuation based on final velocity
-				$(this).animate({ left: (endPoint < a_pos[0]) ?
+				/*$(this).animate({ left: (endPoint < a_pos[0]) ?
 					$(this).offset().left + (-1 * endOfDragDistance/100 * velocity) :
 					$(this).offset().left + (endOfDragDistance/100 * velocity) }, {
 						duration: 300, easing: 'easeOutCirc',//duration should be length of time it takes the velocity to decay 
@@ -548,7 +548,7 @@ $(document).ready(function(){
 									});
 								}
 
-							}*/
+							}
 							$('.szld').each(function(){
 								var $this = $(this);
 								var szldItem = $(this).offset().left / $(window).width() * 100;
@@ -560,15 +560,15 @@ $(document).ready(function(){
 								setZ($this, szldItem);
 							});
 						}
-				});
+				});*/
  
 				//fresh arrays for next drag
 				a_pos = [];
 				a_theTime = [];
 
 			//http://stackoverflow.com/questions/3486760/how-to-avoid-jquery-ui-draggable-from-also-triggering-click-event/13973319#13973319
-			var leftBound = ( (e.pageX > $(window).width() * 0.38) ? leftBound = -5 : leftBound = 0 ),
-				rightofZero = $('.szld').filter(function() {
+			var leftBound = ( (e.pageX > $(window).width() * 0.38) ? leftBound = -5 : leftBound = 0 );
+				/*rightofZero = $('.szld').filter(function() {
 					return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.10));
 				}),
 				theID = $(rightofZero).attr('id');//needs a better name*/
@@ -602,13 +602,13 @@ $(document).ready(function(){
 					{duration: (Math.abs($lastSzld.offset().left) > $(window).width() * 0.25 ? 
 								Math.abs($lastSzld.offset().left) : 300),
 					step: function(){
-						rightofZero = $('.szld').filter(function() {
+						/*rightofZero = $('.szld').filter(function() {
 							return ($(this).offset().left > 0 && $(this).offset().left < ($(window).width() * 0.10));
 						});
 						$(rightofZero).each(function(){
 							$(this).next().css({'transform-origin' : '0px 0px' ,
 							'transform' : 'perspective( 600px ) rotateY(0deg)'});
-						});
+						});*/
 						$('.szld').each(function(){
 							$(this).css({
 								'top': adjustTop($(this).offset().left) ,
