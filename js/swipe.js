@@ -39,7 +39,7 @@ $(document).ready(function(){
 		left = -width + 'px',
 		right = width + 'px',
 		STARTSIZE = $(window).width(),
-		overlap = 0, // percentage each article overlaps into its neighbor
+		overlap = $('#queue').height() * .72, // percentage each article overlaps into its neighbor
 		currentDate,	// time when queue drag is released
 		sidevalue = 0.15;	// used to define the size of the clickable area on right and left edges
 
@@ -114,11 +114,12 @@ $(document).ready(function(){
 				a_theContent.push(szldContent);
 				//if not in queue, add it
 				if (i_szlCount > 0){
+					$queueItems = $('#queue div.szld');
 					$queueItems.each(function(){
-						var cssLeft = $(this).offset().left;
+						var cssLeft = parseInt($(this).css('left'), 10);
 						$(this).animate({left: cssLeft + $(this).width() + 'px'},{duration: 500, queue: false,
 							complete: function(){
-
+								//console.log('shifted');
 								/*adjust left containment based on far right item in queue
 									queueDrag.containment = [
 									-1 * ($('.szld').eq(0).offset().left + overlap), 0, 
@@ -138,27 +139,32 @@ $(document).ready(function(){
 				$('#newSzl' + i_szlCount).append(theIMG).fadeIn(500);
 				//});
 				$queueItems = $('#queue div.szld');
-				console.log($queueItems.length);
-				console.log(a_theContent.length);
+				//console.log($queueItems.length);
+				//console.log(a_theContent.length);
 				// remove new item if it's out of view
 				if ( $queueItems.length * $('.szld').width() > $(window).width()  + $('.szld').width()){
-					console.log('true');
+					//console.log('true');
 					$queueItems.eq(0).remove();
 				}
+
 				i_szlCount += 1;
+				console.log(i_szlCount);
 				$lastSzld = $queueItems.filter(':last');
 
 				//TODO: adding new item when last one is off screen messes up previous items
+				//set the left position of the last one before adjusting the rest of them based on that ****
 				//reposition queue so the newest item added becomes visible
-				if ($lastSzld.offset().left < 0){
-					console.log('shift');
-					$szlQueue.animate({left: 0},{duration: 300, queue: false,
-						step: function(){ // adjust the top & height values of the items along the way
-							adjustValues($queueItems);
-						}
-					});
-				}
-				adjustValues($queueItems);
+				$szlQueue.animate({left: 0},{duration: 300, queue: false,
+					step: function(){ // adjust the top & height values of the items along the way
+						$queueItems.each(function(){
+							//console.log($(this).css('left') + ' ,' + $(this).offset().left);
+							$(this).css({
+								'top': adjustTop($(this).offset().left),
+								'height': i_STARTHEIGHT - ($(this).position().top)/2 + '%'
+							});
+						});
+					}
+				});
 
 				//set descending z-indexes for items after the newly added item
 				$lastSzld.prev().css({'border':'none', 'box-shadow': '0 0 .8em black'});
@@ -371,7 +377,7 @@ $(document).ready(function(){
 
 		drag: function(e, ui){
 
-			console.log(startX);
+			//console.log(startX);
 			/*var dir = $(this).data('dir');
 				// If we don't have a direction, decide where we're going
 				if ((dir != 'y') && (dir != 'x')) {
@@ -404,7 +410,7 @@ $(document).ready(function(){
 				direction = 'left';
 			}
 
-			console.log(direction);
+			//console.log(direction);
 
 			//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
 			$('.szld').each(function(){
@@ -414,7 +420,7 @@ $(document).ready(function(){
 				var $this = $(this);
 				setZ(szldItem, $this);
 
-				if ($(this).offset().left > 0 && $(this).offset().left < overlap){
+				/*if ($(this).offset().left > 0 && $(this).offset().left < overlap){
 					var rotation = (-90 * (1-($(this).offset().left/overlap)));
 					if (rotation >= -45){
 						$(this).next().offset({left:0}).css({
@@ -428,7 +434,7 @@ $(document).ready(function(){
 					$(this).next().css({
 						'transform' : 'perspective( 600px ) rotateY(0deg)'
 					});
-				}
+				}*/
 			});
 			currentDate = new Date();
 			a_theTime.push(currentDate);
@@ -442,7 +448,7 @@ $(document).ready(function(){
 			if ( direction == 'left' && $queueItems.length * $('.szld').width() > ($(window).width() + $('.szld').width()) && $('.szld').eq(lastOne).offset().left < 0 && (a_theContent.length - $queueItems.length) >= arrayPos){
 				//remove it
 				$('.szld').eq(lastOne).remove();
-				console.log(lastId.replace(/\D/g,''));
+				//console.log(lastId.replace(/\D/g,''));
 				newDiv = document.createElement('div');// create new div
 				//newDiv.id = "newSzl" + (($('.szld').eq(0).attr('id').substr($('.szld').eq(0).attr('id').indexOf('l'), $('.szld').eq(0).attr('id').length) - 1) + '');// give it a numbered ID that's one less than its left neighbor
 				$('#queue').prepend($(newDiv)// add it to the first position (the right)
@@ -457,7 +463,7 @@ $(document).ready(function(){
 					}).attr('id', 'newSzl' + ($('#queue .szld').eq(0).attr('id').replace(/\D/g,'') - 1)));
 
 				//append corresponding content from content array
-				console.log($('#queue .szld:last').attr('id'));
+				//console.log($('#queue .szld:last').attr('id'));
 
 				$('#newSzl' + ($('#queue .szld').eq(0).attr('id').replace(/\D/g,''))).append(a_theContent[$('#queue .szld').eq(1).attr('id').replace(/\D/g,'') - 1])
 					//give it appropriate top & height value **doesn't do anything yet
@@ -473,7 +479,7 @@ $(document).ready(function(){
 			} else if ( direction == 'right' && $queueItems.length * $('.szld').width() > ($(window).width() + $('.szld').width()) && $('.szld').eq(0).offset().left > $(window).width() && (a_theContent.length - $queueItems.length) >= arrayPos){
 				//remove it
 				$('.szld').eq(0).remove();
-				console.log($('.szld:last').attr('id'));
+				//console.log($('.szld:last').attr('id'));
 				newDiv = document.createElement('div');// create new div
 				//newDiv.id = "newSzl" + (($('.szld').eq(0).attr('id').substr($('.szld').eq(0).attr('id').indexOf('l'), $('.szld').eq(0).attr('id').length) - 1) + '');// give it a numbered ID that's one less than its left neighbor
 				$('#queue').append($(newDiv)// add it to the first position (the right)
@@ -488,8 +494,8 @@ $(document).ready(function(){
 					}).attr('id', 'newSzl' + (($('#queue .szld:last').attr('id').replace(/\D/g,'') - 0) + 1) ));
 
 				//append corresponding content from content array
-				console.log($('#queue .szld:last').attr('id'));
-				console.log(0 - (a_theContent.length - $('#queue .szld:last').attr('id').replace(/\D/g,'')) );
+				//console.log($('#queue .szld:last').attr('id'));
+				//console.log(0 - (a_theContent.length - $('#queue .szld:last').attr('id').replace(/\D/g,'')) );
 				$('#queue .szld:last').append(a_theContent[0 - (a_theContent.length - $('#queue .szld:last').attr('id').replace(/\D/g,'')) ])
 					//give it appropriate top & height value **doesn't do anything yet
 					.css({
