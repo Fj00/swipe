@@ -613,7 +613,7 @@ $(document).ready(function(){
 				$szlQueue.stop().animate({left: leftBound},
 
 					// if position of newest item is more the 25% from the starting point, set duration equal to its left offset. if not, make it 300ms
-					{duration: (Math.abs($lastSzld.offset().left) > $(window).width() * 0.25 ? 
+					{duration: (Math.abs($lastSzld.offset().left) > $(window).width() * 0.25 ?
 								Math.abs($lastSzld.offset().left) : 300),
 					step: function(){
 						/*rightofZero = $('.szld').filter(function() {
@@ -647,6 +647,31 @@ $(document).ready(function(){
 				});
 				$queueItems.css({'box-shadow':'0 0 1em black','border': 'none'});
 				$lastSzld.css({'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'});
+			}
+			else if ($lastSzld.offset().left < 0) {
+				$('.szld').each(function(){
+					if ($(this).offset().left > (-1 * $(this).width()) && $(this).offset().left < 0){
+						console.log('adjustit');
+						var lastVisible = $(this).offset().left;
+						console.log(lastVisible);
+						console.log($("#queue").offset().left);
+						console.log(Math.abs($("#queue").offset().left - lastVisible));
+						$('#queue').animate({left: $("#queue").offset().left - lastVisible + 'px'}, {duration:500, queue: false, 
+							step: function(){
+								$('.szld').each(function(){
+									$(this).css({
+										'top': adjustTop($(this).offset().left) ,
+										'height': i_STARTHEIGHT - ($(this).position().top)/2 + '%',
+
+										//adjust left position of items if they've shifted further right during dragging
+										'left': $(this).offset().left - ($('.szld:last').offset().left - 5)
+									});
+								});
+							}
+						});
+					}
+				});
+
 			}
 		}
 	};
