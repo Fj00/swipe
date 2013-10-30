@@ -608,6 +608,8 @@ $(document).ready(function(){
 
 			//TODO: left containment gets further left after dragging back and forth
 			//move queue back to initial position when last szld element is > 0
+
+			//TODO: make is so dragging left will keeping adding szld items to the right end as long as there are enough in the array.
 			$lastSzld = $('#queue .szld').eq($('.szld').length - 1);
 			if ($lastSzld.offset().left > 0){
 				$szlQueue.stop().animate({left: leftBound},
@@ -648,14 +650,13 @@ $(document).ready(function(){
 				$queueItems.css({'box-shadow':'0 0 1em black','border': 'none'});
 				$lastSzld.css({'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'});
 			}
+
+			// need to make it so dragging right adds ones that were previously removed while dragging left
 			else if ($lastSzld.offset().left < 0) {
 				$('.szld').each(function(){
 					if ($(this).offset().left > (-1 * $(this).width()) && $(this).offset().left < 0){
 						console.log('adjustit');
 						var lastVisible = $(this).offset().left;
-						console.log(lastVisible);
-						console.log($("#queue").offset().left);
-						console.log(Math.abs($("#queue").offset().left - lastVisible));
 						$('#queue').animate({left: $("#queue").offset().left - lastVisible + 'px'}, {duration:500, queue: false, 
 							step: function(){
 								$('.szld').each(function(){
