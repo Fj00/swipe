@@ -133,7 +133,7 @@ $(document).ready(function(){
 				// create new div, add it to queue, append contents from szld article
 				newDiv = document.createElement('div');
 				newDiv.id = "newSzl" + i_szlCount;
-				console.log(newDiv.id);
+				//console.log(newDiv.id);
 
 				$('#queue').append($(newDiv)
 					.addClass('szld')
@@ -141,8 +141,8 @@ $(document).ready(function(){
 						  'width': $('#queue').height() * 0.72, 
 						  'z-index': i_szlCount + 1
 					}));
-				console.log(theIMG);
-				console.log(newDiv.id)
+				//console.log(theIMG);
+				//console.log(newDiv.id)
 				$(newDiv).append(theIMG).fadeIn(500);
 
 				//});
@@ -156,7 +156,7 @@ $(document).ready(function(){
 				}
 
 				i_szlCount += 1;
-				console.log(i_szlCount);
+				//console.log(i_szlCount);
 				$lastSzld = $queueItems.filter(':last');
 
 				//TODO: adding new item when last one is off screen messes up previous items
@@ -358,6 +358,7 @@ $(document).ready(function(){
 	var lastSzldID;
 	var arrayPos = 0,
 		direction,
+		prevX,
 		startY,
 		startX;
 
@@ -412,11 +413,22 @@ $(document).ready(function(){
 				$('footer').css('height', fh + (ft - ui.offset.top ) + 'px');
 				$('footer').css('top', ui.offset.top);
 			//}*/
-			if (startX < e.pageX){
-				direction = 'right';
-			} else {
-				direction = 'left';
+	        //console.log(e.pageX);
+
+	        // determine direction of drag
+			if (prevX == undefined) {
+				prevX = e.pageX; 
 			}
+			// dragged left
+			if (prevX > e.pageX) {
+				direction = 'left';
+				console.log('dragged left');
+			// dragged right
+			} else if (prevX < e.pageX) { // dragged right
+				direction = 'right';
+				console.log('dragged right');
+			}
+			prevX = e.pageX;
 
 			//console.log(direction);
 
@@ -450,6 +462,7 @@ $(document).ready(function(){
 
 			// add a new item to the right side when ones rotates off of the left side
 			var lastOne = $('.szld').length - 1;// get the eq position of the last one on the left
+			//console.log($('.szld').eq(lastOne).offset());
 			var lastId = $('.szld:first').next().attr('id');
 
 			// if the offset of the last one on the left becomes < 0..
@@ -484,22 +497,25 @@ $(document).ready(function(){
 				//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
 
 				arrayPos += 1;
-			} else if ( direction == 'right' && $queueItems.length * $('.szld').width() > ($(window).width() + ($('.szld').width() * 2)) && $('.szld').eq(0).offset().left > $(window).width() && (a_theContent.length - $queueItems.length) >= arrayPos){
+			} else if ( direction == 'right' && $queueItems.length * $('.szld').width() > ($(window).width() + $('.szld').width()) && $('.szld').eq($('.szld').length - 1).offset().left > 5){
 				//remove it
+				console.log('true');
+				//console.log($('.szld').eq($('.szld').length - 1).attr('id') + ',' + $('.szld').eq($('.szld').length - 1).offset().left)
+			if ( $('#queue .szld:last').attr('id').replace(/\D/g,'') + 1 < i_szlCount) {
+
 				$('.szld').eq(0).remove();
 				//console.log($('.szld:last').attr('id'));
 				newDiv = document.createElement('div');// create new div
 				//newDiv.id = "newSzl" + (($('.szld').eq(0).attr('id').substr($('.szld').eq(0).attr('id').indexOf('l'), $('.szld').eq(0).attr('id').length) - 1) + '');// give it a numbered ID that's one less than its left neighbor
 				$('#queue').append($(newDiv)// add it to the first position (the right)
-					.addClass('szld')
-					.attr('id', $(this).next().attr('id'))
-					.css({
-						'width': $('#queue').height() * 0.72,
-						'z-index': $(this).next().css('z-index') - 1,
-						'left': parseInt($('.szld:last').css('left'), 10) - $('.szld').width() - 10 + 'px',
-						'top': '50px',
-						'height': '50%'
-					}).attr('id', 'newSzl' + (($('#queue .szld:last').attr('id').replace(/\D/g,'') - 0) + 1) ));
+				.addClass('szld')
+				.css({
+					'width': $('#queue').height() * 0.72,
+					'z-index': $(this).next().css('z-index') - 1,
+					'left': parseInt($('.szld:last').css('left'), 10) - $('.szld').width() + 'px',
+					'top': '50px',
+					'height': '50%'
+				}).attr('id', 'newSzl' + (($('#queue .szld:last').attr('id').replace(/\D/g,'') - 0) + 1) ));
 
 				//append corresponding content from content array
 				//console.log($('#queue .szld:last').attr('id'));
@@ -511,10 +527,13 @@ $(document).ready(function(){
 						'height': '50%'//i_STARTHEIGHT - ($(this).position().top)/2 + '%'
 					});
 
+				//console.log($('#newSzl' + (a_theContent.length - $queueItems.length)).offset().left);
+				//console.log($('#newSzl' + (a_theContent.length - $queueItems.length)).css('top'));
 				//adjust containment to prevent last one on the right from being b_dragged off left side
 				//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
 
 				arrayPos += 1;
+				}
 			}
 		},
 
@@ -655,7 +674,7 @@ $(document).ready(function(){
 			else if ($lastSzld.offset().left < 0) {
 				$('.szld').each(function(){
 					if ($(this).offset().left > (-1 * $(this).width()) && $(this).offset().left < 0){
-						console.log('adjustit');
+						//console.log('adjustit');
 						var lastVisible = $(this).offset().left;
 						$('#queue').animate({left: $("#queue").offset().left - lastVisible + 'px'}, {duration:500, queue: false, 
 							step: function(){
@@ -674,6 +693,7 @@ $(document).ready(function(){
 				});
 
 			}
+			prevX = -1;
 		}
 	};
 
