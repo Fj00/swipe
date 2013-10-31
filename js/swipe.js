@@ -464,35 +464,37 @@ $(document).ready(function(){
 			// if the offset of the last one on the left becomes < 0..
 			if ( direction == 'left' && $queueItems.length * $('.szld').width() > ($(window).width() + $('.szld').width()) && $('.szld').eq(lastOne).offset().left < (-1 * $('.szld').width()) && (a_theContent.length - $queueItems.length) >= arrayPos){
 				//remove it
-				$('.szld').eq(lastOne).remove();
-				//console.log(lastId.replace(/\D/g,''));
-				newDiv = document.createElement('div');// create new div
-				//newDiv.id = "newSzl" + (($('.szld').eq(0).attr('id').substr($('.szld').eq(0).attr('id').indexOf('l'), $('.szld').eq(0).attr('id').length) - 1) + '');// give it a numbered ID that's one less than its left neighbor
-				$('#queue').prepend($(newDiv)// add it to the first position (the right)
-					.addClass('szld')
-					.attr('id', $(this).next().attr('id'))
-					.css({
-						'width': $('#queue').height() * 0.72,
-						'z-index': $(this).next().css('z-index') - 1,
-						'left': parseInt($('.szld').eq(0).css('left'), 10) + $('.szld').width() + 5 + 'px',
-						'top': '50px',
-						'height': '50%'
-					}).attr('id', 'newSzl' + ($('#queue .szld').eq(0).attr('id').replace(/\D/g,'') - 1)));
+				if ( ($('#queue .szld:first').attr('id').replace(/\D/g,'') - 0) + 1 > 0) {
+					$('.szld').eq(lastOne).remove();
+					//console.log(lastId.replace(/\D/g,''));
+					newDiv = document.createElement('div');// create new div
+					//newDiv.id = "newSzl" + (($('.szld').eq(0).attr('id').substr($('.szld').eq(0).attr('id').indexOf('l'), $('.szld').eq(0).attr('id').length) - 1) + '');// give it a numbered ID that's one less than its left neighbor
+					$('#queue').prepend($(newDiv)// add it to the first position (the right)
+						.addClass('szld')
+						.attr('id', $(this).next().attr('id'))
+						.css({
+							'width': $('#queue').height() * 0.72,
+							'z-index': $(this).next().css('z-index') - 1,
+							'left': parseInt($('.szld').eq(0).css('left'), 10) + $('.szld').width() + 5 + 'px',
+							'top': '50px',
+							'height': '50%'
+						}).attr('id', 'newSzl' + ($('#queue .szld').eq(0).attr('id').replace(/\D/g,'') - 1)));
 
-				//append corresponding content from content array
-				//console.log($('#queue .szld:last').attr('id'));
+					//append corresponding content from content array
+					//console.log($('#queue .szld:last').attr('id'));
 
-				$('#newSzl' + ($('#queue .szld').eq(0).attr('id').replace(/\D/g,''))).append(a_theContent[$('#queue .szld').eq(1).attr('id').replace(/\D/g,'') - 1])
-					//give it appropriate top & height value **doesn't do anything yet
-					.css({
-						'top': '50px',//adjustTop($(this).offset().left),
-						'height': '50%'//i_STARTHEIGHT - ($(this).position().top)/2 + '%'
-					});
+					$('#newSzl' + ($('#queue .szld').eq(0).attr('id').replace(/\D/g,''))).append(a_theContent[$('#queue .szld').eq(0).attr('id').replace(/\D/g,'') - 1])
+						//give it appropriate top & height value **doesn't do anything yet
+						.css({
+							'top': '50px',//adjustTop($(this).offset().left),
+							'height': '50%'//i_STARTHEIGHT - ($(this).position().top)/2 + '%'
+						});
 
-				//adjust containment to prevent last one on the right from being b_dragged off left side
-				//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
+					//adjust containment to prevent last one on the right from being b_dragged off left side
+					//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
 
-				arrayPos += 1;
+					arrayPos += 1;
+				}
 			} else if ( direction == 'right' && $queueItems.length * $('.szld').width() > ($(window).width() + $('.szld').width()) && $('.szld').eq($('.szld').length - 1).offset().left > 5){
 				//remove it
 				//console.log('true');
@@ -719,8 +721,11 @@ $(document).ready(function(){
 		$('#queue div').removeClass('rerate');
 		$(this).addClass('rerate');
 		clicked = clicked.replace(/\D/g,'');	// strip text from the ID in order to get the correct position in theContent array
+
 		$('#middleArticle').addClass('requeue').empty().append($('#topArticle').contents());
-		$('#topArticle').addClass('rerate').empty().append(a_theContent[clicked - 1]);
+		if (clicked > 0){
+		$('#topArticle').addClass('rerate').empty().append(a_theContent[clicked - 1]); // offset position by one because szlCount is always 1 ahead
+		} else $('#topArticle').addClass('rerate').empty().append(a_theContent[clicked]);
 	});
 
 	//share menu
@@ -769,14 +774,6 @@ $(document).ready(function(){
 	}).on('mouseup', function(){
 		$('.arrows').fadeOut();
 	});
-
-	//prevent browser window from scrolling on iphone
-	/*$('body').bind('touchmove', function (e) {
-		//e.preventDefault();
-		if ($(e.target).attr('id') == 'stream'){
-			e.preventDefault();
-		}
-	});*/
 
 	//extract links and push to an array
 	// http://stackoverflow.com/questions/9934944/embedding-youtube-video-refused-to-display-document-because-display-forbidden-b
