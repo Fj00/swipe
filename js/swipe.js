@@ -129,7 +129,7 @@ $(document).ready(function(){
 						});
 					});
 				}
-
+				i_szlCount += 1;
 				// create new div, add it to queue, append contents from szld article
 				newDiv = document.createElement('div');
 				newDiv.id = "newSzl" + i_szlCount;
@@ -155,7 +155,7 @@ $(document).ready(function(){
 					$queueItems.eq(0).remove();
 				}
 
-				i_szlCount += 1;
+				console.log(i_szlCount);
 				//console.log(i_szlCount);
 				$lastSzld = $queueItems.filter(':last');
 
@@ -362,10 +362,6 @@ $(document).ready(function(){
 		startY,
 		startX;
 
-    $('footer').mousedown(function(e){
-		startY = e.pageY;
-		startX = e.pageX;
-	});
 	var queueDrag = {
 		axis: "x",
 		scroll: false,
@@ -422,11 +418,11 @@ $(document).ready(function(){
 			// dragged left
 			if (prevX > e.pageX) {
 				direction = 'left';
-				console.log('dragged left');
+				//console.log('dragged left');
 			// dragged right
 			} else if (prevX < e.pageX) { // dragged right
 				direction = 'right';
-				console.log('dragged right');
+				//console.log('dragged right');
 			}
 			prevX = e.pageX;
 
@@ -499,10 +495,11 @@ $(document).ready(function(){
 				arrayPos += 1;
 			} else if ( direction == 'right' && $queueItems.length * $('.szld').width() > ($(window).width() + $('.szld').width()) && $('.szld').eq($('.szld').length - 1).offset().left > 5){
 				//remove it
-				console.log('true');
+				//console.log('true');
 				//console.log($('.szld').eq($('.szld').length - 1).attr('id') + ',' + $('.szld').eq($('.szld').length - 1).offset().left)
-			if ( $('#queue .szld:last').attr('id').replace(/\D/g,'') + 1 < i_szlCount) {
-
+				console.log( ($('#queue .szld:last').attr('id').replace(/\D/g,'') - 0) + 1 );
+			if ( ($('#queue .szld:last').attr('id').replace(/\D/g,'') - 0) + 1 < i_szlCount) {
+				console.log('true');
 				$('.szld').eq(0).remove();
 				//console.log($('.szld:last').attr('id'));
 				newDiv = document.createElement('div');// create new div
@@ -520,7 +517,7 @@ $(document).ready(function(){
 				//append corresponding content from content array
 				//console.log($('#queue .szld:last').attr('id'));
 				//console.log(0 - (a_theContent.length - $('#queue .szld:last').attr('id').replace(/\D/g,'')) );
-				$('#queue .szld:last').append(a_theContent[0 - (a_theContent.length - $('#queue .szld:last').attr('id').replace(/\D/g,'')) ])
+				$('#queue .szld:last').append(a_theContent[$('#queue .szld:last').attr('id').replace(/\D/g,'')])
 					//give it appropriate top & height value **doesn't do anything yet
 					.css({
 						'top': '50px',//adjustTop($(this).offset().left),
@@ -723,7 +720,7 @@ $(document).ready(function(){
 		$(this).addClass('rerate');
 		clicked = clicked.replace(/\D/g,'');	// strip text from the ID in order to get the correct position in theContent array
 		$('#middleArticle').addClass('requeue').empty().append($('#topArticle').contents());
-		$('#topArticle').addClass('rerate').empty().append(a_theContent[clicked]);
+		$('#topArticle').addClass('rerate').empty().append(a_theContent[clicked - 1]);
 	});
 
 	//share menu
