@@ -496,42 +496,34 @@ $(document).ready(function(){
 					arrayPos += 1;
 				}
 			} else if ( direction == 'right' && $queueItems.length * $('.szld').width() > ($(window).width() + $('.szld').width()) && $('.szld').eq($('.szld').length - 1).offset().left > 5){
-				//remove it
-				//console.log('true');
-				//console.log($('.szld').eq($('.szld').length - 1).attr('id') + ',' + $('.szld').eq($('.szld').length - 1).offset().left)
-				console.log( ($('#queue .szld:last').attr('id').replace(/\D/g,'') - 0) + 1 );
-			if ( ($('#queue .szld:last').attr('id').replace(/\D/g,'') - 0) + 1 < i_szlCount) {
-				console.log('true');
-				$('.szld').eq(0).remove();
-				//console.log($('.szld:last').attr('id'));
-				newDiv = document.createElement('div');// create new div
-				//newDiv.id = "newSzl" + (($('.szld').eq(0).attr('id').substr($('.szld').eq(0).attr('id').indexOf('l'), $('.szld').eq(0).attr('id').length) - 1) + '');// give it a numbered ID that's one less than its left neighbor
-				$('#queue').append($(newDiv)// add it to the first position (the right)
-				.addClass('szld')
-				.css({
-					'width': $('#queue').height() * 0.72,
-					'z-index': $(this).next().css('z-index') - 1,
-					'left': parseInt($('.szld:last').css('left'), 10) - $('.szld').width() + 'px',
-					'top': '50px',
-					'height': '50%'
-				}).attr('id', 'newSzl' + (($('#queue .szld:last').attr('id').replace(/\D/g,'') - 0) + 1) ));
+				
+				if ( ($('#queue .szld:last').attr('id').replace(/\D/g,'') - 0) + 1 < i_szlCount) {
+					
+					console.log('true');
+					$('.szld').eq(0).remove();
+					newDiv = document.createElement('div');// create new div
+					$('#queue').append($(newDiv)// add it to the first position (the right)
+						.addClass('szld')
+						.css({
+							'width': $('#queue').height() * 0.72,
+							'z-index': $(this).next().css('z-index') - 1,
+							'left': parseInt($('.szld:last').css('left'), 10) - $('.szld').width() + 'px',
+							'top': '50px',
+							'height': '50%'
+					}).attr('id', 'newSzl' + (($('#queue .szld:last').attr('id').replace(/\D/g,'') - 0) + 1) ));
 
-				//append corresponding content from content array
-				//console.log($('#queue .szld:last').attr('id'));
-				//console.log(0 - (a_theContent.length - $('#queue .szld:last').attr('id').replace(/\D/g,'')) );
-				$('#queue .szld:last').append(a_theContent[$('#queue .szld:last').attr('id').replace(/\D/g,'')])
-					//give it appropriate top & height value **doesn't do anything yet
-					.css({
-						'top': '50px',//adjustTop($(this).offset().left),
-						'height': '50%'//i_STARTHEIGHT - ($(this).position().top)/2 + '%'
-					});
+					//append corresponding content from content array
+					$('#queue .szld:last').append(a_theContent[$('#queue .szld:last').attr('id').replace(/\D/g,'')])
+						//give it appropriate top & height value **doesn't do anything yet
+						.css({
+							'top': '50px',//adjustTop($(this).offset().left),
+							'height': '50%'//i_STARTHEIGHT - ($(this).position().top)/2 + '%'
+						});
 
-				//console.log($('#newSzl' + (a_theContent.length - $queueItems.length)).offset().left);
-				//console.log($('#newSzl' + (a_theContent.length - $queueItems.length)).css('top'));
-				//adjust containment to prevent last one on the right from being b_dragged off left side
-				//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
+					//adjust containment to prevent last one on the right from being b_dragged off left side
+					//queueDrag.containment = [-1 * ($('.szld').eq(0).offset().left + overlap), 0, $(window).width()/2, 0];
 
-				arrayPos += 1;
+					arrayPos += 1;
 				}
 			}
 		},
