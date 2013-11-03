@@ -366,15 +366,15 @@ $(document).ready(function(){
 		axis: "x",
 		scroll: false,
 
-		start: function(ui, e){
+		start: function(ui, event){
 			b_dragged = true;
             dragStartTime = new Date();
-            var lastSzld = $('.szld:last');
+            /*var lastSzld = $('.szld:last');
                 lastSzldID = $('.szld:last').attr('id');
 			$(this).data('dir', '');
 			$('#queue .szld').each(function(){
 				$(this).css('z-index', $(this).index());
-			});
+			});*/
 			startX = event.pageX;
 		},
 
@@ -646,9 +646,11 @@ $(document).ready(function(){
 						});
 					//reset z's if they're out of order after dragging fast
 					//TODO: prevent them from getting out of order in the first place
+					/*
 					$lastSzld.prevAll().each(function(){
 						$(this).css({'z-index' : $(this).next().css('z-index') - 1});
 					});
+					*/
 					//$(this).css({'z-index' : $(this).closest().css('z-index') - 1});
 					}, complete: function(){
 						//queue bounces back after hitting left edge
