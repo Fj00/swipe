@@ -388,7 +388,6 @@
 			//if initial pageY is < current pageY and starting pageX is within x amount from current pageX..don't drag
 
 			drag: function(e, ui){
-				var $queueItems = $('#queue .szld');
 				//console.log(startX);
 				/*var dir = $(this).data('dir');
 					// If we don't have a direction, decide where we're going
@@ -665,7 +664,6 @@
 							}
 						}
 					});
-					var $queueItems = $('#queue .szld');
 					$queueItems.css({'box-shadow':'0 0 1em black','border': 'none'});
 					$lastSzld.css({'box-shadow':'0 0 1em #FF4D4D','border': '1px solid #FF4D4D'});
 				}
