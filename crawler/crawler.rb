@@ -57,18 +57,26 @@ def extractor(link)
 	puts urls
 end
 
-extractor("http://news.yahoo.com/archive/")
+#extractor("http://news.yahoo.com/archive/")
 
-#food.com
-=begin def extractor(link)
-	html = Nokogiri::HTML( open( link ) ) and nil
-	#urls = Array.new
-	html.xpath( '//div[@class="rz-topic-list"]//div/div/*[1]//descendant/a' ).each do |a|
-		#title_and_link = "http://www.bloomberg.com" + a["href"], a.text
-		#urls.push [ "http://www.bloomberg.com" + a["href"], a.text ]
-		puts a.text
+#require 'alexa' -- costs money
+
+#client = Alexa::Client.new(access_key_id: "key", secret_access_key: "secret")
+#url_info = client.url_info(url: "http://www.hyperproof.com/")
+#puts url_info.rank
+
+#sbnation
+	html = Nokogiri::HTML( open( "http://www.sbnation.com/latest-news" ) ) and nil
+	urls = Array.new
+	html.xpath( '//div[@class="l-chunk"]//h3/a' ).each do |a|
+		title_and_link = a["href"], a.text
+		urls.push [ a["href"], a.text ]
+		puts title_and_link
+
 	end
-end
-
-extractor("http://www.food.com/recipes-popular")
+	puts urls.length
+	puts urls[0][1]
+=begin -- return body html without script tags
+	doc = html
+	doc.at('body').search('script,noscript').remove
 =end
