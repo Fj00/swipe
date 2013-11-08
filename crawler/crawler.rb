@@ -77,7 +77,7 @@ end
 	end
 	puts urls.length
 	puts urls[0][1]
-=end
+
 
 #nyt - arts beat .. only first page
 	html = Nokogiri::HTML( open( "http://artsbeat.blogs.nytimes.com/2013/" ) ) and nil
@@ -119,7 +119,13 @@ end
 	end
 	puts urls
 	puts urls.length
-
+=end
+require 'simple-rss'
+rss = SimpleRSS.parse open('http://feeds.feedburner.com/nasawatch/Aekt')
+rss.items.each do |a|
+	puts "#{a.link}","#{a.title}"
+end
+#puts rss.items.each do 
 =begin -- return body html without script tags
 	doc = html
 	doc.at('body').search('script,noscript').remove
