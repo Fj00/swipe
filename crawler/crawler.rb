@@ -66,6 +66,7 @@ end
 #puts url_info.rank
 
 #sbnation
+=begin
 	html = Nokogiri::HTML( open( "http://www.sbnation.com/latest-news" ) ) and nil
 	urls = Array.new
 	html.xpath( '//div[@class="l-chunk"]//h3/a' ).each do |a|
@@ -76,6 +77,49 @@ end
 	end
 	puts urls.length
 	puts urls[0][1]
+=end
+
+#nyt - arts beat .. only first page
+	html = Nokogiri::HTML( open( "http://artsbeat.blogs.nytimes.com/2013/" ) ) and nil
+	urls = Array.new
+	html.xpath( '//div[@id="content"]//h3/a' ).each do |a|
+		title_and_link = a["href"], a.text
+		urls.push [ title_and_link ]
+	end
+	puts urls
+	puts urls.length
+	#puts urls[0][1]
+
+#nyt - bits
+	html = Nokogiri::HTML( open( "http://bits.blogs.nytimes.com/2013/" ) ) and nil
+	urls = Array.new
+	html.xpath( '//div[@id="content"]//h3/a' ).each do |a|
+		title_and_link = a["href"], a.text
+		urls.push [ title_and_link ]
+	end
+	puts urls
+	puts urls.length
+
+#deep links
+	html = Nokogiri::HTML( open( "https://www.eff.org/deeplinks") ) and nil
+	urls = Array.new
+	html.xpath( '//div[@class="view-content"]//h2/a' ).each do |a|
+		title_and_link = a["href"], a.text
+		urls.push [ title_and_link ]	
+	end
+	puts urls
+	puts urls.length
+
+#felix salmon
+	html = Nokogiri::HTML( open( "http://blogs.reuters.com/felix-salmon/2013/") ) and nil
+	urls = Array.new
+	html.xpath( '//div[@class="topStory"]//h2/a' ).each do |a|
+		title_and_link = a["href"], a.text
+		urls.push [ title_and_link ]
+	end
+	puts urls
+	puts urls.length
+
 =begin -- return body html without script tags
 	doc = html
 	doc.at('body').search('script,noscript').remove
