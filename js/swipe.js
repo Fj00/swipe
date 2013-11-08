@@ -91,7 +91,27 @@
 
 		});
 
-		$('#topArticle').html(a_articles[5]);
+		// attach handler to new top article
+		// workaround because .on('scroll', ...) doesn't work with newly created elements
+		$.fn.attachScroll = function(){
+			var b_scrolled = false;
+			$(this).find('div:first').data('rated', '');
+
+			$(this).scroll(function(){
+				console.log('scrolling');
+				// user has scrolled..fires once
+				// prevent rating it multiple times
+				if ( $(this).find('div:first').data('rated') === '' && b_scrolled === false) {
+					b_scrolled = true;
+					console.log('+1');
+					$(this).find('div:first').data('rated', true);
+				}
+			});
+
+			return this; // enable chaining
+		};
+
+		$('#topArticle').html(a_articles[5]).attachScroll();
 
 		// return nonlinear top value based on the element's left offset
 		var adjustTop = function(offset){
@@ -108,7 +128,7 @@
 				$topArticle.animate({left: width},{queue: false, duration: 500,
 					complete: function(){
 						$(this).remove();
-						$('#middleArticle').attr('id', 'topArticle');//.draggable(newArticle);
+						$('#middleArticle').attr('id', 'topArticle').attachScroll(false);//.draggable(newArticle);
 						$('#bottomArticle').attr('id', 'middleArticle');
 						b_isRunning = false;
 					}
@@ -222,7 +242,7 @@
 						});
 					}
 					$(this).remove();
-					$('#middleArticle').attr('id', 'topArticle').css('margin-left', artPos)//.draggable(newArticle);
+					$('#middleArticle').attr('id', 'topArticle').css('margin-left', artPos).attachScroll(); //.draggable(newArticle);
 					$('#bottomArticle').attr('id', 'middleArticle').css('margin-left', artPos);
 					b_isRunning = false;
 					}
@@ -728,8 +748,8 @@
 		});
 
 		//share menu
-		var $shareMenu = $('#shareMenu');
 		$('#shareText').click(function(){
+			var $shareMenu = $('#shareMenu');
 			//slides up and down with css transition
 			if ($shareMenu.hasClass('clicked')){
 				$shareMenu.removeClass('clicked').addClass('hideIt');
@@ -774,6 +794,10 @@
 			$('.arrows').fadeOut();
 		});
 
+		/*$('div').scroll(function(){
+			console.log(event.target);
+		});*/
+
 		//extract links and push to an array
 		// http://stackoverflow.com/questions/9934944/embedding-youtube-video-refused-to-display-document-because-display-forbidden-b
 		/*links = [];
@@ -794,7 +818,11 @@
 			//console.log(links);
 			$('#topArticle').html(thumbs[0]);
 			$('#middleArticle').html(thumbs[1]);
+
 		});*/
+
+		// form submit & google analytics
+
 	});
 
 }(window.jQuery));
