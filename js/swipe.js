@@ -104,6 +104,7 @@
 				if ( $(this).find('div:first').data('rated') === '' && b_scrolled === false) {
 					b_scrolled = true;
 					console.log('+1');
+					rateArticle();
 					$(this).find('div:first').data('rated', true);
 				}
 			});
