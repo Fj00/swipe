@@ -45,11 +45,31 @@ var IE = false, // check for IE *
     currentArticleID,
 
     // flags
-    buttonsDisabled = false; // rating buttons disabled when this is true
-    snakeShowing = false; // loading snake *
-    requestInProgress = false; // xml request
+    buttonsDisabled = false, // rating buttons disabled when this is true
+    snakeShowing = false, // loading snake *
+    requestInProgress = false, // xml request
+    shared = false,
+    b_scrolled = false;
 
+  // attach handler to new top article
+  // workaround because .on('scroll', ...) doesn't work with newly created elements
+  $.fn.attachScroll = function(){
+    var b_scrolled = false;
+    $(this).find('div:first').data('rated', '');
 
+    $(this).scroll(function(){
+      console.log('scrolling');
+      // user has scrolled..fires once
+      // prevent rating it multiple times
+      if ( $(this).find('div:first').data('rated') === '' && b_scrolled === false) {
+        window.b_scrolled = true; // make it accessible to rateArticle function
+        console.log('+1');
+        $(this).find('div:first').data('rated', true);
+      }
+    });
+
+    return this; // enable chaining
+  };
 
   // attempt at rewriting xml request and article HTML insertion with jQuery
   function getXML( url ) {
@@ -83,9 +103,9 @@ var IE = false, // check for IE *
                       if ($(this).find('forwarding-user-id').text() === '') {
                         articleHtml += '<h2>This article was forwarded based on prediction</h2>';
                       } else {
-                        articleHtml += '<h2>This article was forwarded by user <a href="http://www.szzzl.com/users/' + $(this).find('forwarding-user-id').text() + '" target="_blank">' + $(this).find('forwarding-user').text() + '</a></h2>'
+                        articleHtml += '<h2>This article was forwarded by user <a href="http://www.szzzl.com/users/' + $(this).find('forwarding-user-id').text() + '" target="_blank">' + $(this).find('forwarding-user').text() + '</a></h2>';
                       }
-                      
+
                       articleHtml += '<h3>' + $(this).find('prediction').text() + '% chance of szl</h3>';
 
                       if ($(this).find('image').text() !== ''){ // if there is an image, add it. otherwise don't create an element for it
@@ -150,8 +170,8 @@ var IE = false, // check for IE *
       });
       if (a_articleContent.length == 4){ // insert first article once cache reaches 4
         currentArticleID = a_articleID[0]; // update article ID
-        $('#topArticle .content').empty().html(a_articleContent[0]); // empty current content and replace with next
-        $('#middleArticle .content').empty().html(a_articleContent[1]);
+        $('#topArticle .content').empty().html(a_articleContent[0]).attachScroll(); // empty current content and replace with next
+        $('#middleArticle .content').empty().html(a_articleContent[1]).attachScroll();
         shareURL = 'http://www.szzzl.com/buzzes/' + currentArticleID;
         addthis.update( 'share', 'url', shareURL ); // pass url
         addthis.update( 'share', 'title', $('#title a').text() ); // pass article title
@@ -170,7 +190,8 @@ var IE = false, // check for IE *
     });
   }
 
-  function checkAndLoad(){
+  // check for mobile and load articles
+  (function checkAndLoad(){
     if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test( navigator.userAgent ) ) {
       isMobile = true;
     }
@@ -179,12 +200,10 @@ var IE = false, // check for IE *
 
     getXML( unratedContent );  // load xml for stream of unrated articles 
 
-  }
+  }());
 
-  checkAndLoad(); // check for mobile and load articles
 
   function rateArticle( articleID, rating ) {
-
     var rateArticleURL = ratingLink + currentArticleID + '/rating/'; // * /buzzes/ + (article ID) + /rating/
     if ( rating == -1 ) {
       rateArticleURL += 'fzl.xml';
@@ -194,11 +213,11 @@ var IE = false, // check for IE *
       szldCount++;
     }
     articlesViewed++;
-    
     // update szld/rated count in the footer
     var $ratingCounter = $('#szldArticle'); // *
     //if ( $ratingCounter && $('#szldArticle').text() !== '' ){
     $ratingCounter.html(szldCount + '/' + articlesViewed + ' szld');
+    shared = false;
     //}
     //sendRating( rateArticleURL );
   }
@@ -318,11 +337,11 @@ var IE = false, // check for IE *
     }
   }
 
+
   $(document).ready(function(){
 
     // set up rating buttons
     $('#rateButtons a').click(function(e){
-
       if (buttonsDisabled === false && b_isRunning === false) {
         rateCount += 1;
         if (e.target.id == 'rateSzl'){
@@ -332,10 +351,20 @@ var IE = false, // check for IE *
         } else {
           //console.log('fzl');
           szlFzl(e.target.id);
-          rateArticle(articleID, -1);
+
+          // if article shared or scrolled count as szl even though fzl was clicked
+          if (shared || b_scrolled || visitSource){
+            console.log('article was shared or scrolled..szl');
+            rateArticle(articleID, 1);
+          } else {
+            rateArticle(articleID, -1);
+          }
         }
         //showNewArticle();
       }
+      b_scrolled = false; // reset flags
+      shared = false;
+      visitSource = false;
       return false;
     });
 
@@ -445,7 +474,7 @@ var IE = false, // check for IE *
 
       $('#mainContent').append(newCont);
       $('#bottomArticle').append(newText);
-      $('#middleArticle').attr('id', 'topArticle');//.draggable(newArticle);
+      $('#middleArticle').attr('id', 'topArticle').attachScroll();//.draggable(newArticle);
       $('#bottomArticle').attr('id', 'middleArticle');
       var title = $('#topArticle .content').find($('#title a')).text();
       showNewArticle(title);
@@ -515,7 +544,7 @@ var IE = false, // check for IE *
     var downPoint,
         mouseIsDown,
         $currentTop;
-    $('body').on('mousedown', '.articleContainer', function(e){
+    /*$('body').on('mousedown', '.articleContainer', function(e){
       $currentTop = $('#topArticle');
       //downPoint = event.touches[0].screenX - $('#topArticle').offset().left;
       //mouseIsDown = true;
@@ -527,9 +556,30 @@ var IE = false, // check for IE *
       //$currentTop.removeClass('unselectable');
       end(e);
       if (!b_isRunning) checkForSwipe();
-    });
+    });*/
 
     // init draggable for initial top article
     //$('.articleContainer').draggable(newArticle);
+
+    // +1 for a share
+    $('#addThis').on('click', 'a', function(e){
+      // rateArticle();
+      console.log('click');
+      if (shared === false){
+        shared = true;
+        console.log('szl');
+        console.log(shared);
+      }
+    });
+
+    // +1 for read more/going to source
+    var visitSource = false;
+    $(document).on('click', '#topArticle a' , function(){
+      if (visitSource === false){
+        visitSource = true;
+        console.log('+1');
+      }
+      //return false;
+    });
 
   });
