@@ -22,7 +22,7 @@ require 'net/http'
 source = Net::HTTP.get('http://bloomberg.com', '/index.html')
 
 print source
-=end
+
 
 require 'open-uri'
 require 'nokogiri'
@@ -56,7 +56,7 @@ def extractor(link)
 	end
 	puts urls
 end
-
+=end
 #extractor("http://news.yahoo.com/archive/")
 
 #require 'alexa' -- costs money
@@ -77,9 +77,56 @@ end
 	end
 	puts urls.length
 	puts urls[0][1]
+=end
+#NYT blogs
+	require 'nokogiri'
+	require 'open-uri'
+	blogs = [
+					 "http://bits.blogs.nytimes.com/2013/", 
+					 "http://well.blogs.nytimes.com/2013/", 
+					 "http://artsbeat.blogs.nytimes.com/2013/", 
+					 "http://cityroom.blogs.nytimes.com/2013/",
+					 "http://economix.blogs.nytimes.com/2013/",
+					 "http://parenting.blogs.nytimes.com/2013/",
+					 "http://kristof.blogs.nytimes.com/2013/",
+					 "http://opinionator.blogs.nytimes.com/2013/",
+					 "http://krugman.blogs.nytimes.com/2013/",
+					 "http://thecaucus.blogs.nytimes.com/2013/"	 
+					]
+	blogs.each do |b|
+		html = Nokogiri::HTML( open( b ) ) and nil
+		urls = Array.new
+		html.xpath( '//div[@id="content"]//h3/a' ).each do |a|
+			title_and_link = a["href"], a.text
+			urls.push [ title_and_link ]
+		end
+		puts urls
+		puts urls.length
+	end
+#NYT main page
+	html = Nokogiri::XML( open( "http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml" ) ) and nil
+	mainURL = Array.new
+	html.xpath( '//item' ).each do |a|
+		%w[link title].each do |n|
+			puts a.at(n).text
+		end
+	end
+	puts mainURL
 
 
-#nyt - arts beat .. only first page
+
+=begin
+	# well
+	html = Nokogiri::HTML( open( "http://well.blogs.nytimes.com/2013" ) ) and nil
+	urls = Array.new
+	html.xpath( '//div[@id="content"]//h3/a' ).each do |a|
+		title_and_link = a["href"], a.text
+		urls.push [ title_and_link ]
+	end
+	puts urls
+	puts urls.length
+
+	# arts beat .. only first page
 	html = Nokogiri::HTML( open( "http://artsbeat.blogs.nytimes.com/2013/" ) ) and nil
 	urls = Array.new
 	html.xpath( '//div[@id="content"]//h3/a' ).each do |a|
@@ -90,15 +137,6 @@ end
 	puts urls.length
 	#puts urls[0][1]
 
-#nyt - bits
-	html = Nokogiri::HTML( open( "http://bits.blogs.nytimes.com/2013/" ) ) and nil
-	urls = Array.new
-	html.xpath( '//div[@id="content"]//h3/a' ).each do |a|
-		title_and_link = a["href"], a.text
-		urls.push [ title_and_link ]
-	end
-	puts urls
-	puts urls.length
 
 #deep links
 	html = Nokogiri::HTML( open( "https://www.eff.org/deeplinks") ) and nil
@@ -119,19 +157,21 @@ end
 	end
 	puts urls
 	puts urls.length
-
+=end
+=begin
 require 'simple-rss'
 rss = SimpleRSS.parse open('http://feeds.feedburner.com/20-nothings')
 rss.items.each do |a|
 	puts "#{a.link}","#{a.title}"
 end
-=end
+#links from 20-nothings
 xml = Nokogiri::HTML( open ('http://feeds.feedburner.com/20-nothings') )
 xml.xpath('//entry/link[@rel="alternate"]').each do |a|
 	unless xml.xpath('//a[href]').to_s.match(/comment/)
 		puts a["href"]
 	end
 end
+=end
 #puts rss.items.each do 
 =begin -- return body html without script tags
 	doc = html
