@@ -119,11 +119,18 @@ end
 	end
 	puts urls
 	puts urls.length
-=end
+
 require 'simple-rss'
-rss = SimpleRSS.parse open('http://feeds.feedburner.com/nasawatch/Aekt')
+rss = SimpleRSS.parse open('http://feeds.feedburner.com/20-nothings')
 rss.items.each do |a|
 	puts "#{a.link}","#{a.title}"
+end
+=end
+xml = Nokogiri::HTML( open ('http://feeds.feedburner.com/20-nothings') )
+xml.xpath('//entry/link[@rel="alternate"]').each do |a|
+	unless xml.xpath('//a[href]').to_s.match(/comment/)
+		puts a["href"]
+	end
 end
 #puts rss.items.each do 
 =begin -- return body html without script tags
