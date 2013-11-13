@@ -131,7 +131,7 @@ end
 		html = Nokogiri::HTML( open( "http://www.latimes.com/business/technology/" ) ) and nil
 		#urls = Array.new
 		puts html.xpath('//div[@id="section"]//div[@class="curvedTop"]')
-=end
+
 
 	#cnn finance
 		require 'nokogiri'
@@ -155,6 +155,19 @@ end
 		html.xpath('//div[@id="posts"]//h2/a').each do |a|
 			puts a['href'], a.text
 		end
+=end
+	#nfl.com news
+		require 'nokogiri'
+		require 'open-uri'
+		xml = Nokogiri::HTML( open( "http://www.nfl.com/rss/rsslanding?searchString=home" ) )
+		xml.search( '//entry' ).each do |a|
+			puts a.css('title').text
+			puts a.css('link').attr('href')
+		end
+		#urls = Array.new
+
+
+
 
 
 =begin
