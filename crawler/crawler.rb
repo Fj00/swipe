@@ -148,6 +148,15 @@ end
 		html.xpath('//div[@id="main-wrapper"]//h3/a').each do |a|
 			puts a['href'], a.text
 		end
+
+	#serious eats
+		html = Nokogiri::HTML( open( "http://www.seriouseats.com/" ) ) and nil
+		#urls = Array.new
+		html.xpath('//div[@id="posts"]//h2/a').each do |a|
+			puts a['href'], a.text
+		end
+
+
 =begin
 	# well
 	html = Nokogiri::HTML( open( "http://well.blogs.nytimes.com/2013" ) ) and nil
