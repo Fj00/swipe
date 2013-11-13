@@ -173,7 +173,7 @@ end
 			puts a['href'], a.text
 		end
 		#urls = Array.new
-=end
+
 	#golf channel
 		require 'nokogiri'
 		require 'open-uri'
@@ -182,7 +182,39 @@ end
 			puts "http://www.golfchannel.com/news" + a['href'], a.text
 		end
 
+	#techmamas
+	require 'nokogiri'
+		require 'open-uri'
+		xml = Nokogiri::HTML( open( "http://techmamas.com/main/2013" ) )
+		xml.xpath( '//div[@id="contentmain"]//h1/a' ).each do |a|
+			puts a['href'], a.text
+		end
 
+
+
+
+	#the loop
+		require 'nokogiri'
+		require 'open-uri'
+		xml = Nokogiri::HTML( open( "http://www.loopinsight.com/2013/" ) )
+		xml.xpath( '//div[@class="container"]//h2/a' ).each do |a|
+			puts a['href'], a.text
+		end
+
+		require 'nokogiri'
+		require 'open-uri'
+		xml = Nokogiri::HTML( open( "http://www.calculatedriskblog.com/2013" ) )
+		xml.xpath( '//div[@class="blog-posts hfeed"]//h3/a' ).each do |a|
+			puts a['href'], a.text
+		end
+
+=end
+		require 'nokogiri'
+		require 'open-uri'
+		xml = Nokogiri::HTML( open( "http://www.consumerreports.org/cro/news/index.htm" ) )
+		xml.xpath( '//div[@class="news-content"]' ).each do |a|
+			puts a
+		end
 
 =begin
 	# well
