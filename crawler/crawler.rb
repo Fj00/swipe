@@ -77,21 +77,21 @@ end
 	end
 	puts urls.length
 	puts urls[0][1]
-=end
+
 #NYT blogs
 	require 'nokogiri'
 	require 'open-uri'
 	blogs = [
-					 "http://bits.blogs.nytimes.com/2013/", 
-					 "http://well.blogs.nytimes.com/2013/", 
-					 "http://artsbeat.blogs.nytimes.com/2013/", 
-					 "http://cityroom.blogs.nytimes.com/2013/",
-					 "http://economix.blogs.nytimes.com/2013/",
-					 "http://parenting.blogs.nytimes.com/2013/",
-					 "http://kristof.blogs.nytimes.com/2013/",
-					 "http://opinionator.blogs.nytimes.com/2013/",
-					 "http://krugman.blogs.nytimes.com/2013/",
-					 "http://thecaucus.blogs.nytimes.com/2013/"	 
+						"http://bits.blogs.nytimes.com/2013/", 
+						"http://well.blogs.nytimes.com/2013/", 
+						"http://artsbeat.blogs.nytimes.com/2013/", 
+						"http://cityroom.blogs.nytimes.com/2013/",
+						"http://economix.blogs.nytimes.com/2013/",
+						"http://parenting.blogs.nytimes.com/2013/",
+						"http://kristof.blogs.nytimes.com/2013/",
+						"http://opinionator.blogs.nytimes.com/2013/",
+						"http://krugman.blogs.nytimes.com/2013/",
+						"http://thecaucus.blogs.nytimes.com/2013/"	 
 					]
 	blogs.each do |b|
 		html = Nokogiri::HTML( open( b ) ) and nil
@@ -104,17 +104,50 @@ end
 		puts urls.length
 	end
 #NYT main page
-	html = Nokogiri::XML( open( "http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml" ) ) and nil
+	xml = Nokogiri::XML( open( "http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml" ) ) and nil
 	mainURL = Array.new
-	html.xpath( '//item' ).each do |a|
+	xml.search( '//item' ).each do |a|
 		%w[link title].each do |n|
 			puts a.at(n).text
 		end
 	end
 	puts mainURL
 
+	#wikipedia
+	require 'nokogiri'
+	require 'open-uri'
+	html = Nokogiri::HTML( open( "http://en.wikipedia.org/wiki/Portal:Featured_content" ) ) and nil
+		#urls = Array.new
+		html.search( 'div#mw-content-text table' )[2].css('tr')[3].css('td')[0].css('a').each do |a|
+			puts a.text, "http://en.wikipedia.org" + a['href']
+		end
+			
+		#puts urls
+		#puts urls.length
 
+	#la times
+		require 'nokogiri'
+		require 'open-uri'
+		html = Nokogiri::HTML( open( "http://www.latimes.com/business/technology/" ) ) and nil
+		#urls = Array.new
+		puts html.xpath('//div[@id="section"]//div[@class="curvedTop"]')
+=end
 
+	#cnn finance
+		require 'nokogiri'
+		require 'open-uri'
+		html = Nokogiri::HTML( open( "http://finance.fortune.cnn.com/2013/" ) ) and nil
+		#urls = Array.new
+		html.xpath('//div[@id="cnnBody"]//h2/a').each do |a|
+			puts a['href'], a.text
+		end
+
+	#brand eating
+		html = Nokogiri::HTML( open( "http://www.brandeating.com/" ) ) and nil
+		#urls = Array.new
+		html.xpath('//div[@id="main-wrapper"]//h3/a').each do |a|
+			puts a['href'], a.text
+		end
 =begin
 	# well
 	html = Nokogiri::HTML( open( "http://well.blogs.nytimes.com/2013" ) ) and nil
