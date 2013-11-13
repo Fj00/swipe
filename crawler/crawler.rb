@@ -155,7 +155,6 @@ end
 		html.xpath('//div[@id="posts"]//h2/a').each do |a|
 			puts a['href'], a.text
 		end
-=end
 	#nfl.com news
 		require 'nokogiri'
 		require 'open-uri'
@@ -165,7 +164,15 @@ end
 			puts a.css('link').attr('href')
 		end
 		#urls = Array.new
-
+=end
+	#mlb.com news
+		require 'nokogiri'
+		require 'open-uri'
+		xml = Nokogiri::HTML( open( "http://www.mlb.com/news/" ) )
+		xml.search( '//div[@class="np_container"]//h2/a' ).each do |a|
+			puts a['href'], a.text
+		end
+		#urls = Array.new
 
 
 
