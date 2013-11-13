@@ -164,7 +164,7 @@ end
 			puts a.css('link').attr('href')
 		end
 		#urls = Array.new
-=end
+
 	#mlb.com news
 		require 'nokogiri'
 		require 'open-uri'
@@ -173,7 +173,14 @@ end
 			puts a['href'], a.text
 		end
 		#urls = Array.new
-
+=end
+	#golf channel
+		require 'nokogiri'
+		require 'open-uri'
+		xml = Nokogiri::HTML( open( "http://www.golfchannel.com/news" ) )
+		xml.xpath( '//div[@class="center-wrapper"]//div[@class="field-content views-field-title"]/a' ).each do |a|
+			puts "http://www.golfchannel.com/news" + a['href'], a.text
+		end
 
 
 
