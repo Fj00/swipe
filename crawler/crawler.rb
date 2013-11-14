@@ -3,6 +3,8 @@
 #if block inside control statement is one line, use the format "do this if that" to condense whole thing to one line
 #use "array.each do |array item|" instead of "for array_item in array"
 
+require 'nokogiri'
+require 'open-uri'
 =begin require 'anemone'
 
 Anemone.crawl("http://www.hyperproof.com") do |anemone|
@@ -208,13 +210,44 @@ end
 			puts a['href'], a.text
 		end
 
-=end
+	#consumer reports - not working
 		require 'nokogiri'
 		require 'open-uri'
-		xml = Nokogiri::HTML( open( "http://www.consumerreports.org/cro/news/index.htm" ) )
-		xml.xpath( '//div[@class="news-content"]' ).each do |a|
-			puts a
+		xml = Nokogiri::HTML( open( "simplefeed.consumerreports.org/f/100001s37j59do52okz.rss" ) )
+		xml.search( '//item' ).each do |a|
+			%w[link title].each do |n|
+				puts a.at(n).text
+			end
 		end
+
+
+	#daily galaxy
+		require 'nokogiri'
+		require 'open-uri'
+		link_and_title = []
+		xml = Nokogiri::HTML( open( "http://www.dailygalaxy.com/" ) )
+		xml.xpath( '//div[@id="alpha-inner"]//h3/a' ).each do |a|
+			link_and_title.push( [ a['href'], a.text ] )
+		end
+		puts link_and_title
+
+
+		link_and_title = []
+		xml = Nokogiri::HTML( open( "http://www.eater.com/" ) )
+		xml.xpath( '//div[@class="column-content"]//div[@class="post post-boxed post-plain"]/h1/a' ).each do |a|
+			link_and_title.push( [ a['href'], a.text ] )
+		end
+		puts link_and_title
+=end
+		link_and_title = []
+		xml = Nokogiri::HTML( open( "http://www.foodandwine.com/blogs" ) )
+		xml.xpath( '//div[@class="entry-excerpt"]//h2/a' ).each do |a|
+			link_and_title.push( [ "http://www.foodandwine.com" + a['href'], a.text ] )
+		end
+		puts link_and_title
+
+
+
 
 =begin
 	# well
