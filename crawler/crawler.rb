@@ -160,8 +160,8 @@ end
 	#nfl.com news
 		require 'nokogiri'
 		require 'open-uri'
-		xml = Nokogiri::HTML( open( "http://www.nfl.com/rss/rsslanding?searchString=home" ) )
-		xml.search( '//entry' ).each do |a|
+		html = Nokogiri::HTML( open( "http://www.nfl.com/rss/rsslanding?searchString=home" ) )
+		html.search( '//entry' ).each do |a|
 			puts a.css('title').text
 			puts a.css('link').attr('href')
 		end
@@ -170,8 +170,8 @@ end
 	#mlb.com news
 		require 'nokogiri'
 		require 'open-uri'
-		xml = Nokogiri::HTML( open( "http://www.mlb.com/news/" ) )
-		xml.search( '//div[@class="np_container"]//h2/a' ).each do |a|
+		html = Nokogiri::HTML( open( "http://www.mlb.com/news/" ) )
+		html.search( '//div[@class="np_container"]//h2/a' ).each do |a|
 			puts a['href'], a.text
 		end
 		#urls = Array.new
@@ -179,16 +179,16 @@ end
 	#golf channel
 		require 'nokogiri'
 		require 'open-uri'
-		xml = Nokogiri::HTML( open( "http://www.golfchannel.com/news" ) )
-		xml.xpath( '//div[@class="center-wrapper"]//div[@class="field-content views-field-title"]/a' ).each do |a|
+		html = Nokogiri::HTML( open( "http://www.golfchannel.com/news" ) )
+		html.xpath( '//div[@class="center-wrapper"]//div[@class="field-content views-field-title"]/a' ).each do |a|
 			puts "http://www.golfchannel.com/news" + a['href'], a.text
 		end
 
 	#techmamas
 	require 'nokogiri'
 		require 'open-uri'
-		xml = Nokogiri::HTML( open( "http://techmamas.com/main/2013" ) )
-		xml.xpath( '//div[@id="contentmain"]//h1/a' ).each do |a|
+		html = Nokogiri::HTML( open( "http://techmamas.com/main/2013" ) )
+		html.xpath( '//div[@id="contentmain"]//h1/a' ).each do |a|
 			puts a['href'], a.text
 		end
 
@@ -198,23 +198,23 @@ end
 	#the loop
 		require 'nokogiri'
 		require 'open-uri'
-		xml = Nokogiri::HTML( open( "http://www.loopinsight.com/2013/" ) )
-		xml.xpath( '//div[@class="container"]//h2/a' ).each do |a|
+		html = Nokogiri::HTML( open( "http://www.loopinsight.com/2013/" ) )
+		html.xpath( '//div[@class="container"]//h2/a' ).each do |a|
 			puts a['href'], a.text
 		end
 
 		require 'nokogiri'
 		require 'open-uri'
-		xml = Nokogiri::HTML( open( "http://www.calculatedriskblog.com/2013" ) )
-		xml.xpath( '//div[@class="blog-posts hfeed"]//h3/a' ).each do |a|
+		html = Nokogiri::HTML( open( "http://www.calculatedriskblog.com/2013" ) )
+		html.xpath( '//div[@class="blog-posts hfeed"]//h3/a' ).each do |a|
 			puts a['href'], a.text
 		end
 
 	#consumer reports - not working
 		require 'nokogiri'
 		require 'open-uri'
-		xml = Nokogiri::HTML( open( "simplefeed.consumerreports.org/f/100001s37j59do52okz.rss" ) )
-		xml.search( '//item' ).each do |a|
+		html = Nokogiri::HTML( open( "simplefeed.consumerreports.org/f/100001s37j59do52okz.rss" ) )
+		html.search( '//item' ).each do |a|
 			%w[link title].each do |n|
 				puts a.at(n).text
 			end
@@ -225,29 +225,52 @@ end
 		require 'nokogiri'
 		require 'open-uri'
 		link_and_title = []
-		xml = Nokogiri::HTML( open( "http://www.dailygalaxy.com/" ) )
-		xml.xpath( '//div[@id="alpha-inner"]//h3/a' ).each do |a|
+		html = Nokogiri::HTML( open( "http://www.dailygalaxy.com/" ) )
+		html.xpath( '//div[@id="alpha-inner"]//h3/a' ).each do |a|
 			link_and_title.push( [ a['href'], a.text ] )
 		end
 		puts link_and_title
 
-
+	#eater
 		link_and_title = []
-		xml = Nokogiri::HTML( open( "http://www.eater.com/" ) )
-		xml.xpath( '//div[@class="column-content"]//div[@class="post post-boxed post-plain"]/h1/a' ).each do |a|
+		html = Nokogiri::HTML( open( "http://www.eater.com/" ) )
+		html.xpath( '//div[@class="column-content"]//div[@class="post post-boxed post-plain"]/h1/a' ).each do |a|
 			link_and_title.push( [ a['href'], a.text ] )
 		end
 		puts link_and_title
-=end
+	#food & wine
 		link_and_title = []
-		xml = Nokogiri::HTML( open( "http://www.foodandwine.com/blogs" ) )
-		xml.xpath( '//div[@class="entry-excerpt"]//h2/a' ).each do |a|
+		html = Nokogiri::HTML( open( "http://www.foodandwine.com/blogs" ) )
+		html.xpath( '//div[@class="entry-excerpt"]//h2/a' ).each do |a|
 			link_and_title.push( [ "http://www.foodandwine.com" + a['href'], a.text ] )
 		end
 		puts link_and_title
 
+	#inside adwords	
+		link_and_title = []
+		html = Nokogiri::HTML( open( "http://adwords.blogspot.com/" ) )
+		html.xpath( '//div[@class="widget Blog"]//h2/a' ).each do |a|
+			link_and_title.push( [ a['href'], a['title'] ] )
+		end
+		puts link_and_title
 
+	#NASA - JPL
+		link_and_title = []
+		xml = Nokogiri::XML( open( "http://www.jpl.nasa.gov/multimedia/rss/news.xml" ) )
+		xml.search( '//item' ).each do |a|
+			link_and_title.push([ a.css('link').text, a.css('title').text ])	
+		end
+		puts link_and_title
 
+=end
+
+	#inside adwords	
+		link_and_title = []
+		html = Nokogiri::HTML( open( "http://www.latimes.com/entertainment/tv/showtracker/" ) )
+		html.xpath( '//div[@class="curvedContent"]//td/*[2]/a' ).each do |a|
+			link_and_title.push( [a['href'], a.text] )
+		end
+		puts link_and_title
 
 =begin
 	# well
