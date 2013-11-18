@@ -1,6 +1,6 @@
 require 'nokogiri'
 require 'open-uri'
-
+=begin
 #LA Times Blogs	
 	link_and_title = []
 	la_times = 	[
@@ -80,3 +80,15 @@ require 'open-uri'
 	html.xpath( '//div[@class="container"]//h2/a' ).each do |a|
 		puts a['href'], a.text
 	end
+=end
+#huff post
+	html = Nokogiri::HTML( open( "http://www.huffingtonpost.com/" ) ) and nil
+		urls = []
+		html.xpath( '//div[@id="news_column"]//h4/a' ).each do |a|
+			if a['href'].match(/#{Time.now.year}/) && a.text.length > 0
+				title_and_link = a["href"], a.text
+				urls.push [ title_and_link ]
+			end
+		end
+		puts urls
+		puts urls.length
