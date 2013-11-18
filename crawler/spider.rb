@@ -3,7 +3,12 @@ require 'open-uri'
 
 #LA Times Blogs	
 	link_and_title = []
-	la_times = ["http://latimesblogs.latimes.com/technology/", "http://latimesblogs.latimes.com/sports_blog/", "http://latimesblogs.latimes.com/showtracker/"]
+	la_times = 	[
+								"http://latimesblogs.latimes.com/technology/", 
+								"http://latimesblogs.latimes.com/sports_blog/", 
+								"http://latimesblogs.latimes.com/showtracker/",
+								"http://latimesblogs.latimes.com/lanow/"
+							]
 	la_times.each do |link|
 		html = Nokogiri::HTML( open( link ) )
 		html.xpath( '//div[@class="curvedContent"]//td/*[2]/a' ).each do |a|
@@ -64,7 +69,7 @@ require 'open-uri'
 		unless a["href"].match(/http/)
 			title_and_link = "http://news.yahoo.com/archive/" + a["href"], a.text
 		else 
-			title_and_link = a["href"], a.text.gsub('[$$]', '') #some titles contain [$$] at the beginning
+			title_and_link = a["href"], a.text.sub('[$$]', '') #some titles contain [$$] at the beginning
 		end
 		urls.push [ title_and_link ]
 	end
