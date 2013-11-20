@@ -44,10 +44,8 @@ require 'open-uri'
 #NYT main page
 	xml = Nokogiri::XML( open( "http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml" ) ) and nil
 	mainURL = []
-	xml.search( '//item' ).each do |a|
-		%w[link title].each do |n|
-			mainURL.push( a.at(n).text )
-		end
+	xml.search( '//item//link | //item//title' ).each do |a|
+		mainURL.push(a.text)
 	end
 	puts mainURL
 
@@ -80,7 +78,7 @@ require 'open-uri'
 	html.xpath( '//div[@class="container"]//h2/a' ).each do |a|
 		puts a['href'], a.text
 	end
-=end
+
 #huff post
 	html = Nokogiri::HTML( open( "http://www.huffingtonpost.com/" ) ) and nil
 		urls = []
@@ -92,3 +90,24 @@ require 'open-uri'
 		end
 		puts urls
 		puts urls.length
+
+#NYT front page
+=end
+	html = Nokogiri::HTML( open( "http://www.nytimes.com/" ) ) and nil
+			urls = []
+			html.xpath( '//div[@class="abColumn"]//div[@class="story"]' ).each do |a|
+				puts a.css('h2 a')
+				puts a.css('h3 a')
+
+			end
+			puts urls
+			puts urls.length
+
+#NYT main page
+	xml = Nokogiri::XML( open( "http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml" ) ) and nil
+	mainURL = []
+	xml.search( '//item' ).each do |a|
+		title_and_link = [a.css('link').text, a.css('title').text]
+		mainURL.push(title_and_link)
+	end
+	puts mainURL
