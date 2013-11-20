@@ -97,9 +97,9 @@
                           '<div id="titleBar"></div>' +
                           '<h2><a id="source-a" href="' + articleLink + '" target="_blank">' + sourceName + '</a> ' + $(this).find('date').text() + ' EST</h2>' +
                           '<ul id="navsub-1">' +
-                          '    <li id="always-li" style="border-top: 1px #888888 solid;" onclick="rateSource(' + sourceID  + ',1,0);"><input type="checkbox" id="always"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Subscribe to ' + sourceName + '</span></li>' +
-                          '    <li id="sometimes-li" class="sometimes" onclick="rateSource(' + sourceID + ',0,0);"><input type="checkbox" id="sometimes" checked><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Unsubscribe from ' + sourceName+ '</span></li>' +
-                          '    <li id="never-li" onclick="rateSource(' + sourceID  + ',-1,0);"><input type="checkbox" id="never" ><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Block ' + sourceName + '</span></li>' +
+                          '    <li id="always-li" style="border-top: 1px #888888 solid;" ><input type="checkbox" id="always"><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Subscribe to ' + sourceName + '</span></li>' +
+                          '    <li id="sometimes-li" class="sometimes" ><input type="checkbox" id="sometimes" checked><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Unsubscribe from ' + sourceName+ '</span></li>' +
+                          '    <li id="never-li" ><input type="checkbox" id="never" ><span style="color: #AF2F4E; margin-left: 4px; margin-right: 4px;">Block ' + sourceName + '</span></li>' +
                           '</ul>';
 
                           if ($(this).find('forwarding-user-id').text() === '') {
@@ -116,6 +116,7 @@
 
             articleHtml += '<div id ="articleWrapper">' + articleText + '</div>' +
                           '<a href="' + articleLink + '" target="_blank" id="readMore">Read more</a>';
+    
             // end block
             a_sourceID.push ( sourceID );
             a_articleID.push( articleID ); // store article's numeric ID
@@ -168,7 +169,6 @@
             }
             a_commentContent.push(commentsHtml); // push comment html
             commentsHtml = '';
-
           });
           if (a_articleContent.length == 4){ // insert first article once cache reaches 4
             currentArticleID = a_articleID[0]; // update article ID
@@ -253,17 +253,14 @@
         var rateSourceURL = sourceLink + sourceID + '/rating/'; // *
         if ( rating == 1 ) {
           rateSourceURL += 'always.xml';
-          $(document).ready(function(){
             if ( cyclic === 0 ) {
               $('#navsub-1 li').removeClass();
               $('#always-li').addClass('always');
               $('#always').prop('checked', true);
               $('#sometimes, #never').prop('checked', false);
             }
-          });
         } else if ( rating === 0 ) {
           rateSourceURL += 'sometimes.xml';
-          $(document).ready(function(){
             if ( cyclic === 0 ) {
               //if ( isMobile ) {
                 /*
@@ -281,19 +278,17 @@
               $('#never, #always').prop('checked', false);
 
             }
-          });
+
         } else if ( rating == -1 ) {
           rateSourceURL += 'never.xml';
-          $(document).ready(function(){
             if ( cyclic === 0 ) {
               $('#navsub-1 li').removeClass();
               $('#never-li').addClass('never');
               $('#never').prop('checked', true);
               $('#sometimes, #always').prop('checked', false);
             }
-          });
         }
-        sendRating( rateSourceURL );
+        // sendRating( rateSourceURL );
       }
 
       function showNewArticle(title){
@@ -580,6 +575,24 @@
             return false;
           }
          
+        });
+
+        $(document).on('click', '#navsub-1 li', function(event){
+          console.log(rateCount);
+          console.log(a_sourceID);
+          console.log(event.target.id + ', ' + this.id);
+          if (this.id == 'always-li'){
+
+            console.log('always');
+            rateSource(a_sourceID[rateCount], 1, 0);
+          } else if (this.id == 'sometimes-li'){
+            console.log('sometimes');
+            rateSource(a_sourceID[rateCount], 0, 0);
+          } else {
+            console.log('never');
+            rateSource(a_sourceID[rateCount], -1, 0);
+          }
+
         });
 
   });
